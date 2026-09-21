@@ -115,13 +115,13 @@
   }
   nav.catnav .wrap { display: flex; overflow-x: auto; scrollbar-width: none; justify-content: center; }
   nav.catnav .wrap::-webkit-scrollbar { display: none; }
-  nav.catnav button {
+  nav.catnav button, nav.catnav a {
     flex: none; font: 700 14px 'Noto Sans KR', sans-serif; color: var(--ink);
     background: none; border: none; padding: 12px 15px; cursor: pointer;
     border-bottom: 2px solid transparent; white-space: nowrap;
   }
-  nav.catnav button:hover { color: var(--navy); }
-  nav.catnav button.active { color: var(--red); border-bottom-color: var(--red); }
+  nav.catnav button:hover, nav.catnav a:hover { color: var(--navy); }
+  nav.catnav button.active, nav.catnav a.active { color: var(--red); border-bottom-color: var(--red); }
 
   /* ---------- notice ---------- */
   .notice {
@@ -264,14 +264,14 @@
     </a>
     <div class="catlist" id="catNav">
       <button data-cat="전체" class="active">전체</button>
-      <button data-cat="속보">속보</button>
-      <button data-cat="교단">교단</button>
+      <a data-cat="속보" href="https://yejangfocus.github.io/news/news001.html">속보</a>
+      <a data-cat="교단" href="https://yejangfocus.github.io/news/news001.html">교단</a>
       <button data-cat="목회">목회</button>
       <button data-cat="신학">신학</button>
       <button data-cat="사설">사설</button>
-      <button data-cat="특집">특집</button>
+      <a data-cat="특집" href="https://yejangfocus.github.io/news/news002.html">특집</a>
       <button data-cat="교회">교회</button>
-      <button data-cat="인물">인물</button>
+      <a data-cat="인물" href="https://yejangfocus.github.io/news/news003.html">인물</a>
       <button data-cat="교계">교계</button>
       <button data-cat="정치">정치</button>
       <button data-cat="오피니언">오피니언</button>
@@ -326,24 +326,24 @@
 
     <div class="legal-grid">
       <div>
-        법인(매체)명: 예장포커스<br>
-        주소: 대구광역시 (상세 주소는 이사회 의결로 정함)<br>
+        법인명: 예장포커스<br>
+        주소: 대전광역시 (상세 주소 추후)<br>
         대표전화: 000-0000-0000
       </div>
       <div>
-        제호: 예장포커스<br>
-        등록번호: 등록 절차 진행 중<br>
-        등록일 / 최초발행일: 창간 준비 중
+        제호: 예장포커스(Yejang Focus)<br>
+        사업자등록번호: 등록 절차 진행 중<br>
+        통신판매업등록번호: 등록 절차 진행 중
       </div>
       <div>
-        발행인: ○○○ (이사장 겸임)<br>
-        편집인(주필): ○○○<br>
-        편집국장: ○○○
+        등록일: 2026-09-30<br>
+        발행일: 창간 준비 중<br>
+        발행·편집인: 박민하
       </div>
     </div>
 
-    <p class="copyright">Copyright ⓒ 예장포커스(Yejang Focus). All rights reserved. 본지의 모든 콘텐츠는 저작권법의 보호를 받으며 무단 전재·복사·배포를 금합니다.</p>
-    <p class="note">※ 이 화면은 뉴스앤조이(newsnjoy.or.kr)의 지면 구성을 참고한 레이아웃 시안이며, 표시된 기사·인물·등록 정보는 예시입니다.</p>
+    <p class="copyright">예장포커스(Yejang Focus)의 모든 콘텐츠(영상, 기사, 사진)는 저작권법의 보호를 받는 바, 무단 전재와 복사, 배포 등을 금합니다.</p>
+    <p class="copyright">Copyright © 2026 예장포커스(Yejang Focus). All rights reserved. mail to <a href="mailto:owenpej@naver.com">owenpej@naver.com</a></p>
   </div>
 </footer>
 
