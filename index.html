@@ -82,6 +82,19 @@
   }
   .support-btn:hover { background: var(--navy-ink); }
 
+  /* ---------- search results dropdown ---------- */
+  .search-results {
+    position: absolute; left: 18px; right: 96px; top: 100%; z-index: 40;
+    background: var(--paper); border: 1px solid var(--hair-strong); border-top: none;
+    box-shadow: 0 10px 22px -10px rgba(15,29,58,.25); max-height: 320px; overflow-y: auto;
+  }
+  .search-results li { border-bottom: 1px solid var(--hair); }
+  .search-results li:last-child { border-bottom: none; }
+  .search-results a { display: block; padding: 10px 14px; font-size: 13.5px; line-height: 1.5; }
+  .search-results a:hover { background: var(--paper-alt); color: var(--navy); }
+  .search-results .tag { font-size: 11px; font-weight: 700; color: var(--navy); margin-right: 6px; }
+  .search-results .empty { padding: 14px; font-size: 13px; color: var(--ink-faint); text-align: center; }
+
   /* ---------- masthead ---------- */
   .masthead { padding: 30px 0 18px; text-align: center; }
   .masthead .lockup {
@@ -244,11 +257,12 @@
 </div>
 
 <div class="searchrow">
-  <div class="wrap">
-    <form onsubmit="return false;">
+  <div class="wrap" style="position:relative;">
+    <form id="siteSearchForm" onsubmit="return false;">
       <span class="search-ic">🔍</span>
-      <input type="text" placeholder="기사 검색">
+      <input type="text" id="siteSearchInput" placeholder="기사 검색 (제목으로 검색)" autocomplete="off">
     </form>
+    <ul id="searchResults" class="search-results" hidden></ul>
     <button type="button" class="support-btn">후원하기</button>
   </div>
 </div>
@@ -283,7 +297,7 @@
 
   <div class="notice">
     <span class="badge">공지</span>
-    <a href="#">예장포커스 창간 준비 소식을 전합니다 — 독자 여러분께 드리는 글</a>
+    <a href="https://yejangfocus.com/공지.html">예장포커스 창간 준비 소식을 전합니다 — 독자 여러분께 드리는 글</a>
   </div>
 
   <!-- 헤드라인 -->
@@ -314,7 +328,7 @@
 
     <div class="flinks">
       <a href="#">매체소개</a>
-      <a href="#">기사 제보</a>
+      <a href="mailto:owenpej@naver.com">기사 제보</a>
       <a href="#">광고 문의</a>
       <a href="#">구독 신청</a>
       <a href="#">이용약관</a>
@@ -354,6 +368,75 @@
         buttons.forEach(function (x) { x.classList.remove('active'); });
         b.classList.add('active');
       });
+    });
+  })();
+
+  // 예장포커스 기사 검색 인덱스 — 새 기사가 올라올 때마다 이 배열에 한 줄씩 추가하면 됩니다.
+  var ARTICLE_INDEX = [
+    { tag: '특집', title: '송기섭 목사, 어떻게 826표를 얻었나 — "조직" 아닌 "이미지"가 갈랐다', url: 'https://yejangfocus.github.io/news/news001.html' },
+    { tag: '특집', title: '총회 끝난 첫 주일, 두 강단의 온도차 — "전화위복"과 "희한하게 떨어졌다" 사이', url: 'https://yejangfocus.github.io/news/news002.html' },
+    { tag: '교계', title: '홍승열 목사 아들 진영 군 혼사 — 당선 닷새 만의 송기섭 목사도 축하 발걸음', url: 'https://yejangfocus.github.io/news/news003.html' },
+    { tag: '교회', title: '원로 추대, 절차를 지킨 교회가 왜 흔들려야 하는가', url: 'https://yejangfocus.github.io/news/news004.html' },
+    { tag: '사설', title: '정정 없는 일방 보도에 유감 — 박○○ 목사, "언론중재위 제소 검토"', url: 'https://yejangfocus.github.io/news/news005.html' }
+  ];
+
+  (function () {
+    var input = document.getElementById('siteSearchInput');
+    var resultsBox = document.getElementById('searchResults');
+    var wrap = input.closest('.wrap');
+    if (!input || !resultsBox) return;
+
+    function normalize(s) {
+      // 자모 결합 형태 차이(NFC/NFD)까지 흡수해 한글 검색이 안정적으로 걸리게 함
+      return (s || '').normalize('NFC').toLowerCase();
+    }
+
+    function render(list, query) {
+      resultsBox.innerHTML = '';
+      if (!query) { resultsBox.hidden = true; return; }
+      if (list.length === 0) {
+        var li = document.createElement('li');
+        li.innerHTML = '<div class="empty">검색 결과가 없습니다.</div>';
+        resultsBox.appendChild(li);
+      } else {
+        list.forEach(function (item) {
+          var li = document.createElement('li');
+          var a = document.createElement('a');
+          a.href = item.url;
+          a.innerHTML = '<span class="tag">' + item.tag + '</span>' + item.title;
+          li.appendChild(a);
+          resultsBox.appendChild(li);
+        });
+      }
+      resultsBox.hidden = false;
+    }
+
+    function search(query) {
+      var q = normalize(query);
+      if (!q) return [];
+      return ARTICLE_INDEX.filter(function (item) {
+        return normalize(item.title).indexOf(q) !== -1 || normalize(item.tag).indexOf(q) !== -1;
+      });
+    }
+
+    input.addEventListener('input', function () {
+      render(search(input.value.trim()), input.value.trim());
+    });
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        var q = input.value.trim();
+        var matched = search(q);
+        if (matched.length > 0) {
+          window.location.href = matched[0].url;
+        } else if (q) {
+          window.open('https://www.google.com/search?q=' + encodeURIComponent('site:yejangfocus.github.io/news ' + q), '_blank');
+        }
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      if (wrap && !wrap.contains(e.target)) resultsBox.hidden = true;
     });
   })();
 </script>
