@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>9.28(월) 삼랑진 라이딩 일정</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --chalk-white:#f5f3ea;
+    --chalk-yellow:#f7e98e;
+    --chalk-pink:#f4b8c4;
+    --chalk-blue:#a9d8e6;
+    --board-green-1:#1f3d2c;
+    --board-green-2:#254a35;
+    --board-frame:#5c3a21;
+    --board-frame-dark:#3e2716;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    width:100%;
+    background:#151515;
+    font-family:'Noto Sans KR',sans-serif;
+    color:var(--chalk-white);
+  }
+
+  /* ===== 칠판 배경 ===== */
+  .board-frame{
+    position:relative;
+    max-width:900px;
+    margin:18px auto;
+    padding:22px;
+    background:
+      linear-gradient(180deg,#6b4527,#4a2f1a 60%, #3e2716);
+    border-radius:14px;
+    box-shadow:
+      0 0 0 4px var(--board-frame-dark),
+      0 18px 40px rgba(0,0,0,.6);
+  }
+  .board{
+    position:relative;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(255,255,255,0.05), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px),
+      linear-gradient(135deg, var(--board-green-1), var(--board-green-2));
+    border:6px solid #2b1a0f;
+    border-radius:6px;
+    padding:26px 18px 34px;
+    min-height:640px;
+    overflow:hidden;
+  }
+  /* 분필가루 느낌 */
+  .board::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(rgba(255,255,255,.5) 1px, transparent 1px),
+      radial-gradient(rgba(255,255,255,.35) 1px, transparent 1px);
+    background-size: 90px 90px, 130px 130px;
+    background-position: 10px 20px, 60px 90px;
+    opacity:.15;
+    pointer-events:none;
+  }
+
+  .chalk-title-wrap{
+    text-align:center;
+    position:relative;
+    z-index:2;
+    margin-bottom:6px;
+  }
+  .date-tag{
+    display:inline-block;
+    font-weight:700;
+    font-size:22px;
+    color:var(--chalk-pink);
+    border:2px dashed var(--chalk-pink);
+    border-radius:10px;
+    padding:4px 16px;
+    margin-bottom:10px;
+    transform:rotate(-1.5deg);
+  }
+  .main-title{
+    font-weight:900;
+    font-size:clamp(28px,6vw,44px);
+    color:var(--chalk-white);
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.08), 0 0 6px rgba(255,255,255,0.15);
+    margin:0 0 4px;
+    line-height:1.3;
+  }
+  .sub-title{
+    font-weight:500;
+    font-size:22px;
+    color:var(--chalk-yellow);
+    margin:0 0 10px;
+  }
+  .chalk-line{
+    width:70%;
+    max-width:400px;
+    height:2px;
+    margin:14px auto 18px;
+    background:repeating-linear-gradient(90deg, var(--chalk-white) 0 10px, transparent 10px 16px);
+    opacity:.6;
+  }
+
+  /* ===== 중앙 메뉴 버튼 ===== */
+  .menu-board{
+    position:relative;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin:10px auto 20px;
+    max-width:520px;
+  }
+  .menu-btn{
+    width:100%;
+    background:rgba(245,243,234,0.06);
+    border:2.5px solid var(--chalk-yellow);
+    border-radius:12px;
+    color:var(--chalk-white);
+    font-family:'Noto Sans KR',sans-serif;
+    font-weight:700;
+    font-size:22px;
+    padding:16px 20px;
+    text-align:center;
+    cursor:pointer;
+    letter-spacing:1px;
+    transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  }
+  .menu-btn .icon{margin-right:10px;}
+  .menu-btn:hover, .menu-btn:focus-visible{
+    background:rgba(247,233,142,0.18);
+    transform:scale(1.03);
+    box-shadow:0 0 14px rgba(247,233,142,0.35);
+    outline:none;
+  }
+  .menu-btn.active{
+    background:var(--chalk-yellow);
+    color:#2b1a0f;
+    border-color:var(--chalk-white);
+  }
+
+  /* ===== 상세 패널 (분필로 쓴 듯) ===== */
+  .detail-panel{
+    position:relative;
+    z-index:2;
+    max-width:640px;
+    margin:6px auto 0;
+    background:rgba(0,0,0,0.18);
+    border:2px dashed var(--chalk-white);
+    border-radius:12px;
+    padding:22px 20px;
+    display:none;
+    animation:chalkIn .25s ease;
+  }
+  .detail-panel.show{display:block;}
+  @keyframes chalkIn{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .detail-panel h3{
+    margin:0 0 14px;
+    font-size:24px;
+    font-weight:900;
+    color:var(--chalk-yellow);
+    border-bottom:2px solid var(--chalk-yellow);
+    padding-bottom:8px;
+  }
+  .detail-panel p, .detail-panel li{
+    font-size:20px;
+    line-height:1.7;
+    font-weight:400;
+    margin:6px 0;
+  }
+  .detail-panel ul{padding-left:22px; margin:0;}
+  .detail-panel strong{color:var(--chalk-pink); font-weight:700;}
+
+  .schedule-item{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    margin:10px 0;
+    padding:10px 12px;
+    background:rgba(255,255,255,0.04);
+    border-radius:8px;
+    border-left:4px solid var(--chalk-blue);
+  }
+  .schedule-time{
+    font-weight:900;
+    font-size:21px;
+    color:var(--chalk-blue);
+    min-width:110px;
+    white-space:nowrap;
+  }
+  .schedule-text{
+    font-size:20px;
+    font-weight:500;
+    color:var(--chalk-white);
+  }
+  .schedule-text .tag{
+    display:inline-block;
+    font-size:16px;
+    font-weight:700;
+    color:#2b1a0f;
+    background:var(--chalk-yellow);
+    border-radius:6px;
+    padding:1px 8px;
+    margin-left:6px;
+    vertical-align:middle;
+  }
+
+  .badge-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+    margin-top:6px;
+  }
+  .badge{
+    font-size:20px;
+    font-weight:700;
+    padding:8px 18px;
+    border-radius:24px;
+    border:2px solid var(--chalk-white);
+    color:var(--chalk-white);
+  }
+  .badge.leader{border-color:var(--chalk-pink); color:var(--chalk-pink);}
+  .badge.extra{border-color:var(--chalk-yellow); color:var(--chalk-yellow);}
+
+  .notice-box{
+    margin-top:8px;
+    padding:14px 16px;
+    border-radius:10px;
+    background:rgba(244,184,196,0.08);
+    border:2px solid var(--chalk-pink);
+    text-align:center;
+  }
+  .notice-box p{color:var(--chalk-pink); font-weight:700; font-size:21px; margin:0;}
+
+  /* ===== 하단 성경구절 ===== */
+  .verse-box{
+    position:relative;
+    z-index:2;
+    max-width:640px;
+    margin:26px auto 0;
+    text-align:center;
+    padding:18px 16px;
+    border-top:2px dashed var(--chalk-white);
+    border-bottom:2px dashed var(--chalk-white);
+  }
+  .verse-text{
+    font-size:22px;
+    font-weight:500;
+    font-style:normal;
+    color:var(--chalk-white);
+    line-height:1.6;
+    margin:0 0 8px;
+  }
+  .verse-ref{
+    font-size:20px;
+    font-weight:700;
+    color:var(--chalk-yellow);
+  }
+
+  .footer-note{
+    text-align:center;
+    margin-top:18px;
+    font-size:20px;
+    font-weight:500;
+    color:rgba(245,243,234,0.6);
+  }
+
+  /* 분필 손자국 */
+  .duster{
+    position:absolute;
+    width:70px; height:26px;
+    background:linear-gradient(180deg,#e9e2d3,#c9beaa);
+    border-radius:6px;
+    box-shadow:0 3px 6px rgba(0,0,0,.4);
+    opacity:.85;
+  }
+  .duster.d1{bottom:14px; left:20px; transform:rotate(-8deg);}
+  .duster.d2{bottom:18px; right:24px; transform:rotate(10deg);}
+
+  @media (max-width:600px){
+    .board-frame{margin:8px; padding:12px; border-radius:10px;}
+    .board{padding:20px 10px 28px; min-height:auto;}
+    .main-title{font-size:26px;}
+    .sub-title{font-size:20px;}
+    .menu-btn{font-size:20px; padding:14px 12px;}
+    .schedule-time{min-width:90px; font-size:20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="board-frame">
+  <div class="board">
+
+    <div class="chalk-title-wrap">
+      <div class="date-tag">📅 9월 28일 (월)</div>
+      <h1 class="main-title">삼랑진 라이딩 일정</h1>
+      <p class="sub-title">함께 달리는 은혜의 하루 🚴</p>
+    </div>
+
+    <div class="chalk-line"></div>
+
+    <!-- 중앙 메뉴 -->
+    <div class="menu-board" id="menuBoard">
+      <button class="menu-btn" data-target="p1"><span class="icon">👥</span>참석 인원</button>
+      <button class="menu-btn" data-target="p2"><span class="icon">🕒</span>시간표 &amp; 코스</button>
+      <button class="menu-btn" data-target="p3"><span class="icon">🍚</span>식사 &amp; 티타임</button>
+      <button class="menu-btn" data-target="p4"><span class="icon">📢</span>추가 참석 안내</button>
+    </div>
+
+    <!-- 상세 패널 1 : 참석 인원 -->
+    <div class="detail-panel" id="p1">
+      <h3>👥 현재 참석 인원</h3>
+      <div class="badge-row">
+        <span class="badge leader">대장님</span>
+        <span class="badge">차농</span>
+        <span class="badge">제농</span>
+        <span class="badge">용농</span>
+        <span class="badge">열농</span>
+      </div>
+      <p style="margin-top:14px;"><strong>대장님·차농·제농</strong>은 <strong>09:00 대구스타디움 제2주차장</strong>에서 출발합니다.</p>
+      <p>이후 삼랑진 낙동대교에서 <strong>용농·열농</strong>이 합류합니다.</p>
+    </div>
+
+    <!-- 상세 패널 2 : 시간표 -->
+    <div class="detail-panel" id="p2">
+      <h3>🕒 시간표 &amp; 코스</h3>
+      <div class="schedule-item">
+        <div class="schedule-time">09:00</div>
+        <div class="schedule-text">대구스타디움 제2주차장 <span class="tag">대장님·차농·제농</span></div>
+      </div>
+      <div class="schedule-item">
+        <div class="schedule-time">10:10</div>
+        <div class="schedule-text">삼랑진 낙동대교 <span class="tag">용농·열농 합류</span></div>
+      </div>
+      <div class="schedule-item">
+        <div class="schedule-time">11:00</div>
+        <div class="schedule-text">물금 경유</div>
+      </div>
+      <div class="schedule-item">
+        <div class="schedule-time">12:00</div>
+        <div class="schedule-text">삼랑진 송지시장 <span class="tag">식사 &amp; 티타임</span></div>
+      </div>
+      <div class="schedule-item">
+        <div class="schedule-time">14:00~15:00</div>
+        <div class="schedule-text">대구 도착</div>
+      </div>
+    </div>
+
+    <!-- 상세 패널 3 : 식사 -->
+    <div class="detail-panel" id="p3">
+      <h3>🍚 식사 &amp; 티타임</h3>
+      <p><strong>장소 :</strong> 삼랑진 송지시장</p>
+      <ul>
+        <li>일미랑</li>
+        <li>가우치</li>
+      </ul>
+      <p>식사 후 시장 내에서 편안한 티타임을 갖습니다.</p>
+      <p style="font-weight:900; color:var(--chalk-yellow);">🕛 12:00 도착 예정</p>
+    </div>
+
+    <!-- 상세 패널 4 : 추가 참석 -->
+    <div class="detail-panel" id="p4">
+      <h3>📢 추가 참석 안내</h3>
+      <div class="notice-box">
+        <p>추가 참석 신청 받습니다! ✋</p>
+      </div>
+      <p style="text-align:center; margin-top:12px;">함께 달리고 싶으신 분은 언제든 연락 주세요.</p>
+      <div class="badge-row" style="margin-top:10px;">
+        <span class="badge extra">추가 참석 환영</span>
+      </div>
+    </div>
+
+    <!-- 성경구절 -->
+    <div class="verse-box">
+      <p class="verse-text">"여호와께서 너를 지켜 모든 환난을 면케 하시며 또 네 영혼을 지키시리로다<br>여호와께서 너의 출입을 지금부터 영원까지 지키시리로다"</p>
+      <p class="verse-ref">— 시편 121편 7~8절 —</p>
+    </div>
+
+    <p class="footer-note">함께하는 라이딩, 함께 나누는 은혜 🙏</p>
+
+    <div class="duster d1"></div>
+    <div class="duster d2"></div>
+
+  </div>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.menu-btn');
+  const panels = document.querySelectorAll('.detail-panel');
+
+  buttons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const targetId = btn.getAttribute('data-target');
+      const targetPanel = document.getElementById(targetId);
+      const isOpen = targetPanel.classList.contains('show');
+
+      panels.forEach(p=>p.classList.remove('show'));
+      buttons.forEach(b=>b.classList.remove('active'));
+
+      if(!isOpen){
+        targetPanel.classList.add('show');
+        btn.classList.add('active');
+        targetPanel.scrollIntoView({behavior:'smooth', block:'nearest'});
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
