@@ -168,6 +168,17 @@
     background: none; border: none; padding: 12px 15px; cursor: pointer;
     border-bottom: 2px solid transparent; white-space: nowrap;
   }
+  /* 메뉴 높낮이 일렬 정렬: button과 a를 동일한 박스로 통일 */
+  .catlist { align-items: stretch; }
+  .catlist > button, .catlist > a {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 46px; margin: 0; padding: 0 15px; line-height: 1;
+    font: 700 14px/1 'Noto Sans KR', sans-serif; vertical-align: middle;
+    -webkit-appearance: none; appearance: none; text-decoration: none;
+    border: none; border-bottom: 2px solid transparent; border-radius: 0;
+  }
+  .catlist > button.active, .catlist > a.active { border-bottom-color: var(--red); }
+  nav.catnav .brandmark { align-self: center; }
   nav.catnav button:hover, nav.catnav a:hover { color: var(--navy); }
   nav.catnav button.active, nav.catnav a.active { color: var(--red); border-bottom-color: var(--red); }
 
