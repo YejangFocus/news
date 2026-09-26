@@ -405,11 +405,12 @@ nav.catnav{
     position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
     background: var(--paper); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--hair-strong);
     margin: 0 0 18px;
+  margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); width: 100vw;
   }
   @media (prefers-color-scheme: dark){
     nav.catnav{ --navy: #86a2dc; --red: #e2707d; --hair-strong: #47453a; }
   }
-  nav.catnav .wrap { display: flex; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; gap: 0; padding: 0; }
+  nav.catnav .wrap { display: flex; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; gap: 0; padding: 0 18px; max-width: 1040px; margin: 0 auto; }
   nav.catnav .wrap::-webkit-scrollbar { display: none; }
   .brandmark {
     flex: none; display: flex; align-items: center; padding: 8px 16px 8px 0; margin-right: 6px;
