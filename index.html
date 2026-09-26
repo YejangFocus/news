@@ -338,18 +338,18 @@
     </a>
     <div class="catlist" id="catNav">
       <button data-cat="전체" class="active">전체</button>
-      <a data-cat="속보" href="https://yejangfocus.github.io/news/news001.html">속보</a>
-      <a data-cat="교단" href="https://yejangfocus.github.io/news/006.html">교단</a>
+      <button data-cat="속보">속보</button>
+      <button data-cat="교단">교단</button>
       <button data-cat="목회">목회</button>
       <button data-cat="신학">신학</button>
-      <a data-cat="사설" href="https://yejangfocus.github.io/news/news005.html">사설</a>
-      <a data-cat="특집" href="https://yejangfocus.github.io/news/news001.html">특집</a>
-      <a data-cat="교회" href="https://yejangfocus.github.io/news/news004.html">교회</a>
-      <a data-cat="인물" href="https://yejangfocus.github.io/news/news003.html">인물</a>
-      <a data-cat="교계" href="https://yejangfocus.github.io/news/007.html">교계</a>
+      <button data-cat="사설">사설</button>
+      <button data-cat="특집">특집</button>
+      <button data-cat="교회">교회</button>
+      <button data-cat="인물">인물</button>
+      <button data-cat="교계">교계</button>
       <button data-cat="정치">정치</button>
       <button data-cat="오피니언">오피니언</button>
-      <a data-cat="칼럼" href="https://yejangfocus.github.io/news/칼럼/분노는_선택이다.html">칼럼</a>
+      <button data-cat="칼럼">칼럼</button>
     </div>
   </div>
 </nav>
@@ -432,7 +432,7 @@
 <div id="allArticlesOverlay" class="aa-overlay" hidden>
   <div class="aa-panel">
     <div class="aa-head">
-      <h2>전체 기사</h2>
+      <h2 id="aaTitle">전체 기사</h2>
       <button type="button" class="aa-close" aria-label="닫기">✕</button>
     </div>
     <ul class="aa-list" id="allArticlesList"></ul>
@@ -452,6 +452,7 @@
   .aa-list li:last-child{border-bottom:none;}
   .aa-list a{color:var(--ink);text-decoration:none;}
   .aa-list a:hover{color:var(--ink-soft);text-decoration:underline;}
+  .aa-empty{padding:40px 0;text-align:center;color:var(--muted);font-size:14px;}
 </style>
 
 <script>
@@ -459,11 +460,24 @@
     var buttons = document.querySelectorAll('#catNav button');
     var overlay = document.getElementById('allArticlesOverlay');
     var list = document.getElementById('allArticlesList');
+    var title = document.getElementById('aaTitle');
     var closeBtn = overlay ? overlay.querySelector('.aa-close') : null;
 
-    function renderAllArticles() {
-      if (!list || list.childElementCount) return;
-      ARTICLE_INDEX.forEach(function (item) {
+    function renderCategory(cat) {
+      if (!list) return;
+      list.innerHTML = '';
+      var items = cat === '전체' ? ARTICLE_INDEX : ARTICLE_INDEX.filter(function (item) {
+        return item.tag === cat;
+      });
+      if (title) title.textContent = cat === '전체' ? '전체 기사' : cat + ' 기사';
+      if (items.length === 0) {
+        var empty = document.createElement('li');
+        empty.className = 'aa-empty';
+        empty.textContent = '아직 등록된 기사가 없습니다.';
+        list.appendChild(empty);
+        return;
+      }
+      items.forEach(function (item) {
         var li = document.createElement('li');
         var a = document.createElement('a');
         a.href = item.url;
@@ -481,8 +495,8 @@
       b.addEventListener('click', function () {
         buttons.forEach(function (x) { x.classList.remove('active'); });
         b.classList.add('active');
-        if (b.dataset.cat === '전체' && overlay) {
-          renderAllArticles();
+        if (overlay) {
+          renderCategory(b.dataset.cat);
           overlay.hidden = false;
         }
       });
@@ -511,6 +525,7 @@
     { tag: '칼럼', title: '갈수록 행복이 사라지는 이유 — 풍요의 시대, 왜 우리는 점점 불행해지는가', url: 'https://yejangfocus.github.io/news/칼럼/갈수록_행복이_사라지는_이유.html' },
     { tag: '칼럼', title: '"예배가 지루해서 떠난다"…청소년 200명의 증언과 사역자의 동상이몽', url: 'https://yejangfocus.github.io/news/칼럼/예배가_지루해서_떠난다_청소년_200명의_증언과_사역자의_동상이몽.html' },
     { tag: '칼럼', title: '분노는 선택이다', url: 'https://yejangfocus.github.io/news/칼럼/분노는_선택이다.html' },
+    { tag: '칼럼', title: '주장과 나를 분리하라, 대화가 즐거워지는 법', url: 'https://yejangfocus.github.io/news/칼럼/주장과_나를_분리하라_칼럼.html' },
     { tag: '신학', title: '박진영의 삼위일체 부정, 개혁주의 신학은 어떻게 반박하는가', url: 'https://yejangfocus.github.io/news/신학/박진영의_삼위일체_부정_개혁주의_신학은_어떻게_반박하는가.html' }
   ];
 
