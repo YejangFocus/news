@@ -520,14 +520,87 @@
 
 </div>
 
+<div id="allArticlesOverlay" class="aa-overlay" hidden>
+  <div class="aa-panel">
+    <div class="aa-head">
+      <h2>전체 기사</h2>
+      <button type="button" class="aa-close" aria-label="닫기">✕</button>
+    </div>
+    <ul class="aa-list" id="allArticlesList"></ul>
+  </div>
+</div>
+
+<style>
+  .aa-overlay{position:fixed;inset:0;z-index:999;background:var(--paper);overflow-y:auto;padding:24px 18px 60px;}
+  .aa-overlay[hidden]{display:none;}
+  .aa-panel{max-width:1040px;margin:0 auto;}
+  .aa-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:9px;margin-bottom:14px;border-bottom:2px solid var(--ink);}
+  .aa-head h2{margin:0;font-size:18px;font-weight:700;color:var(--ink);}
+  .aa-close{background:none;border:none;font-size:20px;line-height:1;cursor:pointer;color:var(--ink-soft);padding:4px 8px;}
+  .aa-close:hover{color:var(--ink);}
+  .aa-list{list-style:none;margin:0;padding:0;}
+  .aa-list li{padding:12px 0;border-bottom:1px solid rgba(128,128,128,.25);font-size:15px;line-height:1.5;}
+  .aa-list li:last-child{border-bottom:none;}
+  .aa-list a{color:var(--ink);text-decoration:none;}
+  .aa-list a:hover{color:var(--ink-soft);text-decoration:underline;}
+</style>
+
 <script>
   (function () {
     var buttons = document.querySelectorAll('#catNav button');
+    var overlay = document.getElementById('allArticlesOverlay');
+    var list = document.getElementById('allArticlesList');
+    var closeBtn = overlay ? overlay.querySelector('.aa-close') : null;
+
+    function renderAllArticles() {
+      if (!list || list.childElementCount) return;
+      ARTICLE_INDEX.forEach(function (item) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = item.url;
+        a.textContent = item.title;
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+    }
+
+    function closeAllArticles() {
+      if (overlay) overlay.hidden = true;
+    }
+
     buttons.forEach(function (b) {
       b.addEventListener('click', function () {
         buttons.forEach(function (x) { x.classList.remove('active'); });
         b.classList.add('active');
+        if (b.dataset.cat === '전체' && overlay) {
+          renderAllArticles();
+          overlay.hidden = false;
+        }
       });
     });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeAllArticles);
+    if (overlay) {
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeAllArticles();
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAllArticles();
+    });
   })();
+
+  // 예장포커스 기사 검색 인덱스 — 새 기사가 올라올 때마다 이 배열에 한 줄씩 추가하면 됩니다.
+  var ARTICLE_INDEX = [
+    { tag: '특집', title: '송기섭 목사, 어떻게 826표를 얻었나 — "조직" 아닌 "이미지"가 갈랐다', url: 'https://yejangfocus.github.io/news/news001.html' },
+    { tag: '특집', title: '총회 끝난 첫 주일, 두 강단의 온도차 — "전화위복"과 "희한하게 떨어졌다" 사이', url: 'https://yejangfocus.github.io/news/news002.html' },
+    { tag: '교계', title: '홍승열 목사 아들 진영 군 혼사 — 당선 닷새 만의 송기섭 목사도 축하 발걸음', url: 'https://yejangfocus.github.io/news/news003.html' },
+    { tag: '교회', title: '원로 추대, 절차를 지킨 교회가 왜 흔들려야 하는가', url: 'https://yejangfocus.github.io/news/news004.html' },
+    { tag: '사설', title: '정정 없는 일방 보도에 유감 — 박○○ 목사, "언론중재위 제소 검토"', url: 'https://yejangfocus.github.io/news/news005.html' },
+    { tag: '교단', title: '"하나로, 미래로, 거룩함으로" 다함께 외치며 파회 — 제111회 총회, 정영교 총회장 체제로 새 회기 출발', url: 'https://yejangfocus.github.io/news/006.html' },
+    { tag: '교계', title: '예장○○교단 김○○ 부총회장 당선자, 가시지 않은 의혹', url: 'https://yejangfocus.github.io/news/007.html' },
+    { tag: '칼럼', title: '갈수록 행복이 사라지는 이유 — 풍요의 시대, 왜 우리는 점점 불행해지는가', url: 'https://yejangfocus.github.io/news/칼럼/갈수록_행복이_사라지는_이유.html' },
+    { tag: '칼럼', title: '"예배가 지루해서 떠난다"…청소년 200명의 증언과 사역자의 동상이몽', url: 'https://yejangfocus.github.io/news/칼럼/예배가_지루해서_떠난다_청소년_200명의_증언과_사역자의_동상이몽.html' }
+  ];
+
 </script>
