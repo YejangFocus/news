@@ -16,6 +16,7 @@
     });
 
   initThemeToggle();
+  initPlaceholderButtons();
 
   function initCategoryOverlay(ARTICLE_INDEX) {
     var buttons = document.querySelectorAll('#catNav button');
@@ -179,6 +180,40 @@
       var next = isDarkNow ? 'light' : 'dark';
       apply(next);
       try { localStorage.setItem(STORAGE_KEY, next); } catch (e) { /* 무시 */ }
+    });
+  }
+
+  function initPlaceholderButtons() {
+    // 로그인/회원가입/후원하기는 아직 실제 기능이 연결되지 않은 버튼.
+    // 아무 반응 없이 무시되지 않도록 준비 중임을 알리는 토스트를 띄운다.
+    var buttons = document.querySelectorAll('.topbar button, .support-btn');
+    if (!buttons.length) return;
+
+    var toastStyle = document.createElement('style');
+    toastStyle.textContent =
+      '#siteToast{position:fixed;left:50%;bottom:74px;transform:translate(-50%,12px);' +
+      'background:var(--ink);color:var(--paper);font-size:13px;padding:10px 18px;border-radius:4px;' +
+      'z-index:600;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;' +
+      'box-shadow:0 6px 18px rgba(0,0,0,.2);white-space:nowrap;}' +
+      '#siteToast.show{opacity:1;transform:translate(-50%,0);}';
+    document.head.appendChild(toastStyle);
+
+    var toast = document.createElement('div');
+    toast.id = 'siteToast';
+    document.body.appendChild(toast);
+    var hideTimer = null;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () { toast.classList.remove('show'); }, 2200);
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        showToast((b.textContent || '이 기능은').trim() + ' 기능은 준비 중입니다.');
+      });
     });
   }
 })();
