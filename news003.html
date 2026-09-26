@@ -81,58 +81,16 @@
     margin: 0 auto;
     padding: 32px 20px 80px;
   }
-  .masthead{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding-bottom: 16px;
-    border-bottom: 3px double var(--rule);
-    margin-bottom: 22px;
-  }
-  .masthead .side{
-    flex: 1;
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-  .masthead .side.right{ text-align: right; }
-  .masthead .side b{
-    display:block;
-    color: var(--ink-soft);
-    font-size: 12px;
-    letter-spacing: 1px;
-  }
-  .masthead .center{
-    text-align:center;
-    flex-shrink: 0;
-  }
-  .masthead .logo{
-    width: 96px;
-    height: auto;
-    margin: 0 auto 6px;
-    display: block;
-  }
-  .masthead .logo-link{
-    display: inline-block;
-    cursor: pointer;
-    transition: opacity .2s, transform .2s;
-  }
-  .masthead .logo-link:hover{ opacity: .85; transform: scale(1.03); }
-  .masthead .kicker{
-    font-size: 12px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .masthead .brand{
-    font-family: 'Noto Serif KR', serif;
-    font-weight: 900;
-    font-size: 20px;
-    letter-spacing: 2px;
-  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   .meta-bar{
     display:flex;
     justify-content: space-between;
@@ -341,14 +299,108 @@
   @media (max-width: 480px){
     .stat-strip{ grid-template-columns: 1fr 1fr; }
     .stat-strip div:last-child{ grid-column: span 2; }
-    .masthead{ flex-wrap: wrap; justify-content: center; text-align:center; }
-    .masthead .side{ flex: none; width: 100%; order: 3; text-align:center; margin-top: 8px; }
-    .masthead .side.right{ text-align:center; }
-    .masthead .center{ order: 1; width: 100%; }
+    
+    
+    
+    
   }
 
   /* ---------- category nav (index.html과 동일) ---------- */
-  nav.catnav{
+    /* ---------- 상단 헤더 (index.html과 동일: 로그인바 · 검색줄 · 마스트헤드) ---------- */
+  .yf-top{
+    --navy: #16294f; --navy-ink: #0f1d3a; --red: #b91c2b; --pine: #3f6b4a;
+    --paper: #ffffff; --paper-alt: #f5f4ef; --ink: #1c1a16; --ink-soft: #67635a;
+    --ink-faint: #96917f; --hair: #e4e1d6; --hair-strong: #cfccbd;
+    line-height: normal;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .yf-top{
+      --navy: #86a2dc; --navy-ink: #eef1fa; --red: #e2707d; --pine: #82bd8f;
+      --paper: #121210; --paper-alt: #1a1a16; --ink: #ece9df; --ink-soft: #aba795;
+      --ink-faint: #7d7a6a; --hair: #33322a; --hair-strong: #47453a;
+    }
+  }
+  :root[data-theme="dark"] .yf-top{
+    --navy: #86a2dc; --navy-ink: #eef1fa; --red: #e2707d; --pine: #82bd8f;
+    --paper: #121210; --paper-alt: #1a1a16; --ink: #ece9df; --ink-soft: #aba795;
+    --ink-faint: #7d7a6a; --hair: #33322a; --hair-strong: #47453a;
+  }
+  .yf-top a{ color: inherit; text-decoration: none; }
+  .yf-top ul{ list-style: none; margin: 0; padding: 0; }
+  .yf-top img{ display: block; }
+  .yf-top .wrap{ max-width: 1040px; margin: 0 auto; padding: 0; }
+
+  .yf-top .topbar{ border-bottom: 1px solid var(--hair); }
+  .yf-top .topbar .wrap{
+    display: flex; justify-content: flex-end; gap: 16px;
+    height: 34px; align-items: center; font-size: 12px; color: var(--ink-soft);
+  }
+  .yf-top .topbar button{ font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  .yf-top .topbar button:hover{ color: var(--navy); }
+
+  .yf-top .searchrow{ border-bottom: 1px solid var(--hair); }
+  .yf-top .searchrow .wrap{ display: flex; align-items: center; gap: 12px; height: 56px; }
+  .yf-top .searchrow form{
+    flex: 1; display: flex; align-items: center; gap: 8px; margin: 0;
+    border: 1px solid var(--hair-strong); border-radius: 3px; padding: 0 12px; height: 34px;
+  }
+  .yf-top .searchrow input{
+    flex: 1; min-width: 0; border: none; outline: none; background: none; font: 13px 'Noto Sans KR', sans-serif; color: var(--ink);
+  }
+  .yf-top .searchrow input::placeholder{ color: var(--ink-faint); }
+  .yf-top .searchrow .search-ic{ font-size: 13px; color: var(--ink-faint); }
+  .yf-top .support-btn{
+    flex: none; background: var(--navy); color: #fff; font: 600 13px 'Noto Sans KR', sans-serif;
+    padding: 0 18px; height: 34px; border-radius: 3px; display: inline-flex; align-items: center; cursor: pointer; border: none;
+  }
+  .yf-top .support-btn:hover{ background: var(--navy-ink); }
+
+  .yf-top .search-results{
+    position: absolute; left: 0; right: 78px; top: 100%; z-index: 40;
+    background: var(--paper); border: 1px solid var(--hair-strong); border-top: none;
+    box-shadow: 0 10px 22px -10px rgba(15,29,58,.25); max-height: 320px; overflow-y: auto;
+  }
+  .yf-top .search-results li{ border-bottom: 1px solid var(--hair); }
+  .yf-top .search-results li:last-child{ border-bottom: none; }
+  .yf-top .search-results a{ display: block; padding: 10px 14px; font-size: 13.5px; line-height: 1.5; color: var(--ink); }
+  .yf-top .search-results a:hover{ background: var(--paper-alt); color: var(--navy); }
+  .yf-top .search-results .tag{ display: inline; background: none; padding: 0; font-size: 11px; font-weight: 700; color: var(--navy); margin-right: 6px; letter-spacing: 0; }
+  .yf-top .search-results .empty{ padding: 14px; font-size: 13px; color: var(--ink-faint); text-align: center; }
+
+  .yf-top .masthead{ padding: 30px 0 18px; text-align: center; }
+  .yf-top .masthead-row{
+    display: grid; grid-template-columns: 1fr minmax(0, 532px) 1fr;
+    align-items: center; gap: 16px;
+  }
+  .yf-top .masthead .ci-link{ grid-column: 2; display: block; }
+  .yf-top .masthead .ci-logo{ display: block; margin: 4px auto 0; width: 100%; height: auto; border-radius: 6px; }
+  .yf-top .masthead .tv-link{
+    grid-column: 1; grid-row: 1; justify-self: start; display: block;
+    border-radius: 6px; transition: transform .15s ease, opacity .15s ease;
+  }
+  .yf-top .masthead .tv-link:hover{ transform: translateY(-2px); opacity: .9; }
+  .yf-top .masthead .tv-logo{ display: block; width: 100%; max-width: 140px; height: auto; border-radius: 6px; }
+  .yf-top .masthead .gapck-link{
+    grid-column: 3; grid-row: 1; justify-self: end; display: block;
+    border-radius: 8px; transition: transform .15s ease, opacity .15s ease;
+  }
+  .yf-top .masthead .gapck-link:hover{ transform: translateY(-2px); opacity: .9; }
+  .yf-top .masthead .gapck-logo{
+    display: block; width: 100%; max-width: 140px; height: auto; border-radius: 8px;
+    box-shadow: 0 6px 16px -10px rgba(15,29,58,.45);
+  }
+  @media (max-width: 720px){
+    .yf-top .masthead-row{ grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+    .yf-top .masthead .ci-link{ grid-column: 1 / -1; grid-row: 1; justify-self: center; width: 64%; }
+    .yf-top .masthead .tv-link{ grid-column: 1; grid-row: 2; justify-self: end; }
+    .yf-top .masthead .gapck-link{ grid-column: 2; grid-row: 2; justify-self: start; }
+    .yf-top .masthead .tv-logo, .yf-top .masthead .gapck-logo{ max-width: 91px; }
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .yf-top .masthead .ci-logo, :root:not([data-theme="light"]) .yf-top .masthead .tv-logo{ background: #fff; padding: 6px 10px; box-sizing: border-box; }
+  }
+  :root[data-theme="dark"] .yf-top .masthead .ci-logo, :root[data-theme="dark"] .yf-top .masthead .tv-logo{ background: #fff; padding: 6px 10px; box-sizing: border-box; }
+nav.catnav{
     --navy: #16294f; --red: #b91c2b; --hair-strong: #cfccbd;
     position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
     background: var(--paper); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--hair-strong);
@@ -377,13 +429,38 @@
 </style>
 <div class="page">
 
-  <div class="masthead">
-    <div class="side left"></div>
-    <div class="center">
-      <a class="logo-link" href="https://yejangfocus.github.io/news" title="예장포커스 뉴스 홈으로"><img class="logo" src="assets/images/1ddc760eb42b787c.png" alt="예장포커스 YEJANG FOCUS 로고"></a>
-      <div class="kicker">교회를 바라보는 새로운 시선</div>
-    </div>
-    <div class="side right"></div>
+  <div class="yf-top">
+<div class="topbar">
+  <div class="wrap">
+    <button type="button">로그인</button>
+    <button type="button">회원가입</button>
+  </div>
+</div>
+
+<div class="searchrow">
+  <div class="wrap" style="position:relative;">
+    <form id="siteSearchForm" onsubmit="return false;">
+      <span class="search-ic">🔍</span>
+      <input type="text" id="siteSearchInput" placeholder="기사 검색 (제목으로 검색)" autocomplete="off">
+    </form>
+    <ul id="searchResults" class="search-results" hidden></ul>
+    <button type="button" class="support-btn">후원하기</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap masthead-row">
+    <a class="tv-link" href="https://www.youtube.com/@%EC%98%88%EC%9E%A5%ED%8F%AC%EC%BB%A4%EC%8A%A4" target="_blank" rel="noopener" aria-label="예포TV 유튜브 채널로 이동">
+      <img class="tv-logo" src="assets/images/18b19830e6e40f7d.webp" alt="예포TV YEJANG FOCUS 유튜브 채널">
+    </a>
+    <a class="ci-link" href="https://yejangfocus.github.io/news" aria-label="예장포커스 뉴스로 이동">
+      <img class="ci-logo" src="assets/images/38701da0735806f0.webp" alt="예장포커스 YEJANG FOCUS 교회를 바라보는 새로운 시선">
+    </a>
+    <a class="gapck-link" href="https://www.gapck.org/" target="_blank" rel="noopener" aria-label="대한예수교장로회총회(예장합동) 홈페이지로 이동">
+      <img class="gapck-logo" src="assets/images/1665deb754d7f97f.webp" alt="예장합동 홈페이지 바로가기">
+    </a>
+  </div>
+</header>
   </div>
   <nav class="catnav" aria-label="기사 카테고리">
   <div class="wrap">
@@ -392,18 +469,18 @@
     </a>
     <div class="catlist" id="catNav">
       <button data-cat="전체" class="active">전체</button>
-      <a data-cat="속보" href="https://yejangfocus.github.io/news/news001.html">속보</a>
-      <a data-cat="교단" href="https://yejangfocus.github.io/news/006.html">교단</a>
+      <button data-cat="속보">속보</button>
+      <button data-cat="교단">교단</button>
       <button data-cat="목회">목회</button>
       <button data-cat="신학">신학</button>
-      <a data-cat="사설" href="https://yejangfocus.github.io/news/news005.html">사설</a>
-      <a data-cat="특집" href="https://yejangfocus.github.io/news/news001.html">특집</a>
-      <a data-cat="교회" href="https://yejangfocus.github.io/news/news004.html">교회</a>
-      <a data-cat="인물" href="https://yejangfocus.github.io/news/news003.html">인물</a>
-      <a data-cat="교계" href="https://yejangfocus.github.io/news/007.html">교계</a>
+      <button data-cat="사설">사설</button>
+      <button data-cat="특집">특집</button>
+      <button data-cat="교회">교회</button>
+      <button data-cat="인물">인물</button>
+      <button data-cat="교계">교계</button>
       <button data-cat="정치">정치</button>
       <button data-cat="오피니언">오피니언</button>
-      <a data-cat="칼럼" href="https://yejangfocus.github.io/news/칼럼/예배가_지루해서_떠난다_청소년_200명의_증언과_사역자의_동상이몽.html">칼럼</a>
+      <button data-cat="칼럼">칼럼</button>
     </div>
   </div>
 </nav>
