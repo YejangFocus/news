@@ -29,20 +29,21 @@
     --ink-faint: #96917f;
     --hair: #e4e1d6;
     --hair-strong: #cfccbd;
+    --amber: #d9791a;
     color-scheme: light;
   }
   :root:not([data-theme="light"]) {
     @media (prefers-color-scheme: dark) {
       --navy: #86a2dc; --navy-ink: #eef1fa; --red: #e2707d; --pine: #82bd8f;
       --paper: #121210; --paper-alt: #1a1a16; --ink: #ece9df; --ink-soft: #aba795;
-      --ink-faint: #7d7a6a; --hair: #33322a; --hair-strong: #47453a;
+      --ink-faint: #7d7a6a; --hair: #33322a; --hair-strong: #47453a; --amber: #e8a252;
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
     --navy: #86a2dc; --navy-ink: #eef1fa; --red: #e2707d; --pine: #82bd8f;
     --paper: #121210; --paper-alt: #1a1a16; --ink: #ece9df; --ink-soft: #aba795;
-    --ink-faint: #7d7a6a; --hair: #33322a; --hair-strong: #47453a;
+    --ink-faint: #7d7a6a; --hair: #33322a; --hair-strong: #47453a; --amber: #e8a252;
     color-scheme: dark;
   }
 
@@ -270,6 +271,142 @@
   .corner-sub li:last-child { border-bottom: none; }
   .corner-sub a:hover { color: var(--navy); }
 
+  /* ---------- home grid (3-column main layout) ---------- */
+  .home-grid { display: grid; grid-template-columns: 1.8fr 1fr 1.2fr; gap: 0 34px; align-items: start; padding: 22px 0 8px; }
+  .home-grid > div { min-width: 0; }
+
+  /* left column: top ticker bar */
+  .ticker-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .ticker-badge {
+    flex: none; font: 700 12.5px 'Noto Sans KR', sans-serif; color: #fff;
+    background: var(--amber); padding: 7px 12px; border-radius: 2px; white-space: nowrap;
+  }
+  .ticker-box {
+    flex: 1; min-width: 0; height: 34px; display: flex; align-items: center; gap: 10px;
+    border: 1px solid var(--hair-strong); background: var(--paper); border-radius: 3px;
+    padding: 0 14px; overflow: hidden; white-space: nowrap; font-size: 13px;
+  }
+  .ticker-box a { color: var(--ink); }
+  .ticker-box a:hover { color: var(--navy); }
+  .ticker-box .sep { color: var(--ink-faint); flex: none; }
+
+  /* left column: featured article (image + title + summary) */
+  .feature-item { display: flex; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--hair); }
+  .feature-item .thumb { width: 190px; aspect-ratio: 4/3; flex: none; }
+  .feature-item .body { flex: 1; min-width: 0; }
+  .feature-item .tag { font-size: 12px; font-weight: 700; display: block; margin-bottom: 8px; }
+  .feature-item h3 {
+    font-size: 19px; line-height: 1.42; font-weight: 700;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .feature-item h3:hover { color: var(--navy); }
+  .feature-item p {
+    margin-top: 10px; font-size: 13.5px; line-height: 1.65; color: var(--ink-soft);
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  /* left column: text-only list */
+  .plain-list li { display: flex; align-items: baseline; gap: 8px; padding: 11px 0; border-bottom: 1px solid var(--hair); font-size: 14.5px; }
+  .plain-list li:last-child { border-bottom: none; }
+  .plain-list .tag { flex: none; font-weight: 700; font-size: 12px; }
+  .plain-list a { flex: 1; min-width: 0; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .plain-list a:hover { color: var(--navy); }
+
+  /* mid / right column: module section header */
+  .mod-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: 8px; margin: 0 0 14px; border-bottom: 2px solid var(--ink);
+  }
+  .mod-head h3 { font-size: 16px; font-weight: 700; color: var(--navy); }
+  .mod-head a.more { font-size: 11.5px; color: var(--ink-soft); flex: none; }
+  .mod-head a.more:hover { color: var(--navy); }
+
+  /* mid column: vertical ad banner */
+  .ad-vert {
+    aspect-ratio: 1 / 1.08; border-radius: 6px; margin-bottom: 26px; padding: 20px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    background: linear-gradient(160deg, #1c3d78, #0c1a34); color: #fff;
+  }
+  .ad-vert .ad-logo { font: 700 12px 'Noto Sans KR', sans-serif; letter-spacing: .1em; opacity: .85; }
+  .ad-vert .ad-copy { font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 22px; line-height: 1.5; }
+  .ad-vert .ad-cta {
+    display: inline-block; font: 700 12.5px 'Noto Sans KR', sans-serif; color: #16294f;
+    background: #fff; padding: 8px 14px; border-radius: 3px;
+  }
+  .ad-vert .ad-contact { margin-top: 8px; font-size: 11.5px; opacity: .75; }
+
+  /* mid column: wide hero image + caption */
+  .mod-hero { display: block; margin-bottom: 18px; }
+  .mod-hero .thumb { width: 100%; aspect-ratio: 16/10; }
+  .mod-hero .cap { margin-top: 9px; font-size: 13px; line-height: 1.55; color: var(--ink-soft); }
+  .mod-hero:hover .cap { color: var(--navy); }
+
+  /* mid column: circled-number list */
+  .num-list { margin-bottom: 30px; }
+  .num-list li { display: flex; gap: 9px; padding: 10px 0; border-bottom: 1px dashed var(--hair); font-size: 13.8px; line-height: 1.55; }
+  .num-list li:last-child { border-bottom: none; }
+  .num-list .num { flex: none; font-weight: 700; color: var(--pine); }
+  .num-list a:hover { color: var(--navy); }
+
+  /* right column: horizontal ad banner */
+  .ad-horiz {
+    display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 6px; margin-bottom: 22px;
+    background: linear-gradient(100deg, #0d3a52, #123a63); color: #fff;
+  }
+  .ad-horiz img { flex: none; height: 30px; width: auto; }
+  .ad-horiz span { font-size: 12.5px; line-height: 1.5; font-weight: 600; }
+
+  /* right column: social-style widget card */
+  .social-card {
+    border: 1px solid var(--hair-strong); border-radius: 6px; overflow: hidden;
+    box-shadow: 0 10px 24px -16px rgba(15,29,58,.4); margin-bottom: 28px;
+  }
+  .social-card .sc-head { display: flex; align-items: center; gap: 10px; padding: 13px 14px; border-bottom: 1px solid var(--hair); }
+  .social-card .sc-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex: none; }
+  .social-card .sc-name { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 700; }
+  .social-card .sc-name small { display: block; margin-top: 2px; font-size: 11px; font-weight: 400; color: var(--ink-faint); letter-spacing: .06em; }
+  .social-card .sc-follow {
+    flex: none; font: 700 12px 'Noto Sans KR', sans-serif; color: #fff; background: var(--navy);
+    padding: 7px 12px; border-radius: 3px;
+  }
+  .social-card .sc-follow:hover { background: var(--navy-ink); }
+  .social-card .sc-media { display: block; width: 100%; aspect-ratio: 1/1; overflow: hidden; }
+  .social-card .sc-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .social-card .sc-body { padding: 13px 14px; }
+  .social-card .sc-source { font-size: 11px; font-weight: 700; letter-spacing: .07em; color: var(--ink-faint); }
+  .social-card .sc-title { display: block; margin-top: 6px; font-size: 14.5px; font-weight: 700; line-height: 1.45; }
+  .social-card .sc-title:hover { color: var(--navy); }
+  .social-card .sc-desc { margin-top: 6px; font-size: 12.5px; line-height: 1.55; color: var(--ink-soft); }
+  .social-card .sc-actions {
+    display: flex; gap: 16px; padding: 10px 14px 13px; border-top: 1px solid var(--hair);
+    font-size: 12px; color: var(--ink-faint);
+  }
+
+  /* right column: small-thumb list */
+  .side-list li { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--hair); }
+  .side-list li:last-child { border-bottom: none; }
+  .side-list .thumb { width: 64px; aspect-ratio: 1/1; flex: none; border-radius: 3px; }
+  .side-list .body { flex: 1; min-width: 0; }
+  .side-list h4 {
+    font-size: 13.5px; font-weight: 700; line-height: 1.42;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .side-list h4:hover { color: var(--navy); }
+  .side-list p {
+    margin-top: 4px; font-size: 12px; color: var(--ink-soft); line-height: 1.5;
+    display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  @media (max-width: 980px) {
+    .home-grid { grid-template-columns: 1fr; gap: 0; }
+    .col-mid, .col-right { margin-top: 34px; padding-top: 30px; border-top: 1px solid var(--hair); }
+  }
+  @media (max-width: 640px) {
+    .feature-item { flex-direction: column; }
+    .feature-item .thumb { width: 100%; }
+    .ticker-bar { flex-wrap: wrap; }
+  }
+
   /* ---------- shorts row ---------- */
   .shorts-strip { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
   .shorts-strip .clip { flex: none; width: 132px; }
@@ -370,38 +507,138 @@
     <a href="https://yejangfocus.com/공지.html">예장포커스 창간 준비 소식을 전합니다 — 독자 여러분께 드리는 글</a>
   </div>
 
-  <!-- 헤드라인 -->
-  <section class="headline">
-    <a href="https://yejangfocus.github.io/news/news001.html"><img class="thumb" src="assets/images/68c1e433e7ed8d97.jpg" alt="송기섭 목사"></a>
-    <div>
-      <span class="tag">특집 · 총회 임원선거 해설</span>
-      <h1><a href="https://yejangfocus.github.io/news/news001.html">송기섭 목사, 어떻게 826표를 얻었나 — "조직" 아닌 "이미지"가 갈랐다</a></h1>
-      <p class="dek">전승덕 목사의 전국적 인지도와 조직력을 넘어선 완승. 네 건의 보도를 겹쳐 읽으면 하나의 그림이 드러난다 — 이번 선거는 조직력이 아니라 인격과 목회적 역량, 즉 이미지가 갈랐다는 것.</p>
-      <p class="byline">예장포커스 취재팀 | 2026.09.19 · 제111회 총회(예장합동) 종합해설</p>
+  <div class="home-grid">
+
+    <!-- 좌측 컬럼: 메인 뉴스 영역 -->
+    <div class="col-left">
+
+      <div class="ticker-bar">
+        <span class="ticker-badge">최신뉴스</span>
+        <div class="ticker-box">
+          <a href="https://yejangfocus.github.io/news/006.html">"하나로, 미래로, 거룩함으로" 다함께 외치며 파회 — 제111회 총회 새 회기 출발</a>
+          <span class="sep">•</span>
+          <a href="https://yejangfocus.github.io/news/news005.html">정정 없는 일방 보도에 유감 — 박○○ 목사, "언론중재위 제소 검토"</a>
+          <span class="sep">•</span>
+          <a href="https://yejangfocus.github.io/news/007.html">예장○○교단 김○○ 부총회장 당선자, 가시지 않은 의혹</a>
+        </div>
+      </div>
+
+      <a class="feature-item" href="https://yejangfocus.github.io/news/news001.html">
+        <img class="thumb" src="assets/images/68c1e433e7ed8d97.jpg" alt="송기섭 목사">
+        <div class="body">
+          <span class="tag" style="color:var(--pine);">특집 · 총회 임원선거 해설</span>
+          <h3>송기섭 목사, 어떻게 826표를 얻었나 — "조직" 아닌 "이미지"가 갈랐다</h3>
+          <p>전승덕 목사의 전국적 인지도와 조직력을 넘어선 완승. 네 건의 보도를 겹쳐 읽으면 하나의 그림이 드러난다 — 이번 선거는 조직력이 아니라 인격과 목회적 역량, 즉 이미지가 갈랐다는 것.</p>
+        </div>
+      </a>
+
+      <a class="feature-item" href="https://yejangfocus.github.io/news/news003.html">
+        <img class="thumb" src="assets/images/adf820eb57afc352.jpg" alt="홍승열 목사">
+        <div class="body">
+          <span class="tag" style="color:var(--navy);">교계</span>
+          <h3>홍승열 목사 아들 진영 군 혼사 — 당선 닷새 만의 송기섭 목사도 축하 발걸음</h3>
+          <p>홍승열 목사의 아들 진영 군과 박종탁·이미숙 씨의 딸 지윤 양의 결혼식이 지난 9월 19일 대구 퀸벨호텔에서 열렸다.</p>
+        </div>
+      </a>
+
+      <ul class="plain-list">
+        <li><span class="tag tag-교회">교회</span><a href="https://yejangfocus.github.io/news/news004.html">원로 추대, 절차를 지킨 교회가 왜 흔들려야 하는가</a></li>
+        <li><span class="tag tag-사설">사설</span><a href="https://yejangfocus.github.io/news/news005.html">정정 없는 일방 보도에 유감 — 박○○ 목사, "언론중재위 제소 검토"</a></li>
+        <li><span class="tag tag-교계">교계</span><a href="https://yejangfocus.github.io/news/007.html">예장○○교단 김○○ 부총회장 당선자, 가시지 않은 의혹</a></li>
+        <li><span class="tag tag-칼럼">칼럼</span><a href="https://yejangfocus.github.io/news/칼럼/갈수록_행복이_사라지는_이유.html">갈수록 행복이 사라지는 이유 — 풍요의 시대, 왜 우리는 점점 불행해지는가</a></li>
+        <li><span class="tag tag-칼럼">칼럼</span><a href="https://yejangfocus.github.io/news/칼럼/예배가_지루해서_떠난다_청소년_200명의_증언과_사역자의_동상이몽.html">"예배가 지루해서 떠난다"…청소년 200명의 증언과 사역자의 동상이몽</a></li>
+        <li><span class="tag tag-칼럼">칼럼</span><a href="https://yejangfocus.github.io/news/칼럼/분노는_선택이다.html">분노는 선택이다</a></li>
+        <li><span class="tag tag-칼럼">칼럼</span><a href="https://yejangfocus.github.io/news/칼럼/주장과_나를_분리하라_칼럼.html">주장과 나를 분리하라, 대화가 즐거워지는 법</a></li>
+        <li><span class="tag tag-신학">신학</span><a href="https://yejangfocus.github.io/news/신학/박진영의_삼위일체_부정_개혁주의_신학은_어떻게_반박하는가.html">박진영의 삼위일체 부정, 개혁주의 신학은 어떻게 반박하는가</a></li>
+      </ul>
+
+      <a class="feature-item" href="https://yejangfocus.github.io/news/006.html" style="border-bottom:none;">
+        <img class="thumb" src="assets/images/54a39b0d549fcc52.jpg" alt="제111회 총회 현장">
+        <div class="body">
+          <span class="tag" style="color:var(--navy);">교단</span>
+          <h3>"하나로, 미래로, 거룩함으로" 다함께 외치며 파회 — 제111회 총회, 정영교 총회장 체제로 새 회기 출발</h3>
+          <p>대한예수교장로회 제111회 총회가 1,500여 명의 총대가 참석한 가운데 모든 회무를 마치고 파회, 정영교 총회장 체제의 새 회기를 시작했다.</p>
+        </div>
+      </a>
+
     </div>
-  </section>
 
-  <!-- 최신 · 속보 -->
-  <section>
-    <div class="sec-title"><h2>최신 · 속보</h2><a class="more" href="#">더 보기</a></div>
-    <ul class="taglist">
-      <li><span class="tag tag-교단">교단</span> <a href="https://yejangfocus.github.io/news/006.html">"하나로, 미래로, 거룩함으로" 다함께 외치며 파회 — 제111회 총회, 정영교 총회장 체제로 새 회기 출발</a></li>
-      <li><span class="tag tag-사설">사설</span> <a href="https://yejangfocus.github.io/news/news005.html">정정 없는 일방 보도에 유감 — 박○○ 목사, "언론중재위 제소 검토"</a></li>
-      <li><span class="tag tag-교회">교회</span> <a href="https://yejangfocus.github.io/news/news004.html">원로 추대, 절차를 지킨 교회가 왜 흔들려야 하는가</a></li>
-      <li><span class="tag tag-교계">교계</span> <a href="https://yejangfocus.github.io/news/007.html">예장○○교단 김○○ 부총회장 당선자, 가시지 않은 의혹</a></li>
-    </ul>
-  </section>
+    <!-- 중앙 컬럼: 총회 소식 -->
+    <div class="col-mid">
 
-  <!-- 칼럼 -->
-  <section>
-    <div class="sec-title"><h2>신학 · 칼럼</h2><a class="more" href="https://yejangfocus.github.io/news/신학/박진영의_삼위일체_부정_개혁주의_신학은_어떻게_반박하는가.html">더 보기</a></div>
-    <ul class="taglist">
-      <li><span class="tag tag-신학">신학</span> <a href="https://yejangfocus.github.io/news/신학/박진영의_삼위일체_부정_개혁주의_신학은_어떻게_반박하는가.html">박진영의 삼위일체 부정, 개혁주의 신학은 어떻게 반박하는가</a></li>
-      <li><span class="tag tag-칼럼">칼럼</span> <a href="https://yejangfocus.github.io/news/칼럼/분노는_선택이다.html">분노는 선택이다</a></li>
-      <li><span class="tag tag-칼럼">칼럼</span> <a href="https://yejangfocus.github.io/news/칼럼/예배가_지루해서_떠난다_청소년_200명의_증언과_사역자의_동상이몽.html">"예배가 지루해서 떠난다"…청소년 200명의 증언과 사역자의 동상이몽</a></li>
-      <li><span class="tag tag-칼럼">칼럼</span> <a href="https://yejangfocus.github.io/news/칼럼/갈수록_행복이_사라지는_이유.html">갈수록 행복이 사라지는 이유 — 풍요의 시대, 왜 우리는 점점 불행해지는가</a></li>
-    </ul>
-  </section>
+      <a class="ad-vert" href="mailto:owenpej@naver.com?subject=%5B광고%20문의%5D">
+        <div class="ad-logo">AD · 예장포커스</div>
+        <div class="ad-copy">당신의 소식,<br>예장포커스가<br>전합니다</div>
+        <div>
+          <span class="ad-cta">광고·제보 문의</span>
+          <div class="ad-contact">010-9751-4888</div>
+        </div>
+      </a>
+
+      <div class="mod-head"><h3>총회 소식</h3><a class="more" href="https://yejangfocus.github.io/news/006.html">더보기〉</a></div>
+
+      <a class="mod-hero" href="https://yejangfocus.github.io/news/006.html">
+        <img class="thumb" src="assets/images/7534f4d71a11d0a5.jpg" alt="제111회 총회 임원 선거 당선 축하 현장">
+        <p class="cap">제111회 총회 임원 선거 이후, 당선자들을 축하하는 현장</p>
+      </a>
+
+      <ul class="num-list">
+        <li><span class="num">①</span><a href="https://yejangfocus.github.io/news/006.html">"하나로, 미래로, 거룩함으로" 다함께 외치며 파회 — 제111회 총회, 정영교 총회장 체제로 새 회기 출발</a></li>
+        <li><span class="num">②</span><a href="https://yejangfocus.github.io/news/news003.html">홍승열 목사 아들 진영 군 혼사 — 당선 닷새 만의 송기섭 목사도 축하 발걸음</a></li>
+        <li><span class="num">③</span><a href="https://yejangfocus.github.io/news/007.html">예장○○교단 김○○ 부총회장 당선자, 가시지 않은 의혹</a></li>
+        <li><span class="num">④</span><a href="https://yejangfocus.github.io/news/news005.html">정정 없는 일방 보도에 유감 — 박○○ 목사, "언론중재위 제소 검토"</a></li>
+        <li><span class="num">⑤</span><a href="https://yejangfocus.github.io/news/news004.html">원로 추대, 절차를 지킨 교회가 왜 흔들려야 하는가</a></li>
+      </ul>
+
+    </div>
+
+    <!-- 우측 컬럼: 교계 소식 + 위젯 -->
+    <div class="col-right">
+
+      <a class="ad-horiz" href="https://www.youtube.com/@%EC%98%88%EC%9E%A5%ED%8F%AC%EC%BB%A4%EC%8A%A4" target="_blank" rel="noopener">
+        <img src="assets/images/18b19830e6e40f7d.webp" alt="예포TV">
+        <span>예포TV 유튜브 채널 구독하기<br>총회 소식을 영상으로 만나보세요</span>
+      </a>
+
+      <div class="social-card">
+        <div class="sc-head">
+          <img class="sc-avatar" src="assets/images/38701da0735806f0.webp" alt="예장포커스">
+          <div class="sc-name">예장포커스<small>YEJANG FOCUS</small></div>
+          <a class="sc-follow" href="https://www.youtube.com/@%EC%98%88%EC%9E%A5%ED%8F%AC%EC%BB%A4%EC%8A%A4" target="_blank" rel="noopener">구독하기</a>
+        </div>
+        <a class="sc-media" href="https://yejangfocus.github.io/news/news003.html">
+          <img src="assets/images/adf820eb57afc352.jpg" alt="홍승열 목사 아들 혼사">
+        </a>
+        <div class="sc-body">
+          <div class="sc-source">YEJANGFOCUS.GITHUB.IO</div>
+          <a class="sc-title" href="https://yejangfocus.github.io/news/news003.html">홍승열 목사 아들 진영 군 혼사 — 당선 닷새 만의 송기섭 목사도 축하 발걸음</a>
+          <p class="sc-desc">홍승열 목사의 아들 진영 군과 박종탁·이미숙 씨의 딸 지윤 양의 결혼식이 지난 9월 19일 대구 퀸벨호텔에서 열렸다.</p>
+        </div>
+        <div class="sc-actions"><span>🔗 공유</span><span>💬 의견</span><span>📌 스크랩</span></div>
+      </div>
+
+      <div class="mod-head"><h3>교계 소식</h3><a class="more" href="https://yejangfocus.github.io/news/007.html">더보기〉</a></div>
+
+      <ul class="side-list">
+        <li>
+          <a href="https://yejangfocus.github.io/news/007.html"><img class="thumb" src="assets/images/6a87ed9f05f90b87.jpg" alt="총회 임원 선거 현장"></a>
+          <div class="body">
+            <a href="https://yejangfocus.github.io/news/007.html"><h4>예장○○교단 김○○ 부총회장 당선자, 가시지 않은 의혹</h4></a>
+            <p>목사부총회장에 당선된 김○○ 목사를 둘러싼 재정 유용 의혹과 과거 논란들이 선거 이후에도 해소되지 않고 있다.</p>
+          </div>
+        </li>
+        <li>
+          <a href="https://yejangfocus.github.io/news/news005.html"><img class="thumb" src="assets/images/b15009dcce4f47c3.jpg" alt="총회 현장"></a>
+          <div class="body">
+            <a href="https://yejangfocus.github.io/news/news005.html"><h4>정정 없는 일방 보도에 유감 — 박○○ 목사, "언론중재위 제소 검토"</h4></a>
+            <p>일부 언론의 보도 오류에 대해 정정을 요구했으나 정정 없이 일방적 반론만 게재됐다는 박○○ 목사 측 입장을 전한다.</p>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+
+  </div>
 </main>
 
 <footer>
