@@ -13,9 +13,11 @@ sync_article_index.py
          아니라 실제 기사 제목이 나오도록 <h1>을 마지막 안전망으로 둔다.)
        - 요약: <meta property="og:description">(없으면 <meta name="description">)
        - 썸네일: <meta property="og:image"> → 본문 <figure><img> 중 첫 사진 순으로 시도.
-         (본문 사진도 없으면 홈페이지에서 예포 CI 기본 이미지로 대체.
-         이미지가 data: base64로 파일에 통째 박제된 경우는 articles.json이
-         과도하게 커지는 걸 막기 위해 건너뛴다.)
+         본문 사진도 없으면 홈페이지에서 예포 CI 기본 이미지로 대체한다.
+         사진이 data: base64로 파일에 통째 박제된 경우(브라우저로 페이지를
+         통째 저장해 올린 파일 특유의 현상)는 디코딩해 assets/images/에
+         실제 파일로 저장하고, articles.json에는 다른 사진들처럼 짧은
+         URL만 담는다 — 그래야 이 파일이 부풀지 않는다.
        - 카테고리(tag): '폴더명'. 예) 신학/예지예정.html → tag="신학"
   3. 기존 data/articles.json과 병합한다.
        - 새 파일 → 새 항목 추가
@@ -32,6 +34,8 @@ data/articles.json은 assets/js/site.js가 그대로 읽어 홈페이지(index.h
 목록·썸네일까지 전부 자동으로 그려내므로, index.html 자체는 더 이상 손댈 필요가 없다.
 """
 
+import base64
+import hashlib
 import html
 import json
 import os
@@ -43,7 +47,12 @@ from pathlib import Path
 # ── 설정 ────────────────────────────────────────────────────────────────
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ARTICLE_INDEX_PATH = REPO_ROOT / "data" / "articles.json"
+IMAGES_DIR = REPO_ROOT / "assets" / "images"
 SITE_BASE = "https://yejangfocus.github.io/news"
+
+# data: URI로 파일에 통째 박제된 사진을 실제 파일로 뽑아낼 때 쓰는 확장자 매핑
+DATA_URI_IMAGE_RE = re.compile(r"^data:image/([a-zA-Z0-9.+-]+);base64,(.+)$", re.S)
+DATA_URI_EXT = {"jpeg": "jpg", "jpg": "jpg", "png": "png", "webp": "webp", "gif": "gif"}
 
 # 기사로 취급하지 않는 최상위 폴더 (사이트 정보성 페이지, 비공개 자료 등)
 EXCLUDE_DIRS = {".git", ".github", "data", "assets", "images", "img", "css", "js", "메인화면", "ETC", "scripts"}
@@ -137,17 +146,12 @@ def extract_description(html_text: str) -> str | None:
 
 
 def extract_body_image(html_text: str) -> str | None:
-    """og:image가 없을 때, 본문 <figure><img>에 실제로 쓰인 첫 사진을 대신 쓴다.
-
-    브라우저로 페이지를 통째 저장해 사진이 data: base64로 파일 안에
-    그대로 박제된 경우는 건너뛴다 — 그걸 그대로 articles.json에 옮기면
-    파일 하나가 수백 KB~수 MB로 불어나고, 이 파일은 모든 페이지에서
-    매번 내려받으므로 사이트 전체가 느려진다. 그런 파일은 사진이 없는
-    것으로 보고 홈페이지 기본 이미지(예포 CI)로 대체한다.
-    """
-    for m in re.finditer(r"<figure[^>]*>.*?<img[^>]+src=([\"'])(.*?)\1", html_text, re.S):
+    """og:image가 없을 때, 본문 <figure><img>에 실제로 쓰인 첫 사진의 src를 그대로 돌려준다.
+    (상대경로 자산이든 data: base64든 그대로 반환 — 저장 방식은 extract_image가 정한다.)"""
+    m = re.search(r"<figure[^>]*>.*?<img[^>]+src=([\"'])(.*?)\1", html_text, re.S)
+    if m:
         src = html.unescape(m.group(2).strip())
-        if src and not src.startswith("data:"):
+        if src:
             return src
     return None
 
@@ -170,6 +174,39 @@ def resolve_image_url(src: str, rel_path: Path) -> str:
     return f"{SITE_BASE}/{'/'.join(parts)}"
 
 
+def save_data_uri_image(data_uri: str) -> str | None:
+    """<figure> 안에 data: base64로 통째 박제된 사진을 실제 파일로 뽑아
+    assets/images/에 저장하고 사이트 URL을 돌려준다.
+
+    브라우저로 페이지를 통째 "저장"해서 올린 파일은 본문 사진이 base64로
+    파일 안에 그대로 들어있다. 이걸 그대로 articles.json 문자열로 옮기면
+    파일 하나가 수백 KB~수 MB로 불어나고, 이 파일은 모든 페이지가 매번
+    내려받으므로 사이트 전체가 느려진다. 그래서 디코딩해 실제 이미지
+    파일로 뽑아두고, articles.json에는 다른 사진들처럼 짧은 경로만 담는다.
+    내용이 같은 사진은 해시가 같아 다시 저장하지 않는다(중복 방지).
+    """
+    m = DATA_URI_IMAGE_RE.match(data_uri.strip())
+    if not m:
+        return None
+    ext = DATA_URI_EXT.get(m.group(1).lower())
+    if not ext:
+        return None
+    try:
+        raw = base64.b64decode(m.group(2), validate=False)
+    except Exception:
+        return None
+    if len(raw) < 2000:
+        # 아이콘 등 너무 작은 이미지는 기사 사진으로 보지 않는다.
+        return None
+
+    digest = hashlib.sha256(raw).hexdigest()[:16]
+    IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = IMAGES_DIR / f"{digest}.{ext}"
+    if not out_path.exists():
+        out_path.write_bytes(raw)
+    return f"{SITE_BASE}/assets/images/{digest}.{ext}"
+
+
 def extract_image(html_text: str, rel_path: Path) -> str | None:
     """홈페이지 카드 썸네일 URL. og:image 우선, 없으면 본문 첫 사진, 그마저 없으면 None
     (→ 홈페이지에서 예포 CI 기본 이미지로 대체)."""
@@ -179,6 +216,8 @@ def extract_image(html_text: str, rel_path: Path) -> str | None:
 
     body_image = extract_body_image(html_text)
     if body_image:
+        if body_image.startswith("data:"):
+            return save_data_uri_image(body_image)
         return resolve_image_url(body_image, rel_path)
 
     return None
