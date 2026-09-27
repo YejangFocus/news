@@ -11,7 +11,9 @@ sync_article_index.py
        - 제목: <meta property="og:title"> → <title> → 본문 <h1> 순으로 시도.
          (브라우저로 페이지를 통째 저장해 <head>가 통째로 빠진 파일도 파일명이
          아니라 실제 기사 제목이 나오도록 <h1>을 마지막 안전망으로 둔다.)
-       - 요약: <meta property="og:description">(없으면 <meta name="description">)
+       - 요약: <meta property="og:description"> → <meta name="description"> →
+         그마저 없으면 본문 첫 문단(<p class="lede">, 기사 첫부분)에서 뽑아 채운다.
+         홈페이지 카드의 빈 요약 공간이 비어 보이지 않도록 하기 위함.
        - 썸네일: <meta property="og:image"> → 본문 <figure><img> 중 첫 사진 순으로 시도.
          본문 사진도 없으면 articles.json에 예포 CI 기본 이미지(DEFAULT_IMAGE_URL)를
          그대로 채워 넣는다(홈페이지 자바스크립트가 별도로 대체하지 않아도 된다).
@@ -143,11 +145,43 @@ def extract_title(html_text: str) -> str | None:
     return None
 
 
+def _truncate_desc(text: str, limit: int = 110) -> str:
+    """카드 요약문 길이를 다른 기사들과 비슷하게 다듬는다.
+    가능하면 문장 부호(. ! ?)에서 끊고, 마땅한 문장 경계가 없으면 단어
+    단위로 잘라 말줄임표를 붙인다."""
+    text = text.strip()
+    if len(text) <= limit:
+        return text
+    cut = text[:limit]
+    m = re.search(r"^(.*[.!?])", cut, re.S)
+    if m and len(m.group(1)) >= limit * 0.4:
+        return m.group(1)
+    if " " in cut:
+        cut = cut.rsplit(" ", 1)[0]
+    return cut.rstrip() + "…"
+
+
+def extract_lede(html_text: str) -> str | None:
+    """og:description·meta description이 모두 없을 때, 본문 첫 문단
+    (<p class="lede">, 기사 첫부분)에서 요약문을 대신 뽑아 카드 빈 공간을
+    채운다."""
+    m = re.search(r'<p class="lede">(.*?)</p>', html_text, re.S)
+    if not m:
+        return None
+    text = re.sub(r"<[^>]+>", "", m.group(1))
+    text = re.sub(r"\s+", " ", html.unescape(text)).strip()
+    if not text:
+        return None
+    return _truncate_desc(text)
+
+
 def extract_description(html_text: str) -> str | None:
-    """홈페이지 카드 요약문에 쓸 설명. og:description 우선, 없으면 meta description."""
+    """홈페이지 카드 요약문에 쓸 설명. og:description → meta description →
+    본문 첫 문단(기사 첫부분) 순으로 시도한다."""
     return (
         _meta_content(html_text, "og:description", "property")
         or _meta_content(html_text, "description", "name")
+        or extract_lede(html_text)
     )
 
 
