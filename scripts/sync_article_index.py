@@ -71,12 +71,22 @@ def find_article_files():
 
 def extract_title(html_text: str) -> str | None:
     """og:title 우선, 없으면 <title> 태그에서 제목을 추출."""
+    # content 속성값의 실제 구분 따옴표(' 또는 ")를 역참조로 맞춰 잡아야,
+    # 예) content='제목 "부제목"' 처럼 다른 종류의 따옴표가 값 안에 섞여 있어도
+    # 잘리지 않고 온전한 제목을 추출할 수 있다.
     m = re.search(
-        r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']',
+        r'<meta[^>]+property=["\']og:title["\'][^>]+content=(["\'])(.*?)\1',
         html_text,
     )
     if m:
-        return html.unescape(m.group(1).strip())
+        return html.unescape(m.group(2).strip())
+
+    m = re.search(
+        r'<meta[^>]+content=(["\'])(.*?)\1[^>]+property=["\']og:title["\']',
+        html_text,
+    )
+    if m:
+        return html.unescape(m.group(2).strip())
 
     m = re.search(r"<title>(.*?)</title>", html_text, re.S)
     if m:
