@@ -80,6 +80,20 @@
       });
     });
 
+    var totalNewsMore = document.getElementById('totalNewsMore');
+    if (totalNewsMore) {
+      totalNewsMore.addEventListener('click', function (e) {
+        e.preventDefault();
+        buttons.forEach(function (x) { x.classList.remove('active'); });
+        var allBtn = document.querySelector('#catNav button[data-cat="전체"]');
+        if (allBtn) allBtn.classList.add('active');
+        if (overlay) {
+          renderCategory('전체');
+          overlay.hidden = false;
+        }
+      });
+    }
+
     if (closeBtn) closeBtn.addEventListener('click', closeAllArticles);
     if (overlay) {
       overlay.addEventListener('click', function (e) {
@@ -171,7 +185,7 @@
       }).join('');
     }
 
-    // 중앙 컬럼: 총회 소식 — 카테고리와 무관하게 사이트 전체 최신 5건
+    // 중앙 컬럼: 최신 소식 — 카테고리와 무관하게 사이트 전체 최신 5건
     var topFive = ARTICLE_INDEX.slice(0, 5);
     var numList = document.getElementById('numList');
     if (numList) {
@@ -188,9 +202,6 @@
           (topFive[0].desc ? '<p class="cap">' + esc(topFive[0].desc) + '</p>' : '') +
         '</a>';
     }
-    var totalNewsMore = document.getElementById('totalNewsMore');
-    if (totalNewsMore && topFive[0]) totalNewsMore.href = topFive[0].url;
-
     // 우측 컬럼: 칼럼 — 최신 2건
     var columns = pickMany(['칼럼'], 2);
     var sideList = document.getElementById('sideList');
