@@ -48,7 +48,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ARTICLE_INDEX_PATH = REPO_ROOT / "data" / "articles.json"
 IMAGES_DIR = REPO_ROOT / "assets" / "images"
-SITE_BASE = "https://yejangfocus.github.io/news"
+SITE_BASE = "https://yejangfocus.com/news"
 
 # data: URI로 파일에 통째 박제된 사진을 실제 파일로 뽑아낼 때 쓰는 확장자 매핑
 DATA_URI_IMAGE_RE = re.compile(r"^data:image/([a-zA-Z0-9.+-]+);base64,(.+)$", re.S)
