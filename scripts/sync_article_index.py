@@ -26,8 +26,13 @@ sync_article_index.py
        - 새 파일 → 새 항목 추가
        - 이미 있던 파일 → 제목/요약/썸네일/URL 최신화, tag는 하위 폴더 파일이면 폴더명으로 갱신
        - 저장소에서 사라진 파일 → 목록에서 제거
-  4. 결과를 최신순(파일의 git 최종 커밋 시각 기준, 없으면 mtime)으로 정렬해
-     data/articles.json에 다시 쓴다.
+  4. 결과를 최신순으로 정렬해 data/articles.json에 다시 쓴다. 정렬 기준은
+     기사 <head>에 명시된 발행 시각(<meta property="article:published_time">
+     또는 "og:published_time", ISO 8601 형식)을 최우선으로 쓰고, 그 태그가
+     없는(예: 브라우저로 페이지를 통째 저장해 <head>가 통째로 빠진) 기사만
+     예전처럼 git 최종 커밋 시각으로 대체한다. 같은 커밋에 여러 기사가
+     한꺼번에 올라와도 각 기사에 발행 시각을 명시해두면 그 안에서의 순서까지
+     정확히 구분된다.
 
 이 스크립트 자체는 파일을 읽고/쓰기만 한다. 실제 "발행할 때마다 자동 동기화"는
 함께 제공하는 GitHub Actions 워크플로(.github/workflows/sync-article-index.yml)가
@@ -45,6 +50,7 @@ import os
 import re
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 
 # ── 설정 ────────────────────────────────────────────────────────────────
@@ -266,6 +272,31 @@ def extract_image(html_text: str, rel_path: Path) -> str | None:
     return DEFAULT_IMAGE_URL
 
 
+def extract_published_time(html_text: str) -> int | None:
+    """정렬에 쓸 명시적 발행 시각(article:published_time 또는 og:published_time
+    메타태그, ISO 8601 + 타임존 형식)을 epoch 초로 돌려준다.
+
+    태그가 없거나, 형식이 잘못됐거나, 타임존이 빠져 있으면 None을 돌려줘
+    호출 쪽에서 git 커밋 시각으로 대체하게 한다. 같은 커밋에 여러 기사가
+    한꺼번에 올라와 커밋 시각만으로는 순서를 구분할 수 없는 경우, 이 태그를
+    기사마다 다르게 적어두면 그 안에서도 정확한 순서를 유지할 수 있다.
+    """
+    raw = (
+        _meta_content(html_text, "article:published_time", "property")
+        or _meta_content(html_text, "og:published_time", "property")
+    )
+    if not raw:
+        return None
+    try:
+        dt = datetime.fromisoformat(raw.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if dt.tzinfo is None:
+        # 타임존이 없는 값은 어느 지역 기준인지 알 수 없어 신뢰할 수 없다.
+        return None
+    return int(dt.timestamp())
+
+
 def git_last_commit_epoch(rel_path: Path) -> int:
     """파일의 마지막 git 커밋 시각(unix epoch). git 정보가 없으면 0."""
     try:
@@ -335,16 +366,20 @@ def main():
         desc = extract_description(html_text) or existing_by_url.get(url, {}).get("desc", "")
         image = extract_image(html_text, rel_path) or existing_by_url.get(url, {}).get("image", "")
 
+        sort_key = extract_published_time(html_text)
+        if sort_key is None:
+            sort_key = git_last_commit_epoch(rel_path)
+
         new_index.append({
             "tag": tag,
             "title": title,
             "url": url,
             "desc": desc,
             "image": image,
-            "_sort_key": git_last_commit_epoch(rel_path),
+            "_sort_key": sort_key,
         })
 
-    # 최신 글이 위로 오도록 정렬 (git 커밋 시각 기준, 동일하면 기존 순서 유지)
+    # 최신 글이 위로 오도록 정렬 (발행 시각 메타태그 우선, 없으면 git 커밋 시각)
     new_index.sort(key=lambda x: x["_sort_key"], reverse=True)
     for item in new_index:
         del item["_sort_key"]
