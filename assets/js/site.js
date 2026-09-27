@@ -4,6 +4,21 @@
 (function () {
   var root = typeof window.SITE_ROOT === 'string' ? window.SITE_ROOT : '';
 
+  // 태그(카테고리)별 강조색과 이스케이프는 전체 기사 목록·홈페이지 썸네일에서
+  // 공통으로 쓰므로 한 곳에서 관리한다.
+  var TAG_COLOR = {
+    '속보': 'var(--red)', '사설': 'var(--red)',
+    '신학': 'var(--pine)', '오피니언': 'var(--pine)', '특집': 'var(--pine)', '칼럼': 'var(--pine)',
+    '교단': 'var(--navy)', '교단소식': 'var(--navy)', '교계': 'var(--navy)', '정치': 'var(--navy)',
+    '목회': 'var(--navy)', '교회': 'var(--navy)', '인물': 'var(--navy)'
+  };
+
+  function tagColor(tag) { return TAG_COLOR[tag] || 'var(--ink)'; }
+
+  function esc(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   fetch(root + 'data/articles.json')
     .then(function (res) { return res.json(); })
     .then(function (articles) {
@@ -44,7 +59,7 @@
         var li = document.createElement('li');
         var a = document.createElement('a');
         a.href = item.url;
-        a.textContent = item.title;
+        a.innerHTML = '<span class="aa-tag" style="color:' + tagColor(item.tag) + ';">[' + esc(item.tag) + ']</span> ' + esc(item.title);
         li.appendChild(a);
         list.appendChild(li);
       });
@@ -96,19 +111,6 @@
       var extra = isFallback ? ' is-fallback' : '';
       return '<img class="' + cls + extra + '" src="' + esc(src) + '" alt="' + esc(item.title) + '">';
     }
-    var TAG_COLOR = {
-      '속보': 'var(--red)', '사설': 'var(--red)',
-      '신학': 'var(--pine)', '오피니언': 'var(--pine)', '특집': 'var(--pine)', '칼럼': 'var(--pine)',
-      '교단': 'var(--navy)', '교단소식': 'var(--navy)', '교계': 'var(--navy)', '정치': 'var(--navy)',
-      '목회': 'var(--navy)', '교회': 'var(--navy)', '인물': 'var(--navy)'
-    };
-
-    function tagColor(tag) { return TAG_COLOR[tag] || 'var(--ink)'; }
-
-    function esc(s) {
-      return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-
     if (!ARTICLE_INDEX.length) {
       tickerBox.innerHTML = '<span style="color:var(--ink-faint);">아직 등록된 기사가 없습니다.</span>';
       return;
