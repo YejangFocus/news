@@ -225,6 +225,9 @@
   .tone-e { background: linear-gradient(150deg, #55506f, #302c47); }
   .tone-f { background: linear-gradient(150deg, #4a6b6f, #26383a); }
   img.thumb { display: block; object-fit: cover; object-position: center 20%; width: 100%; height: 100%; background: none; }
+  /* 기사 사진이 없을 때 대신 나오는 예포 CI 로고: cover로 잘라내면 로고·문구가
+     잘리므로, 여백을 두고 전체가 보이도록 contain + 흰 배경으로 따로 그린다. */
+  img.thumb.is-fallback { object-fit: contain; object-position: center; background: #ffffff; padding: 14%; box-sizing: border-box; }
 
   /* ---------- headline block ---------- */
   .headline { display: flex; gap: 22px; padding-bottom: 26px; border-bottom: 1px solid var(--hair); }

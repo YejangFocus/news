@@ -84,7 +84,17 @@
     var tickerBox = document.getElementById('tickerBox');
     if (!tickerBox) return;
 
-    var DEFAULT_IMAGE = root + 'assets/images/38701da0735806f0.webp';
+    // 기사에 쓸 만한 사진이 없을 때 대신 보여줄 예포 CI 로고(정사각형, 흰 배경).
+    // 사진과 달리 cover로 잘라내면 로고·문구가 잘리므로, 아래 thumbImgHtml()에서
+    // object-fit:contain으로 전체가 보이게 따로 처리한다.
+    var DEFAULT_IMAGE = root + 'assets/images/598070cc4a9196e6.webp';
+
+    function thumbImgHtml(item, cls) {
+      var isFallback = !item.image;
+      var src = item.image || DEFAULT_IMAGE;
+      var extra = isFallback ? ' is-fallback' : '';
+      return '<img class="' + cls + extra + '" src="' + esc(src) + '" alt="' + esc(item.title) + '">';
+    }
     var TAG_COLOR = {
       '속보': 'var(--red)', '사설': 'var(--red)',
       '신학': 'var(--pine)', '오피니언': 'var(--pine)', '특집': 'var(--pine)', '칼럼': 'var(--pine)',
@@ -121,7 +131,7 @@
       if (!item) return '';
       return '' +
         '<a class="feature-item" href="' + item.url + '"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
-          '<img class="thumb" src="' + esc(item.image || DEFAULT_IMAGE) + '" alt="' + esc(item.title) + '">' +
+          thumbImgHtml(item, 'thumb') +
           '<div class="body">' +
             '<span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
             '<h3>' + esc(item.title) + '</h3>' +
@@ -171,7 +181,7 @@
     if (modHero && topFive[0]) {
       modHero.innerHTML =
         '<a class="mod-hero" href="' + topFive[0].url + '">' +
-          '<img class="thumb" src="' + esc(topFive[0].image || DEFAULT_IMAGE) + '" alt="' + esc(topFive[0].title) + '">' +
+          thumbImgHtml(topFive[0], 'thumb') +
           (topFive[0].desc ? '<p class="cap">' + esc(topFive[0].desc) + '</p>' : '') +
         '</a>';
     }
@@ -185,7 +195,7 @@
       sideList.innerHTML = columns.map(function (item) {
         return '' +
           '<li>' +
-            '<a href="' + item.url + '"><img class="thumb" src="' + esc(item.image || DEFAULT_IMAGE) + '" alt="' + esc(item.title) + '"></a>' +
+            '<a href="' + item.url + '">' + thumbImgHtml(item, 'thumb') + '</a>' +
             '<div class="body">' +
               '<a href="' + item.url + '"><h4>' + esc(item.title) + '</h4></a>' +
               (item.desc ? '<p>' + esc(item.desc) + '</p>' : '') +
