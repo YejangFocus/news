@@ -13,7 +13,8 @@ sync_article_index.py
          아니라 실제 기사 제목이 나오도록 <h1>을 마지막 안전망으로 둔다.)
        - 요약: <meta property="og:description">(없으면 <meta name="description">)
        - 썸네일: <meta property="og:image"> → 본문 <figure><img> 중 첫 사진 순으로 시도.
-         본문 사진도 없으면 홈페이지에서 예포 CI 기본 이미지로 대체한다.
+         본문 사진도 없으면 articles.json에 예포 CI 기본 이미지(DEFAULT_IMAGE_URL)를
+         그대로 채워 넣는다(홈페이지 자바스크립트가 별도로 대체하지 않아도 된다).
          사진이 data: base64로 파일에 통째 박제된 경우(브라우저로 페이지를
          통째 저장해 올린 파일 특유의 현상)는 디코딩해 assets/images/에
          실제 파일로 저장하고, articles.json에는 다른 사진들처럼 짧은
@@ -49,6 +50,11 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 ARTICLE_INDEX_PATH = REPO_ROOT / "data" / "articles.json"
 IMAGES_DIR = REPO_ROOT / "assets" / "images"
 SITE_BASE = "https://yejangfocus.github.io/news"
+
+# 기사 안에 쓸 만한 사진이 하나도 없을 때 썸네일로 대신 올릴 예포 CI 로고.
+# assets/images/yejang-focus-ci.webp는 원본 예포CI.png의 여백을 미리 잘라낸
+# 버전이라, 홈페이지 썸네일 박스를 꽉 채워 보기 좋게 채운다.
+DEFAULT_IMAGE_URL = f"{SITE_BASE}/assets/images/yejang-focus-ci.webp"
 
 # data: URI로 파일에 통째 박제된 사진을 실제 파일로 뽑아낼 때 쓰는 확장자 매핑
 DATA_URI_IMAGE_RE = re.compile(r"^data:image/([a-zA-Z0-9.+-]+);base64,(.+)$", re.S)
@@ -208,8 +214,8 @@ def save_data_uri_image(data_uri: str) -> str | None:
 
 
 def extract_image(html_text: str, rel_path: Path) -> str | None:
-    """홈페이지 카드 썸네일 URL. og:image 우선, 없으면 본문 첫 사진, 그마저 없으면 None
-    (→ 홈페이지에서 예포 CI 기본 이미지로 대체)."""
+    """홈페이지 카드 썸네일 URL. og:image 우선, 없으면 본문 첫 사진, 그마저 없으면
+    예포 CI 기본 이미지(DEFAULT_IMAGE_URL)로 대체한다."""
     image = _meta_content(html_text, "og:image", "property")
     if image:
         return image
@@ -217,10 +223,13 @@ def extract_image(html_text: str, rel_path: Path) -> str | None:
     body_image = extract_body_image(html_text)
     if body_image:
         if body_image.startswith("data:"):
-            return save_data_uri_image(body_image)
-        return resolve_image_url(body_image, rel_path)
+            decoded = save_data_uri_image(body_image)
+            if decoded:
+                return decoded
+        else:
+            return resolve_image_url(body_image, rel_path)
 
-    return None
+    return DEFAULT_IMAGE_URL
 
 
 def git_last_commit_epoch(rel_path: Path) -> int:

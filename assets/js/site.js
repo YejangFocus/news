@@ -84,13 +84,14 @@
     var tickerBox = document.getElementById('tickerBox');
     if (!tickerBox) return;
 
-    // 기사에 쓸 만한 사진이 없을 때 대신 보여줄 예포 CI 로고(정사각형, 흰 배경).
+    // 기사에 쓸 만한 사진이 없을 때 대신 보여줄 예포 CI 로고.
+    // 로고 자체의 여백을 미리 잘라낸 버전이라 박스를 꽉 채워 보인다.
     // 사진과 달리 cover로 잘라내면 로고·문구가 잘리므로, 아래 thumbImgHtml()에서
     // object-fit:contain으로 전체가 보이게 따로 처리한다.
-    var DEFAULT_IMAGE = root + 'assets/images/598070cc4a9196e6.webp';
+    var DEFAULT_IMAGE = root + 'assets/images/yejang-focus-ci.webp';
 
     function thumbImgHtml(item, cls) {
-      var isFallback = !item.image;
+      var isFallback = !item.image || item.image.indexOf('yejang-focus-ci') !== -1;
       var src = item.image || DEFAULT_IMAGE;
       var extra = isFallback ? ' is-fallback' : '';
       return '<img class="' + cls + extra + '" src="' + esc(src) + '" alt="' + esc(item.title) + '">';
