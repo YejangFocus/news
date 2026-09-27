@@ -8,9 +8,14 @@ sync_article_index.py
 동작 방식
   1. 저장소 안의 모든 기사 HTML 파일(예: 신학/예지예정.html)을 찾는다.
   2. 각 파일에서 다음을 추출한다.
-       - 제목: <meta property="og:title">(없으면 <title>)
+       - 제목: <meta property="og:title"> → <title> → 본문 <h1> 순으로 시도.
+         (브라우저로 페이지를 통째 저장해 <head>가 통째로 빠진 파일도 파일명이
+         아니라 실제 기사 제목이 나오도록 <h1>을 마지막 안전망으로 둔다.)
        - 요약: <meta property="og:description">(없으면 <meta name="description">)
-       - 썸네일: <meta property="og:image"> (없으면 홈페이지에서 기본 이미지로 대체)
+       - 썸네일: <meta property="og:image"> → 본문 <figure><img> 중 첫 사진 순으로 시도.
+         (본문 사진도 없으면 홈페이지에서 예포 CI 기본 이미지로 대체.
+         이미지가 data: base64로 파일에 통째 박제된 경우는 articles.json이
+         과도하게 커지는 걸 막기 위해 건너뛴다.)
        - 카테고리(tag): '폴더명'. 예) 신학/예지예정.html → tag="신학"
   3. 기존 data/articles.json과 병합한다.
        - 새 파일 → 새 항목 추가
@@ -94,7 +99,12 @@ def _meta_content(html_text: str, key: str, key_attr: str = "property") -> str |
 
 
 def extract_title(html_text: str) -> str | None:
-    """og:title 우선, 없으면 <title> 태그에서 제목을 추출."""
+    """og:title 우선, 없으면 <title> 태그, 그마저 없으면 본문 <h1>에서 제목을 추출.
+
+    브라우저로 페이지를 통째 "저장"해서 올린 파일처럼 <head>/<title>/
+    <meta>가 통째로 빠진 경우가 있는데, 그런 파일도 파일명이 아니라
+    실제 기사 제목(= 본문 <h1>)이 나오도록 마지막 안전망을 둔다.
+    """
     title = _meta_content(html_text, "og:title", "property")
     if title:
         return title
@@ -104,7 +114,16 @@ def extract_title(html_text: str) -> str | None:
         title = html.unescape(m.group(1).strip())
         # "제목 | 예장포커스" 형태에서 매체명 제거
         title = re.split(r"\s*\|\s*예장포커스\s*$", title)[0].strip()
-        return title
+        if title:
+            return title
+
+    m = re.search(r"<h1[^>]*>(.*?)</h1>", html_text, re.S)
+    if m:
+        inner = re.sub(r"<br\s*/?>", " ", m.group(1), flags=re.I)
+        inner = re.sub(r"<[^>]+>", "", inner)
+        title = re.sub(r"\s+", " ", html.unescape(inner)).strip()
+        if title:
+            return title
 
     return None
 
@@ -117,9 +136,52 @@ def extract_description(html_text: str) -> str | None:
     )
 
 
-def extract_image(html_text: str) -> str | None:
-    """홈페이지 카드 썸네일에 쓸 og:image URL (없으면 None → 홈페이지 기본 이미지 사용)."""
-    return _meta_content(html_text, "og:image", "property")
+def extract_body_image(html_text: str) -> str | None:
+    """og:image가 없을 때, 본문 <figure><img>에 실제로 쓰인 첫 사진을 대신 쓴다.
+
+    브라우저로 페이지를 통째 저장해 사진이 data: base64로 파일 안에
+    그대로 박제된 경우는 건너뛴다 — 그걸 그대로 articles.json에 옮기면
+    파일 하나가 수백 KB~수 MB로 불어나고, 이 파일은 모든 페이지에서
+    매번 내려받으므로 사이트 전체가 느려진다. 그런 파일은 사진이 없는
+    것으로 보고 홈페이지 기본 이미지(예포 CI)로 대체한다.
+    """
+    for m in re.finditer(r"<figure[^>]*>.*?<img[^>]+src=([\"'])(.*?)\1", html_text, re.S):
+        src = html.unescape(m.group(2).strip())
+        if src and not src.startswith("data:"):
+            return src
+    return None
+
+
+def resolve_image_url(src: str, rel_path: Path) -> str:
+    """본문 <img src>(상대경로)를 articles.json에 쓸 절대 URL로 바꾼다."""
+    if re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*:", src):
+        # 이미 절대 URL(http, https, data 등)이면 그대로 사용
+        return src
+
+    parts: list[str] = []
+    for part in (*rel_path.parent.parts, *Path(src).parts):
+        if part in ("", "."):
+            continue
+        if part == "..":
+            if parts:
+                parts.pop()
+            continue
+        parts.append(part)
+    return f"{SITE_BASE}/{'/'.join(parts)}"
+
+
+def extract_image(html_text: str, rel_path: Path) -> str | None:
+    """홈페이지 카드 썸네일 URL. og:image 우선, 없으면 본문 첫 사진, 그마저 없으면 None
+    (→ 홈페이지에서 예포 CI 기본 이미지로 대체)."""
+    image = _meta_content(html_text, "og:image", "property")
+    if image:
+        return image
+
+    body_image = extract_body_image(html_text)
+    if body_image:
+        return resolve_image_url(body_image, rel_path)
+
+    return None
 
 
 def git_last_commit_epoch(rel_path: Path) -> int:
@@ -185,11 +247,11 @@ def main():
                 )
 
         if title is None:
-            warnings.append(f"[경고] '{rel_path}'에서 제목을 찾지 못했습니다. og:title 또는 <title>을 확인해 주세요.")
+            warnings.append(f"[경고] '{rel_path}'에서 제목을 찾지 못했습니다. og:title·<title>·본문 <h1>을 모두 확인해 주세요.")
             title = existing_by_url.get(url, {}).get("title", rel_path.stem)
 
         desc = extract_description(html_text) or existing_by_url.get(url, {}).get("desc", "")
-        image = extract_image(html_text) or existing_by_url.get(url, {}).get("image", "")
+        image = extract_image(html_text, rel_path) or existing_by_url.get(url, {}).get("image", "")
 
         new_index.append({
             "tag": tag,
