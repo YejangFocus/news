@@ -175,11 +175,16 @@
       return '<a href="' + item.url + '">' + esc(item.title) + '</a>';
     }).join('<span class="sep">•</span>');
 
-    // 좌측 하단 텍스트 목록: 위 헤드라인 카드에 이미 쓰인 기사를 제외한 나머지 최신 기사
+    // 좌측 하단 텍스트 목록: 정해진 카테고리 순서대로 각 카테고리 최신 기사 1건씩.
+    // 해당 카테고리에 기사가 없으면 카테고리명만 넣고 비워둔다.
+    var PLAIN_LIST_CATS = ['목회', '사설', '교회', '인물', '교계', '정치', '오피니언'];
     var plainList = document.getElementById('plainList');
     if (plainList) {
-      var remaining = ARTICLE_INDEX.filter(function (item) { return !used[item.url]; }).slice(0, 7);
-      plainList.innerHTML = remaining.map(function (item) {
+      plainList.innerHTML = PLAIN_LIST_CATS.map(function (cat) {
+        var item = ARTICLE_INDEX.find(function (a) { return a.tag === cat; });
+        if (!item) {
+          return '<li><span class="tag" style="color:' + tagColor(cat) + ';">' + esc(cat) + '</span></li>';
+        }
         return '<li><span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
           '<a href="' + item.url + '">' + esc(item.title) + '</a></li>';
       }).join('');
