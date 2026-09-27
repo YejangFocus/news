@@ -7,12 +7,14 @@ sync_article_index.py
 
 동작 방식
   1. 저장소 안의 모든 기사 HTML 파일(예: 신학/예지예정.html)을 찾는다.
-  2. 각 파일의 <meta property="og:title">(없으면 <title>)에서 제목을,
-     '폴더명'에서 카테고리(tag)를 추출한다.
-     예) 신학/예지예정.html → tag="신학"
+  2. 각 파일에서 다음을 추출한다.
+       - 제목: <meta property="og:title">(없으면 <title>)
+       - 요약: <meta property="og:description">(없으면 <meta name="description">)
+       - 썸네일: <meta property="og:image"> (없으면 홈페이지에서 기본 이미지로 대체)
+       - 카테고리(tag): '폴더명'. 예) 신학/예지예정.html → tag="신학"
   3. 기존 data/articles.json과 병합한다.
        - 새 파일 → 새 항목 추가
-       - 이미 있던 파일 → 제목/URL 최신화, tag는 하위 폴더 파일이면 폴더명으로 갱신
+       - 이미 있던 파일 → 제목/요약/썸네일/URL 최신화, tag는 하위 폴더 파일이면 폴더명으로 갱신
        - 저장소에서 사라진 파일 → 목록에서 제거
   4. 결과를 최신순(파일의 git 최종 커밋 시각 기준, 없으면 mtime)으로 정렬해
      data/articles.json에 다시 쓴다.
@@ -20,6 +22,9 @@ sync_article_index.py
 이 스크립트 자체는 파일을 읽고/쓰기만 한다. 실제 "발행할 때마다 자동 동기화"는
 함께 제공하는 GitHub Actions 워크플로(.github/workflows/sync-article-index.yml)가
 push 이벤트마다 이 스크립트를 실행하고, 바뀐 내용이 있으면 커밋·푸시까지 자동으로 한다.
+
+data/articles.json은 assets/js/site.js가 그대로 읽어 홈페이지(index.html)의 헤드라인·
+목록·썸네일까지 전부 자동으로 그려내므로, index.html 자체는 더 이상 손댈 필요가 없다.
 """
 
 import html
@@ -69,24 +74,30 @@ def find_article_files():
     return sorted(files)
 
 
+def _meta_content(html_text: str, key: str, key_attr: str = "property") -> str | None:
+    """<meta {key_attr}="{key}" content="..."> 형태에서 content 값을 추출.
+
+    content 속성값의 여는/닫는 따옴표가 같은 종류인지 역참조로 확인해야,
+    예) content='제목 "부제목"' 처럼 값 안에 다른 종류의 따옴표가 섞여 있어도
+    잘리지 않는다. property/content 속성이 쓰인 순서도 둘 다 대응한다.
+    """
+    key_re = re.escape(key)
+    patterns = (
+        rf'<meta[^>]+{key_attr}=["\']{key_re}["\'][^>]+content=(["\'])(.*?)\1',
+        rf'<meta[^>]+content=(["\'])(.*?)\1[^>]+{key_attr}=["\']{key_re}["\']',
+    )
+    for pat in patterns:
+        m = re.search(pat, html_text)
+        if m:
+            return html.unescape(m.group(2).strip())
+    return None
+
+
 def extract_title(html_text: str) -> str | None:
     """og:title 우선, 없으면 <title> 태그에서 제목을 추출."""
-    # content 속성값의 실제 구분 따옴표(' 또는 ")를 역참조로 맞춰 잡아야,
-    # 예) content='제목 "부제목"' 처럼 다른 종류의 따옴표가 값 안에 섞여 있어도
-    # 잘리지 않고 온전한 제목을 추출할 수 있다.
-    m = re.search(
-        r'<meta[^>]+property=["\']og:title["\'][^>]+content=(["\'])(.*?)\1',
-        html_text,
-    )
-    if m:
-        return html.unescape(m.group(2).strip())
-
-    m = re.search(
-        r'<meta[^>]+content=(["\'])(.*?)\1[^>]+property=["\']og:title["\']',
-        html_text,
-    )
-    if m:
-        return html.unescape(m.group(2).strip())
+    title = _meta_content(html_text, "og:title", "property")
+    if title:
+        return title
 
     m = re.search(r"<title>(.*?)</title>", html_text, re.S)
     if m:
@@ -96,6 +107,19 @@ def extract_title(html_text: str) -> str | None:
         return title
 
     return None
+
+
+def extract_description(html_text: str) -> str | None:
+    """홈페이지 카드 요약문에 쓸 설명. og:description 우선, 없으면 meta description."""
+    return (
+        _meta_content(html_text, "og:description", "property")
+        or _meta_content(html_text, "description", "name")
+    )
+
+
+def extract_image(html_text: str) -> str | None:
+    """홈페이지 카드 썸네일에 쓸 og:image URL (없으면 None → 홈페이지 기본 이미지 사용)."""
+    return _meta_content(html_text, "og:image", "property")
 
 
 def git_last_commit_epoch(rel_path: Path) -> int:
@@ -164,10 +188,15 @@ def main():
             warnings.append(f"[경고] '{rel_path}'에서 제목을 찾지 못했습니다. og:title 또는 <title>을 확인해 주세요.")
             title = existing_by_url.get(url, {}).get("title", rel_path.stem)
 
+        desc = extract_description(html_text) or existing_by_url.get(url, {}).get("desc", "")
+        image = extract_image(html_text) or existing_by_url.get(url, {}).get("image", "")
+
         new_index.append({
             "tag": tag,
             "title": title,
             "url": url,
+            "desc": desc,
+            "image": image,
             "_sort_key": git_last_commit_epoch(rel_path),
         })
 
