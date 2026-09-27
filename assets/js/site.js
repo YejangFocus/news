@@ -10,6 +10,7 @@
       window.ARTICLE_INDEX = articles;
       initCategoryOverlay(articles);
       initSiteSearch(articles);
+      renderHomepage(articles);
     })
     .catch(function (err) {
       console.error('기사 목록(articles.json)을 불러오지 못했습니다.', err);
@@ -73,6 +74,127 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeAllArticles();
     });
+  }
+
+  // 메인화면(index.html)의 헤드라인·목록·썸네일을 ARTICLE_INDEX(=articles.json)로부터
+  // 통째로 그려낸다. 기사 발행 → GitHub Actions가 articles.json 자동 갱신 → 다음
+  // 방문 시 이 함수가 최신 내용으로 다시 그려주므로, index.html을 따로 손댈 필요가 없다.
+  // 홈페이지가 아닌 페이지에는 아래 컨테이너 요소들이 없으므로 조용히 종료한다.
+  function renderHomepage(ARTICLE_INDEX) {
+    var tickerBox = document.getElementById('tickerBox');
+    if (!tickerBox) return;
+
+    var DEFAULT_IMAGE = root + 'assets/images/38701da0735806f0.webp';
+    var TAG_COLOR = {
+      '속보': 'var(--red)', '사설': 'var(--red)',
+      '신학': 'var(--pine)', '오피니언': 'var(--pine)', '특집': 'var(--pine)', '칼럼': 'var(--pine)',
+      '교단': 'var(--navy)', '교단소식': 'var(--navy)', '교계': 'var(--navy)', '정치': 'var(--navy)',
+      '목회': 'var(--navy)', '교회': 'var(--navy)', '인물': 'var(--navy)'
+    };
+
+    function tagColor(tag) { return TAG_COLOR[tag] || 'var(--ink)'; }
+
+    function esc(s) {
+      return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    if (!ARTICLE_INDEX.length) {
+      tickerBox.innerHTML = '<span style="color:var(--ink-faint);">아직 등록된 기사가 없습니다.</span>';
+      return;
+    }
+
+    var used = {};
+    function markUsed(item) { if (item) used[item.url] = true; }
+    function pickOne(tags) {
+      var found = tags && ARTICLE_INDEX.find(function (item) {
+        return !used[item.url] && tags.indexOf(item.tag) !== -1;
+      });
+      return found || ARTICLE_INDEX.find(function (item) { return !used[item.url]; }) || null;
+    }
+    function pickMany(tags, count) {
+      return ARTICLE_INDEX.filter(function (item) {
+        return tags.indexOf(item.tag) !== -1;
+      }).slice(0, count);
+    }
+
+    function featureItemHtml(item, extraStyle) {
+      if (!item) return '';
+      return '' +
+        '<a class="feature-item" href="' + item.url + '"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
+          '<img class="thumb" src="' + esc(item.image || DEFAULT_IMAGE) + '" alt="' + esc(item.title) + '">' +
+          '<div class="body">' +
+            '<span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
+            '<h3>' + esc(item.title) + '</h3>' +
+            (item.desc ? '<p>' + esc(item.desc) + '</p>' : '') +
+          '</div>' +
+        '</a>';
+    }
+
+    // 좌측 컬럼: 헤드라인 2건(특집 → 교단소식 우선, 없으면 최신순) + 하단 신학 카드
+    var hero = pickOne(['특집']); markUsed(hero);
+    var second = pickOne(['교단소식', '교단']); markUsed(second);
+    var third = pickOne(['신학']); markUsed(third);
+
+    var heroEl = document.getElementById('heroFeature');
+    var secondEl = document.getElementById('secondFeature');
+    var thirdEl = document.getElementById('thirdFeature');
+    if (heroEl) heroEl.innerHTML = featureItemHtml(hero);
+    if (secondEl) secondEl.innerHTML = featureItemHtml(second);
+    if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;');
+
+    // 최신뉴스 티커: 항상 전체 최신 3건
+    var tickerItems = ARTICLE_INDEX.slice(0, 3);
+    tickerBox.innerHTML = tickerItems.map(function (item) {
+      return '<a href="' + item.url + '">' + esc(item.title) + '</a>';
+    }).join('<span class="sep">•</span>');
+
+    // 좌측 하단 텍스트 목록: 위 헤드라인 카드에 이미 쓰인 기사를 제외한 나머지 최신 기사
+    var plainList = document.getElementById('plainList');
+    if (plainList) {
+      var remaining = ARTICLE_INDEX.filter(function (item) { return !used[item.url]; }).slice(0, 7);
+      plainList.innerHTML = remaining.map(function (item) {
+        return '<li><span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
+          '<a href="' + item.url + '">' + esc(item.title) + '</a></li>';
+      }).join('');
+    }
+
+    // 중앙 컬럼: 총회 소식 — 카테고리와 무관하게 사이트 전체 최신 5건
+    var topFive = ARTICLE_INDEX.slice(0, 5);
+    var numList = document.getElementById('numList');
+    if (numList) {
+      var numerals = ['①', '②', '③', '④', '⑤'];
+      numList.innerHTML = topFive.map(function (item, i) {
+        return '<li><span class="num">' + numerals[i] + '</span><a href="' + item.url + '">' + esc(item.title) + '</a></li>';
+      }).join('');
+    }
+    var modHero = document.getElementById('modHero');
+    if (modHero && topFive[0]) {
+      modHero.innerHTML =
+        '<a class="mod-hero" href="' + topFive[0].url + '">' +
+          '<img class="thumb" src="' + esc(topFive[0].image || DEFAULT_IMAGE) + '" alt="' + esc(topFive[0].title) + '">' +
+          (topFive[0].desc ? '<p class="cap">' + esc(topFive[0].desc) + '</p>' : '') +
+        '</a>';
+    }
+    var totalNewsMore = document.getElementById('totalNewsMore');
+    if (totalNewsMore && topFive[0]) totalNewsMore.href = topFive[0].url;
+
+    // 우측 컬럼: 칼럼 — 최신 2건
+    var columns = pickMany(['칼럼'], 2);
+    var sideList = document.getElementById('sideList');
+    if (sideList) {
+      sideList.innerHTML = columns.map(function (item) {
+        return '' +
+          '<li>' +
+            '<a href="' + item.url + '"><img class="thumb" src="' + esc(item.image || DEFAULT_IMAGE) + '" alt="' + esc(item.title) + '"></a>' +
+            '<div class="body">' +
+              '<a href="' + item.url + '"><h4>' + esc(item.title) + '</h4></a>' +
+              (item.desc ? '<p>' + esc(item.desc) + '</p>' : '') +
+            '</div>' +
+          '</li>';
+      }).join('');
+    }
+    var columnMore = document.getElementById('columnMore');
+    if (columnMore && columns[0]) columnMore.href = columns[0].url;
   }
 
   function initSiteSearch(ARTICLE_INDEX) {
