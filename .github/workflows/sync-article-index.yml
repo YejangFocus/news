@@ -8,7 +8,10 @@ on:
     paths:
       - '**/*.html'
       - '!index.html'
+      - '!404.html'
+      - '!공지.html'
       - '!메인화면/**'
+      - '!ETC/**'
   workflow_dispatch: {}   # 필요하면 Actions 탭에서 수동 실행도 가능
 
 permissions:

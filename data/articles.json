@@ -1,12 +1,72 @@
 [
-  { "tag": "특집", "title": "송기섭 목사, 어떻게 826표를 얻었나 — \"조직\" 아닌 \"이미지\"가 갈랐다", "url": "https://yejangfocus.github.io/news/news001.html" },
-  { "tag": "교단소식", "title": "\"하나로, 미래로, 거룩함으로\" 다함께 외치며 파회 — 제111회 총회, 정영교 총회장 체제로 새 회기 출발", "url": "https://yejangfocus.github.io/news/006.html" },
-  { "tag": "교회", "title": "원로 추대, 절차를 지킨 교회가 왜 흔들려야 하는가", "url": "https://yejangfocus.github.io/news/news004.html" },
-  { "tag": "사설", "title": "정정 없는 일방 보도에 유감 — 박○○ 목사, \"언론중재위 제소 검토\"", "url": "https://yejangfocus.github.io/news/news005.html" },
-  { "tag": "교계", "title": "예장○○교단 김○○ 부총회장 당선자, 가시지 않은 의혹", "url": "https://yejangfocus.github.io/news/007.html" },
-  { "tag": "칼럼", "title": "갈수록 행복이 사라지는 이유 — 풍요의 시대, 왜 우리는 점점 불행해지는가", "url": "https://yejangfocus.github.io/news/칼럼/갈수록_행복이_사라지는_이유.html" },
-  { "tag": "칼럼", "title": "\"예배가 지루해서 떠난다\"…청소년 200명의 증언과 사역자의 동상이몽", "url": "https://yejangfocus.github.io/news/칼럼/예배가_지루해서_떠난다_청소년_200명의_증언과_사역자의_동상이몽.html" },
-  { "tag": "칼럼", "title": "분노는 선택이다", "url": "https://yejangfocus.github.io/news/칼럼/분노는_선택이다.html" },
-  { "tag": "칼럼", "title": "주장과 나를 분리하라, 대화가 즐거워지는 법", "url": "https://yejangfocus.github.io/news/칼럼/주장과_나를_분리하라_칼럼.html" },
-  { "tag": "신학", "title": "박진영의 삼위일체 부정, 개혁주의 신학은 어떻게 반박하는가", "url": "https://yejangfocus.github.io/news/신학/박진영의_삼위일체_부정_개혁주의_신학은_어떻게_반박하는가.html" }
+  {
+    "tag": "신학",
+    "title": "예지예정론 소고:",
+    "url": "https://yejangfocus.github.io/news/신학/예지예정론_소고.html"
+  },
+  {
+    "tag": "교단소식",
+    "title": "\"하나로, 미래로, 거룩함으로\" 다함께 외치며 파회 — 제111회 총회, 정영교 총회장 체제로 새 회기 출발",
+    "url": "https://yejangfocus.github.io/news/006.html"
+  },
+  {
+    "tag": "교계",
+    "title": "예장○○교단 김○○ 부총회장 당선자, 가시지 않은 의혹",
+    "url": "https://yejangfocus.github.io/news/007.html"
+  },
+  {
+    "tag": "특집",
+    "title": "송기섭 목사, 어떻게 826표를 얻었나 — \"조직\" 아닌 \"이미지\"가 갈랐다",
+    "url": "https://yejangfocus.github.io/news/news001.html"
+  },
+  {
+    "tag": "교단소식",
+    "title": "홍승열 목사 아들 진영 군 혼사 — 당선 닷새 만의 송기섭 목사도 축하 발걸음",
+    "url": "https://yejangfocus.github.io/news/news003.html"
+  },
+  {
+    "tag": "교회",
+    "title": "원로 추대, 절차를 지킨 교회가 왜 흔들려야 하는가",
+    "url": "https://yejangfocus.github.io/news/news004.html"
+  },
+  {
+    "tag": "사설",
+    "title": "정정 없는 일방 보도에 유감 — 박○○ 목사, \"언론중재위 제소 검토\"",
+    "url": "https://yejangfocus.github.io/news/news005.html"
+  },
+  {
+    "tag": "사설",
+    "title": "갈수록 행복이 사라지는 이유 — 풍요의 시대, 왜 우리는 점점 불행해지는가",
+    "url": "https://yejangfocus.github.io/news/사설/갈수록_행복이_사라지는_이유.html"
+  },
+  {
+    "tag": "신학",
+    "title": "박진영의 삼위일체 부정, 개혁주의 신학은 어떻게 반박하는가",
+    "url": "https://yejangfocus.github.io/news/신학/박진영_삼위일체_비판.html"
+  },
+  {
+    "tag": "신학",
+    "title": "박진영의 삼위일체 부정, 개혁주의 신학은 어떻게 반박하는가",
+    "url": "https://yejangfocus.github.io/news/신학/박진영의_삼위일체_부정_개혁주의_신학은_어떻게_반박하는가.html"
+  },
+  {
+    "tag": "칼럼",
+    "title": "갈수록 행복이 사라지는 이유 — 풍요의 시대, 왜 우리는 점점 불행해지는가",
+    "url": "https://yejangfocus.github.io/news/칼럼/갈수록_행복이_사라지는_이유.html"
+  },
+  {
+    "tag": "칼럼",
+    "title": "분노는 선택이다",
+    "url": "https://yejangfocus.github.io/news/칼럼/분노는_선택이다.html"
+  },
+  {
+    "tag": "칼럼",
+    "title": "\"예배가 지루해서 떠난다\"…청소년 200명의 증언과 사역자의 동상이몽",
+    "url": "https://yejangfocus.github.io/news/칼럼/예배가_지루해서_떠난다_청소년_200명의_증언과_사역자의_동상이몽.html"
+  },
+  {
+    "tag": "칼럼",
+    "title": "주장과 나를 분리하라, 대화가 즐거워지는 법",
+    "url": "https://yejangfocus.github.io/news/칼럼/주장과_나를_분리하라_칼럼.html"
+  }
 ]

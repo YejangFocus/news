@@ -35,11 +35,14 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 ARTICLE_INDEX_PATH = REPO_ROOT / "data" / "articles.json"
 SITE_BASE = "https://yejangfocus.github.io/news"
 
-# 기사로 취급하지 않는 최상위 폴더 (사이트 정보성 페이지 등)
-EXCLUDE_DIRS = {".git", ".github", "data", "assets", "images", "img", "css", "js", "메인화면"}
+# 기사로 취급하지 않는 최상위 폴더 (사이트 정보성 페이지, 비공개 자료 등)
+EXCLUDE_DIRS = {".git", ".github", "data", "assets", "images", "img", "css", "js", "메인화면", "ETC", "scripts"}
 
 # 기사로 취급하지 않는 루트 파일
 EXCLUDE_ROOT_FILES = {"index.html", "404.html", "공지.html"}
+
+# 검색엔진 소유 확인용 파일(naver-site-verification 등)은 내용으로 판별해 제외한다.
+SITE_VERIFICATION_RE = re.compile(r"^(?:naver|google)-site-verification:", re.I)
 
 # 폴더가 없는(=루트에 있는) 기사 파일의 tag를 새로 만들 때 사용할 기본값
 DEFAULT_TAG_FOR_ROOT_FILES = "교단소식"
@@ -126,6 +129,9 @@ def main():
             html_text = full_path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             html_text = full_path.read_text(encoding="utf-8", errors="ignore")
+
+        if SITE_VERIFICATION_RE.match(html_text.strip()):
+            continue
 
         title = extract_title(html_text)
         url = build_url(rel_path)
