@@ -89,13 +89,13 @@
   .searchrow input::placeholder { color: var(--ink-faint); }
   .searchrow .search-ic { font-size: 13px; color: var(--ink-faint); }
   .support-btn {
-    flex: none; background: var(--amber); color: #fff; font: 700 14px 'Gaegu', cursive;
+    flex: none; background: var(--amber); color: #fff; font: 700 15px 'Noto Sans KR', sans-serif; letter-spacing: -0.2px;
     padding: 0 20px; height: 38px; border-radius: 20px 4px 20px 4px; display: inline-flex; align-items: center; cursor: pointer;
     border: 2px solid var(--doodle); box-shadow: 3px 3px 0 var(--doodle);
-    transform: rotate(-1.5deg); animation: bump 1.8s ease-in-out infinite;
+    animation: bump 1.8s ease-in-out infinite;
   }
-  .support-btn:hover { background: var(--red); transform: rotate(0deg) scale(1.04); }
-  @keyframes bump { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.5deg); } }
+  .support-btn:hover { background: var(--red); transform: scale(1.04); }
+  @keyframes bump { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
   @media (max-width: 480px) {
     .support-btn { font-size: 12px; padding: 0 12px; height: 34px; white-space: nowrap; }
   }
