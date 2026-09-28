@@ -30,9 +30,12 @@ sync_article_index.py
      기사 <head>에 명시된 발행 시각(<meta property="article:published_time">
      또는 "og:published_time", ISO 8601 형식)을 최우선으로 쓰고, 그 태그가
      없는(예: 브라우저로 페이지를 통째 저장해 <head>가 통째로 빠진) 기사만
-     예전처럼 git 최종 커밋 시각으로 대체한다. 같은 커밋에 여러 기사가
-     한꺼번에 올라와도 각 기사에 발행 시각을 명시해두면 그 안에서의 순서까지
-     정확히 구분된다.
+     그 파일이 저장소에 처음 추가된 git 커밋 시각으로 대체한다. 최종 수정
+     시각이 아니라 최초 추가 시각을 쓰는 이유는, 카테고리 메뉴나 광고 배너
+     교체처럼 전체 기사 파일을 한꺼번에 고치는 커밋이 지나가도 예전 기사들이
+     그 커밋 시각으로 갱신되어 최신 소식 맨 위로 몰리지 않게 하기 위함이다.
+     같은 커밋에 여러 기사가 한꺼번에 올라와도 각 기사에 발행 시각을 명시해두면
+     그 안에서의 순서까지 정확히 구분된다.
 
 이 스크립트 자체는 파일을 읽고/쓰기만 한다. 실제 "발행할 때마다 자동 동기화"는
 함께 제공하는 GitHub Actions 워크플로(.github/workflows/sync-article-index.yml)가
@@ -312,6 +315,32 @@ def git_last_commit_epoch(rel_path: Path) -> int:
         return 0
 
 
+def git_created_epoch(rel_path: Path) -> int:
+    """파일이 저장소에 처음 추가된 git 커밋 시각(unix epoch).
+
+    정렬 fallback으로 '최종 수정' 대신 '최초 추가' 시각을 쓴다. 카테고리
+    메뉴 교체나 광고 배너 변경처럼 템플릿을 전체 기사 파일에 한꺼번에
+    반영하는 커밋이 지나가면, 최종 수정 시각 기준으로는 오래전에 쓴
+    기사들까지 전부 그 커밋 시각으로 갱신돼 '최신 소식' 맨 위로 몰리게
+    된다. 최초 추가 시각을 쓰면 이런 전역 수정에 흔들리지 않고 실제로
+    글이 올라온 순서가 유지된다.
+    """
+    try:
+        out = subprocess.run(
+            ["git", "log", "--follow", "--diff-filter=A", "--format=%ct", "--", str(rel_path)],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip().splitlines()
+        if out:
+            return int(out[-1])
+    except Exception:
+        pass
+    # 추가 커밋을 못 찾으면(얕은 클론 등) 마지막 커밋 시각으로 대체
+    return git_last_commit_epoch(rel_path)
+
+
 def build_url(rel_path: Path) -> str:
     # 저장소 내 실제 파일명(한글 포함)을 그대로 사용 (기존 articles.json 규칙과 동일)
     return f"{SITE_BASE}/{rel_path.as_posix()}"
@@ -368,7 +397,7 @@ def main():
 
         sort_key = extract_published_time(html_text)
         if sort_key is None:
-            sort_key = git_last_commit_epoch(rel_path)
+            sort_key = git_created_epoch(rel_path)
 
         new_index.append({
             "tag": tag,
