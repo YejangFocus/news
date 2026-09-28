@@ -177,7 +177,7 @@
 
     // 좌측 하단 텍스트 목록: 정해진 카테고리 순서대로 각 카테고리 최신 기사 1건씩.
     // 해당 카테고리에 기사가 없으면 카테고리명만 넣고 비워둔다.
-    var PLAIN_LIST_CATS = ['목회', '사설', '교회', '인물', '교계', '정치', '오피니언'];
+    var PLAIN_LIST_CATS = ['목회', '사설', '교회', '인물', '교계'];
     var plainList = document.getElementById('plainList');
     if (plainList) {
       plainList.innerHTML = PLAIN_LIST_CATS.map(function (cat) {
