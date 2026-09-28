@@ -19,9 +19,19 @@
     return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  // 카테고리 메뉴(상단 메뉴 클릭 시 뜨는 기사 목록)와 칼럼 섹션을 포함해
+  // 홈페이지의 모든 목록이 항상 최신 날짜순으로 나오도록, 배열에 담긴 순서에만
+  // 기대지 않고 각 기사의 date(YYYY-MM-DD)로 명시적으로 재정렬한다.
+  function sortByLatestDate(articles) {
+    return articles.slice().sort(function (a, b) {
+      return (b.date || '').localeCompare(a.date || '');
+    });
+  }
+
   fetch(root + 'data/articles.json')
     .then(function (res) { return res.json(); })
     .then(function (articles) {
+      articles = sortByLatestDate(articles);
       window.ARTICLE_INDEX = articles;
       initCategoryOverlay(articles);
       initSiteSearch(articles);
