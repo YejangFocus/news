@@ -53,7 +53,7 @@ import os
 import re
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 # ── 설정 ────────────────────────────────────────────────────────────────
@@ -61,6 +61,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 ARTICLE_INDEX_PATH = REPO_ROOT / "data" / "articles.json"
 IMAGES_DIR = REPO_ROOT / "assets" / "images"
 SITE_BASE = "https://yejangfocus.github.io/news"
+
+# 기사 목록에 남기는 날짜는 한국 독자 기준(KST)으로 표기한다.
+KST = timezone(timedelta(hours=9))
 
 # 기사 안에 쓸 만한 사진이 하나도 없을 때 썸네일로 대신 올릴 예포 CI 로고.
 # assets/images/yejang-focus-ci.webp는 원본 예포CI.png의 여백을 미리 잘라낸
@@ -405,6 +408,9 @@ def main():
             "url": url,
             "desc": desc,
             "image": image,
+            # 홈페이지 스크립트가 배열 순서에만 의존하지 않고 실제 날짜로도
+            # 재정렬할 수 있도록, 정렬에 쓴 시각을 사람이 읽을 수 있는 날짜로 남겨둔다.
+            "date": datetime.fromtimestamp(sort_key, tz=timezone.utc).astimezone(KST).strftime("%Y-%m-%d"),
             "_sort_key": sort_key,
         })
 
