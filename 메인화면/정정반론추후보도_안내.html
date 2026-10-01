@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 <title>정정·반론·추후 보도 안내 | 예장포커스</title>
 <meta name="description" content="예장포커스 보도로 사실과 다르거나 일방적인 내용이 전달된 경우, 언론중재법에 따른 정정·반론·추후 보도 청구 절차를 안내합니다.">
 <meta property="og:type" content="website">
@@ -79,18 +80,8 @@
   .page{
     max-width: 820px;
     margin: 0 auto;
-    padding: 32px 20px 80px;
+    padding: 0 20px 80px;
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   .meta-bar{
     display:flex;
     justify-content: space-between;
@@ -299,14 +290,9 @@
   @media (max-width: 480px){
     .stat-strip{ grid-template-columns: 1fr 1fr; }
     .stat-strip div:last-child{ grid-column: span 2; }
-    
-    
-    
-    
   }
 
-  /* ---------- category nav (index.html과 동일) ---------- */
-    /* ---------- 상단 헤더 (index.html과 동일: 로그인바 · 검색줄 · 마스트헤드) ---------- */
+  /* ---------- 상단 헤더 (index.html과 동일: 로그인바 · 검색줄 · 마스트헤드) ---------- */
   .yf-top{
     --navy: #16294f; --navy-ink: #0f1d3a; --red: #b91c2b; --pine: #3f6b4a;
     --paper: #ffffff; --paper-alt: #f5f4ef; --ink: #1c1a16; --ink-soft: #67635a;
@@ -400,7 +386,9 @@
     :root:not([data-theme="light"]) .yf-top .masthead .ci-logo, :root:not([data-theme="light"]) .yf-top .masthead .tv-logo{ background: #fff; padding: 6px 10px; box-sizing: border-box; }
   }
   :root[data-theme="dark"] .yf-top .masthead .ci-logo, :root[data-theme="dark"] .yf-top .masthead .tv-logo{ background: #fff; padding: 6px 10px; box-sizing: border-box; }
-nav.catnav{
+
+  /* ---------- category nav (index.html과 동일) ---------- */
+  nav.catnav{
     --navy: #16294f; --red: #b91c2b; --hair-strong: #cfccbd;
     position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
     background: var(--paper); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--hair-strong);
@@ -427,6 +415,35 @@ nav.catnav{
   nav.catnav a.brandmark { padding: 8px 16px 8px 0; border-bottom: none; }
   nav.catnav button:hover, nav.catnav a:hover { color: var(--navy); }
   nav.catnav button.active, nav.catnav a.active { color: var(--red); border-bottom-color: var(--red); }
+
+  /* ---------- 하단 푸터 (index.html과 동일) ---------- */
+  footer.yf-footer{
+    margin-top: 20px; background: #0f1d3a; color: #c9cfe2;
+    line-height: normal; font-family: 'Noto Sans KR', sans-serif;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  footer.yf-footer a{ color: inherit; text-decoration: none; }
+  footer.yf-footer .wrap{ max-width: 1040px; margin: 0 auto; padding: 32px 18px 30px; }
+  footer.yf-footer .flockup{
+    font-family: 'Noto Serif KR', serif; font-weight: 900; font-size: 20px; color: #fff; margin-bottom: 4px;
+  }
+  footer.yf-footer .fsub{ font-size: 11px; letter-spacing: .28em; color: #8b93ab; }
+  footer.yf-footer .flinks{ display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 16px 0 18px; font-size: 12.5px; }
+  footer.yf-footer .flinks a:hover{ color: #fff; }
+  footer.yf-footer .legal-grid{
+    display: flex; flex-wrap: wrap; column-gap: 14px; row-gap: 4px;
+    font-size: 12px; line-height: 1.5; color: #98a0bd; border-top: 1px solid #263258; padding-top: 16px;
+  }
+  footer.yf-footer .legal-grid .litem{ white-space: nowrap; }
+  footer.yf-footer .legal-grid .ll{ color: #6b7396; margin-right: 3px; }
+  footer.yf-footer .legal-grid .lv{ color: #98a0bd; }
+  footer.yf-footer p.copyright{ margin: 18px 0 4px; font-size: 11.5px; line-height: 1.6; color: #7b83a3; }
+  footer.yf-footer p.copyright + p.copyright{ margin-top: 0; }
+  footer.yf-footer p.copyright a:hover{ color: #fff; }
+  @media (max-width: 760px){
+    footer.yf-footer .legal-grid{ flex-direction: column; }
+    footer.yf-footer .legal-grid .litem{ white-space: normal; }
+  }
 </style>
 <div class="page">
 
@@ -470,20 +487,18 @@ nav.catnav{
     </a>
     <div class="catlist" id="catNav">
       <button data-cat="전체" class="active">전체</button>
-      <a data-cat="교단" href="https://yejangfocus.github.io/news/006.html">교단</a>
+      <button data-cat="교단">교단</button>
       <button data-cat="목회">목회</button>
       <button data-cat="신학">신학</button>
-      <a data-cat="사설" href="https://yejangfocus.github.io/news/news005.html">사설</a>
-      <a data-cat="특집" href="https://yejangfocus.github.io/news/news001.html">특집</a>
-      <a data-cat="교회" href="https://yejangfocus.github.io/news/news004.html">교회</a>
-      <a data-cat="인물" href="https://yejangfocus.github.io/news/news003.html">인물</a>
-      <a data-cat="교계" href="https://yejangfocus.github.io/news/007.html">교계</a>
-      <a data-cat="칼럼" href="https://yejangfocus.github.io/news/칼럼/예배가_지루해서_떠난다_청소년_200명의_증언과_사역자의_동상이몽.html">칼럼</a>
+      <button data-cat="사설">사설</button>
+      <button data-cat="특집">특집</button>
+      <button data-cat="교회">교회</button>
+      <button data-cat="인물">인물</button>
+      <button data-cat="교계">교계</button>
+      <button data-cat="칼럼">칼럼</button>
     </div>
   </div>
 </nav>
-
-
   <div class="meta-bar">
     <span>알림 · 2026.09.24</span>
     <span>정정·반론·추후보도 청구 절차 안내</span>
@@ -566,6 +581,40 @@ nav.catnav{
 
 </div>
 
+<footer class="yf-footer">
+  <div class="wrap">
+    <div class="flockup">예장포커스</div>
+    <div class="fsub">YEJANG FOCUS</div>
+
+    <div class="flinks">
+      <a href="https://yejangfocus.github.io/news/메인화면/예장포커스_매체소개.html">매체소개</a>
+      <a href="mailto:owenpej@naver.com">기사 제보</a>
+      <a href="mailto:owenpej@naver.com?subject=%5B광고%20문의%5D">광고 문의</a>
+      <a href="mailto:owenpej@naver.com?subject=%5B구독%20신청%5D">구독 신청</a>
+      <a href="#">이용약관</a>
+      <a href="https://yejangfocus.github.io/news/메인화면/예장포커스_개인정보취급방침.html">개인정보처리방침</a>
+      <a href="https://yejangfocus.github.io/news/메인화면/청소년보호정책.html">청소년보호정책</a>
+      <a href="https://yejangfocus.github.io/news/메인화면/저작권보호정책.html">저작권보호정책</a>
+      <a href="https://yejangfocus.github.io/news/메인화면/정정반론추후보도_안내.html">정정·반론·추후 보도</a>
+    </div>
+
+    <div class="legal-grid">
+      <span class="litem"><span class="ll">제호</span><span class="lv">예장포커스(Yejang Focus)</span></span>
+      <span class="litem"><span class="ll">주소</span><span class="lv">대전광역시 동구 대전로 542번길 27 (천동) 반석빌딩 1층</span></span>
+      <span class="litem"><span class="ll">대표전화</span><span class="lv">010-9751-4888</span></span>
+      <span class="litem"><span class="ll">팩스</span><span class="lv">0504-492-3386</span></span>
+      <span class="litem"><span class="ll">사업자등록번호</span><span class="lv">등록 절차 진행 중</span></span>
+      <span class="litem"><span class="ll">청소년보호책임자</span><span class="lv">윤기로</span></span>
+      <span class="litem"><span class="ll">등록일</span><span class="lv">2026-09-30</span></span>
+      <span class="litem"><span class="ll">발행일</span><span class="lv">창간 준비 중</span></span>
+      <span class="litem"><span class="ll">발행·편집인</span><span class="lv">박민하</span></span>
+    </div>
+
+    <p class="copyright">예장포커스(Yejang Focus)의 모든 콘텐츠(영상, 기사, 사진)는 저작권법의 보호를 받는 바, 무단 전재와 복사, 배포 등을 금합니다.</p>
+    <p class="copyright">Copyright © 2026 예장포커스(Yejang Focus). All rights reserved. mail to <a href="mailto:owenpej@naver.com">owenpej@naver.com</a></p>
+  </div>
+</footer>
+
 <div id="allArticlesOverlay" class="aa-overlay" hidden>
   <div class="aa-panel">
     <div class="aa-head">
@@ -588,7 +637,6 @@ nav.catnav{
   .aa-list li{padding:12px 0;border-bottom:1px solid rgba(128,128,128,.25);font-size:15px;line-height:1.5;}
   .aa-list li:last-child{border-bottom:none;}
   .aa-list a{color:var(--ink);text-decoration:none;}
-  .aa-tag{font-weight:700;margin-right:2px;}
   .aa-list a:hover{color:var(--ink-soft);text-decoration:underline;}
 </style>
 
