@@ -27,8 +27,8 @@ sync_article_index.py
        - 이미 있던 파일 → 제목/요약/썸네일/URL 최신화, tag는 하위 폴더 파일이면 폴더명으로 갱신
        - 저장소에서 사라진 파일 → 목록에서 제거
   4. 결과를 "최신에 업로드된 순"으로 정렬해 data/articles.json에 다시 쓴다.
-     각 기사의 업로드 시각(uploaded)은 처음 발견했을 때 한 번만 기록하고 이후
-     보존한다(저장소에 처음 추가된 git 커밋 시각). 홈페이지 헤드라인과 모든
+     각 기사의 업로드 시각(uploaded)은 그 파일이 git에 (마지막으로) 추가된 커밋
+     시각이다. 홈페이지 헤드라인과 모든
      페이지의 상단 카테고리 메뉴가 이 순서를 그대로 따른다. 아래 설명은
      과거 방식(발행 시각 우선)으로, 지금은 같은 업로드 시각끼리의 보조 정렬에만
      쓰인다. 기존 설명: 기사 <head>에 명시된 발행 시각(<meta property="article:published_time">
@@ -323,25 +323,26 @@ def git_last_commit_epoch(rel_path: Path) -> int:
 
 
 def git_created_epoch(rel_path: Path) -> int:
-    """파일이 저장소에 처음 추가된 git 커밋 시각(unix epoch).
+    """이 경로의 파일이 저장소에 (가장 최근에) 올라온 git 커밋 시각(unix epoch).
 
-    정렬 fallback으로 '최종 수정' 대신 '최초 추가' 시각을 쓴다. 카테고리
-    메뉴 교체나 광고 배너 변경처럼 템플릿을 전체 기사 파일에 한꺼번에
-    반영하는 커밋이 지나가면, 최종 수정 시각 기준으로는 오래전에 쓴
-    기사들까지 전부 그 커밋 시각으로 갱신돼 '최신 소식' 맨 위로 몰리게
-    된다. 최초 추가 시각을 쓰면 이런 전역 수정에 흔들리지 않고 실제로
-    글이 올라온 순서가 유지된다.
+    --follow(이름 변경 추적)는 쓰지 않는다. 같은 템플릿으로 만든 기사들은
+    내용이 거의 같아서 git이 서로를 "이름만 바뀐 같은 파일"로 잘못 엮어,
+    나중에 올린 기사가 옛 기사의 업로드 시각을 물려받기 때문이다. 또
+    "가장 최근 추가 커밋"을 쓰므로 파일을 삭제했다가 다시 올리거나 다른
+    폴더로 옮겨 올린 기사는 다시 올린 시각이 업로드 시각이 된다. 반면 기사
+    내용만 수정하는 커밋(메뉴·배너·템플릿 교체)은 추가가 아니므로 순서에
+    영향을 주지 않는다.
     """
     try:
         out = subprocess.run(
-            ["git", "log", "--follow", "--diff-filter=A", "--format=%ct", "--", str(rel_path)],
+            ["git", "log", "--no-renames", "--diff-filter=A", "--format=%ct", "--", str(rel_path)],
             cwd=REPO_ROOT,
             capture_output=True,
             text=True,
             check=True,
         ).stdout.strip().splitlines()
         if out:
-            return int(out[-1])
+            return max(int(x) for x in out)
     except Exception:
         pass
     # 추가 커밋을 못 찾으면(얕은 클론 등) 마지막 커밋 시각으로 대체
@@ -413,14 +414,11 @@ def main():
         desc = extract_description(html_text) or existing_by_url.get(url, {}).get("desc", "")
         image = extract_image(html_text, rel_path) or existing_by_url.get(url, {}).get("image", "")
 
-        # 정렬 기준 = "업로드된 시각". 한 번 기록한 업로드 시각(uploaded)은 그대로
-        # 보존해서 이후 파일이 수정돼도 순서가 바뀌지 않게 한다. 처음 보는
-        # 기사만 저장소에 처음 추가된 git 커밋 시각(없으면 지금)으로 정한다.
+        # 정렬 기준 = "업로드된 시각"(git에 파일이 추가된 커밋 시각). 매번 git
+        # 기록에서 다시 계산하므로 별도 보관이 필요 없다.
         # 발행 시각 메타태그는 같은 커밋에 올라온 기사끼리의 순서를 가르는
         # 보조 키로만 쓴다.
-        uploaded = parse_iso_epoch(existing_by_url.get(url, {}).get("uploaded"))
-        if uploaded is None:
-            uploaded = git_created_epoch(rel_path) or int(datetime.now(timezone.utc).timestamp())
+        uploaded = git_created_epoch(rel_path) or int(datetime.now(timezone.utc).timestamp())
         published = extract_published_time(html_text) or 0
 
         new_index.append({
