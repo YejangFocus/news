@@ -142,13 +142,12 @@
       return;
     }
 
-    var used = {};
-    function markUsed(item) { if (item) used[item.url] = true; }
-    function pickOne(tags) {
-      var found = tags && ARTICLE_INDEX.find(function (item) {
-        return !used[item.url] && tags.indexOf(item.tag) !== -1;
-      });
-      return found || ARTICLE_INDEX.find(function (item) { return !used[item.url]; }) || null;
+    // 좌측 컬럼은 카테고리 순서가 고정이다: 특집 → 교단 → (목록) 목회·사설·교회·인물·교계 → 신학.
+    // 각 칸에는 그 카테고리에서 가장 최근에 업로드된 기사가 들어간다.
+    // (ARTICLE_INDEX는 이미 최신 업로드순이므로 find가 곧 최신 기사다.)
+    // 해당 카테고리에 기사가 없으면 다른 카테고리로 채우지 않고 칸 이름만 보여준다.
+    function latestOf(tags) {
+      return ARTICLE_INDEX.find(function (item) { return tags.indexOf(item.tag) !== -1; }) || null;
     }
     function pickMany(tags, count) {
       return ARTICLE_INDEX.filter(function (item) {
@@ -156,8 +155,11 @@
       }).slice(0, count);
     }
 
-    function featureItemHtml(item, extraStyle) {
-      if (!item) return '';
+    function featureItemHtml(item, extraStyle, emptyLabel) {
+      if (!item) {
+        return emptyLabel ? '<div class="feature-item"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
+          '<div class="body"><span class="tag" style="color:' + tagColor(emptyLabel) + ';">' + esc(emptyLabel) + '</span></div></div>' : '';
+      }
       return '' +
         '<a class="feature-item" href="' + item.url + '"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
           thumbImgHtml(item, 'thumb') +
@@ -169,18 +171,16 @@
         '</a>';
     }
 
-    // 좌측 컬럼: 카테고리와 무관하게 가장 최근에 업로드된 기사 순서대로
-    // 헤드라인 → 두 번째 → 세 번째 카드를 채운다.
-    var hero = pickOne(); markUsed(hero);
-    var second = pickOne(); markUsed(second);
-    var third = pickOne(); markUsed(third);
+    var hero = latestOf(['특집']);
+    var second = latestOf(['교단', '교단소식']);
+    var third = latestOf(['신학']);
 
     var heroEl = document.getElementById('heroFeature');
     var secondEl = document.getElementById('secondFeature');
     var thirdEl = document.getElementById('thirdFeature');
-    if (heroEl) heroEl.innerHTML = featureItemHtml(hero);
-    if (secondEl) secondEl.innerHTML = featureItemHtml(second);
-    if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;');
+    if (heroEl) heroEl.innerHTML = featureItemHtml(hero, '', '특집');
+    if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '교단');
+    if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;', '신학');
 
     // 최신뉴스 티커: 항상 전체 최신 3건
     var tickerItems = ARTICLE_INDEX.slice(0, 3);
