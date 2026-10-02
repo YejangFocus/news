@@ -26,8 +26,12 @@ sync_article_index.py
        - 새 파일 → 새 항목 추가
        - 이미 있던 파일 → 제목/요약/썸네일/URL 최신화, tag는 하위 폴더 파일이면 폴더명으로 갱신
        - 저장소에서 사라진 파일 → 목록에서 제거
-  4. 결과를 최신순으로 정렬해 data/articles.json에 다시 쓴다. 정렬 기준은
-     기사 <head>에 명시된 발행 시각(<meta property="article:published_time">
+  4. 결과를 "최신에 업로드된 순"으로 정렬해 data/articles.json에 다시 쓴다.
+     각 기사의 업로드 시각(uploaded)은 처음 발견했을 때 한 번만 기록하고 이후
+     보존한다(저장소에 처음 추가된 git 커밋 시각). 홈페이지 헤드라인과 모든
+     페이지의 상단 카테고리 메뉴가 이 순서를 그대로 따른다. 아래 설명은
+     과거 방식(발행 시각 우선)으로, 지금은 같은 업로드 시각끼리의 보조 정렬에만
+     쓰인다. 기존 설명: 기사 <head>에 명시된 발행 시각(<meta property="article:published_time">
      또는 "og:published_time", ISO 8601 형식)을 최우선으로 쓰고, 그 태그가
      없는(예: 브라우저로 페이지를 통째 저장해 <head>가 통째로 빠진) 기사만
      그 파일이 저장소에 처음 추가된 git 커밋 시각으로 대체한다. 최종 수정
@@ -344,6 +348,17 @@ def git_created_epoch(rel_path: Path) -> int:
     return git_last_commit_epoch(rel_path)
 
 
+def parse_iso_epoch(raw) -> int | None:
+    """articles.json에 저장해 둔 ISO 8601(타임존 포함) 문자열을 epoch 초로."""
+    if not raw:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(raw).strip())
+    except ValueError:
+        return None
+    return int(dt.timestamp()) if dt.tzinfo else None
+
+
 def build_url(rel_path: Path) -> str:
     # 저장소 내 실제 파일명(한글 포함)을 그대로 사용 (기존 articles.json 규칙과 동일)
     return f"{SITE_BASE}/{rel_path.as_posix()}"
@@ -398,9 +413,15 @@ def main():
         desc = extract_description(html_text) or existing_by_url.get(url, {}).get("desc", "")
         image = extract_image(html_text, rel_path) or existing_by_url.get(url, {}).get("image", "")
 
-        sort_key = extract_published_time(html_text)
-        if sort_key is None:
-            sort_key = git_created_epoch(rel_path)
+        # 정렬 기준 = "업로드된 시각". 한 번 기록한 업로드 시각(uploaded)은 그대로
+        # 보존해서 이후 파일이 수정돼도 순서가 바뀌지 않게 한다. 처음 보는
+        # 기사만 저장소에 처음 추가된 git 커밋 시각(없으면 지금)으로 정한다.
+        # 발행 시각 메타태그는 같은 커밋에 올라온 기사끼리의 순서를 가르는
+        # 보조 키로만 쓴다.
+        uploaded = parse_iso_epoch(existing_by_url.get(url, {}).get("uploaded"))
+        if uploaded is None:
+            uploaded = git_created_epoch(rel_path) or int(datetime.now(timezone.utc).timestamp())
+        published = extract_published_time(html_text) or 0
 
         new_index.append({
             "tag": tag,
@@ -408,13 +429,12 @@ def main():
             "url": url,
             "desc": desc,
             "image": image,
-            # 홈페이지 스크립트가 배열 순서에만 의존하지 않고 실제 날짜로도
-            # 재정렬할 수 있도록, 정렬에 쓴 시각을 사람이 읽을 수 있는 날짜로 남겨둔다.
-            "date": datetime.fromtimestamp(sort_key, tz=timezone.utc).astimezone(KST).strftime("%Y-%m-%d"),
-            "_sort_key": sort_key,
+            "date": datetime.fromtimestamp(uploaded, tz=timezone.utc).astimezone(KST).strftime("%Y-%m-%d"),
+            "uploaded": datetime.fromtimestamp(uploaded, tz=timezone.utc).astimezone(KST).isoformat(),
+            "_sort_key": (uploaded, published),
         })
 
-    # 최신 글이 위로 오도록 정렬 (발행 시각 메타태그 우선, 없으면 git 커밋 시각)
+    # 최신에 업로드된 기사가 맨 위로 오도록 정렬
     new_index.sort(key=lambda x: x["_sort_key"], reverse=True)
     for item in new_index:
         del item["_sort_key"]

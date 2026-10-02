@@ -21,9 +21,11 @@
 
   // 카테고리 메뉴(상단 메뉴 클릭 시 뜨는 기사 목록)와 칼럼 섹션을 포함해
   // 홈페이지의 모든 목록이 항상 최신 날짜순으로 나오도록, 배열에 담긴 순서에만
-  // 기대지 않고 각 기사의 date(YYYY-MM-DD)로 명시적으로 재정렬한다.
+  // 기대지 않고 각 기사의 uploaded(업로드 시각, 없으면 date)로 명시적으로 재정렬한다.
   function sortByLatestDate(articles) {
     return articles.slice().sort(function (a, b) {
+      var ta = Date.parse(a.uploaded) || 0, tb = Date.parse(b.uploaded) || 0;
+      if (ta !== tb) return tb - ta;
       return (b.date || '').localeCompare(a.date || '');
     });
   }
@@ -167,10 +169,11 @@
         '</a>';
     }
 
-    // 좌측 컬럼: 헤드라인 2건(특집 → 교단소식 우선, 없으면 최신순) + 하단 신학 카드
-    var hero = pickOne(['특집']); markUsed(hero);
-    var second = pickOne(['교단소식', '교단']); markUsed(second);
-    var third = pickOne(['신학']); markUsed(third);
+    // 좌측 컬럼: 카테고리와 무관하게 가장 최근에 업로드된 기사 순서대로
+    // 헤드라인 → 두 번째 → 세 번째 카드를 채운다.
+    var hero = pickOne(); markUsed(hero);
+    var second = pickOne(); markUsed(second);
+    var third = pickOne(); markUsed(third);
 
     var heroEl = document.getElementById('heroFeature');
     var secondEl = document.getElementById('secondFeature');
