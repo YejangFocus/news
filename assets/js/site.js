@@ -30,60 +30,6 @@
     });
   }
 
-  // ───────── 조회수 ─────────
-  // 정적 사이트라 서버가 없으므로 외부 카운터 서비스(CounterAPI)를 쓴다.
-  // 기사 페이지를 열면 해당 페이지의 카운터를 +1(세션당 1회)하고, 상단 카테고리 메뉴의
-  // 기사 목록에는 각 제목 옆에 현재 조회수를 읽어와 표시한다.
-  // 서비스를 바꾸려면 VIEWS_API 한 곳만 고치면 된다. 호출이 실패하면 조회수만 조용히 숨긴다.
-  var VIEWS_API = 'https://api.counterapi.dev/v1/yejangfocus-news/';
-  var viewCache = {};
-
-  // github.io/news/칼럼/x.html 과 yejangfocus.com/칼럼/x.html 이 같은 카운터를 쓰도록
-  // 경로를 정규화하고, 한글 경로가 키로 쓰기 어려우므로 해시로 바꾼다.
-  function viewKey(pathname) {
-    var p;
-    try { p = decodeURIComponent(pathname); } catch (e) { p = pathname; }
-    p = p.normalize('NFC').replace(/^\/+/, '').replace(/^news\//, '').replace(/\.html$/, '');
-    var h1 = 0xdeadbeef, h2 = 0x41c6ce57;
-    for (var i = 0; i < p.length; i++) {
-      var ch = p.charCodeAt(i);
-      h1 = Math.imul(h1 ^ ch, 2654435761);
-      h2 = Math.imul(h2 ^ ch, 1597334677);
-    }
-    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-    return 'p' + (h1 >>> 0).toString(16) + (h2 >>> 0).toString(16);
-  }
-
-  function viewCall(key, up) {
-    return fetch(VIEWS_API + key + (up ? '/up' : ''))
-      .then(function (res) { return res.ok ? res.json() : { count: 0 }; })
-      .then(function (d) { return typeof d.count === 'number' ? d.count : 0; });
-  }
-
-  function getViews(url) {
-    var key;
-    try { key = viewKey(new URL(url, location.href).pathname); } catch (e) { return Promise.reject(e); }
-    if (!viewCache[key]) viewCache[key] = viewCall(key, false);
-    return viewCache[key];
-  }
-
-  function countThisView() {
-    if (document.getElementById('tickerBox')) return;            // 홈페이지는 집계하지 않음
-    if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) return;
-    var key = viewKey(location.pathname), mark = 'yfv:' + key;
-    try { if (sessionStorage.getItem(mark)) return; sessionStorage.setItem(mark, '1'); } catch (e) {}
-    viewCache[key] = viewCall(key, true).catch(function () { return 0; });
-  }
-
-  (function injectViewStyle() {
-    var st = document.createElement('style');
-    st.textContent = '.aa-views{margin-left:8px;font-size:12px;font-weight:400;color:var(--ink-soft);white-space:nowrap;}' +
-      '.aa-views::before{content:"조회 ";}';
-    document.head.appendChild(st);
-  })();
-  countThisView();
-
   fetch(root + 'data/articles.json')
     .then(function (res) { return res.json(); })
     .then(function (articles) {
@@ -127,14 +73,6 @@
         a.href = item.url;
         a.innerHTML = '<span class="aa-tag" style="color:' + tagColor(item.tag) + ';">[' + esc(item.tag) + ']</span> ' + esc(item.title);
         li.appendChild(a);
-        var views = document.createElement('span');
-        views.className = 'aa-views';
-        views.hidden = true;
-        li.appendChild(views);
-        getViews(item.url).then(function (n) {
-          views.textContent = n.toLocaleString('ko-KR');
-          views.hidden = false;
-        }).catch(function () {});
         list.appendChild(li);
       });
     }
