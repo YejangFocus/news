@@ -10,7 +10,7 @@
     '속보': 'var(--red)', '사설': 'var(--red)',
     '신학': 'var(--pine)', '오피니언': 'var(--pine)', '특집': 'var(--pine)', '칼럼': 'var(--pine)',
     '교단': 'var(--navy)', '교단소식': 'var(--navy)', '교계': 'var(--navy)', '정치': 'var(--navy)',
-    '목회': 'var(--navy)', '교회': 'var(--navy)', '인물': 'var(--navy)'
+    '목회': 'var(--navy)', '노회': 'var(--navy)', '인물': 'var(--navy)'
   };
 
   function tagColor(tag) { return TAG_COLOR[tag] || 'var(--ink)'; }
@@ -142,7 +142,7 @@
       return;
     }
 
-    // 좌측 컬럼은 카테고리 순서가 고정이다: 특집 → 교단 → (목록) 목회·사설·교회·인물·교계 → 신학.
+    // 좌측 컬럼은 카테고리 순서가 고정이다: 특집 → 교단 → (목록) 목회·사설·노회·인물·교계 → 신학.
     // 각 칸에는 그 카테고리에서 가장 최근에 업로드된 기사가 들어간다.
     // (ARTICLE_INDEX는 이미 최신 업로드순이므로 find가 곧 최신 기사다.)
     // 해당 카테고리에 기사가 없으면 다른 카테고리로 채우지 않고 칸 이름만 보여준다.
@@ -190,7 +190,7 @@
 
     // 좌측 하단 텍스트 목록: 정해진 카테고리 순서대로 각 카테고리 최신 기사 1건씩.
     // 해당 카테고리에 기사가 없으면 카테고리명만 넣고 비워둔다.
-    var PLAIN_LIST_CATS = ['목회', '사설', '교회', '인물', '교계'];
+    var PLAIN_LIST_CATS = ['목회', '사설', '노회', '인물', '교계'];
     var plainList = document.getElementById('plainList');
     if (plainList) {
       plainList.innerHTML = PLAIN_LIST_CATS.map(function (cat) {
