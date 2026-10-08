@@ -45,6 +45,7 @@
 
   initThemeToggle();
   initPlaceholderButtons();
+  initSupportModal();
 
   function initCategoryOverlay(ARTICLE_INDEX) {
     var buttons = document.querySelectorAll('#catNav button');
@@ -350,7 +351,7 @@
   function initPlaceholderButtons() {
     // 로그인/회원가입/후원하기는 아직 실제 기능이 연결되지 않은 버튼.
     // 아무 반응 없이 무시되지 않도록 준비 중임을 알리는 토스트를 띄운다.
-    var buttons = document.querySelectorAll('.topbar button, .support-btn');
+    var buttons = document.querySelectorAll('.topbar button');
     if (!buttons.length) return;
 
     var toastStyle = document.createElement('style');
@@ -378,6 +379,109 @@
       b.addEventListener('click', function () {
         showToast((b.textContent || '이 기능은').trim() + ' 기능은 준비 중입니다.');
       });
+    });
+  }
+
+  // 후원문의 팝업: 후원계좌 안내 + 계좌번호 복사
+  function initSupportModal() {
+    var triggers = document.querySelectorAll('.support-btn');
+    if (!triggers.length) return;
+
+    var ACCOUNT_BANK = '농협';
+    var ACCOUNT_NO = '352-2415-1903-53';
+    var ACCOUNT_HOLDER = '윤기로';
+
+    var css = document.createElement('style');
+    css.textContent =
+      '.sp-overlay{position:fixed;inset:0;z-index:1000;background:rgba(15,29,58,.55);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease;}' +
+      '.sp-overlay.open{opacity:1;visibility:visible;}' +
+      '.sp-modal{position:relative;width:100%;max-width:400px;max-height:calc(100vh - 32px);overflow-y:auto;background:var(--paper);color:var(--ink);border:2px solid var(--doodle);border-radius:10px;box-shadow:6px 6px 0 var(--doodle);padding:28px 24px 22px;transform:translateY(12px);transition:transform .2s ease;}' +
+      '.sp-overlay.open .sp-modal{transform:translateY(0);}' +
+      '.sp-close{position:absolute;top:8px;right:10px;background:none;border:none;font-size:20px;line-height:1;color:var(--ink-soft);cursor:pointer;padding:8px;}' +
+      '.sp-close:hover{color:var(--ink);}' +
+      '.sp-title{font-family:"Noto Serif KR",serif;font-size:20px;font-weight:700;margin:0 0 8px;color:var(--ink);}' +
+      '.sp-desc{font-size:14px;line-height:1.6;color:var(--ink-soft);margin:0 0 18px;word-break:keep-all;}' +
+      '.sp-box{background:var(--paper-alt);border:1px solid var(--hair-strong);border-radius:8px;padding:14px 16px;margin-bottom:14px;}' +
+      '.sp-label{font-size:12px;color:var(--ink-faint);margin-bottom:4px;}' +
+      '.sp-bank{font-size:14px;color:var(--ink);margin-bottom:6px;}' +
+      '.sp-no{font-size:22px;font-weight:700;letter-spacing:.02em;color:var(--navy);word-break:break-all;}' +
+      '.sp-copy{display:block;width:100%;padding:13px;font-size:15px;font-weight:700;font-family:inherit;color:#fff;background:var(--navy);border:none;border-radius:8px;cursor:pointer;}' +
+      '.sp-copy:hover{filter:brightness(1.1);}' +
+      '.sp-copy.done{background:var(--pine);}' +
+      '.sp-note{font-size:12px;line-height:1.5;color:var(--ink-faint);text-align:center;margin:12px 0 0;}' +
+      '@media (max-width:480px){.sp-modal{padding:26px 18px 18px;}.sp-no{font-size:20px;}}';
+    document.head.appendChild(css);
+
+    var overlay = document.createElement('div');
+    overlay.className = 'sp-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'spTitle');
+    overlay.innerHTML =
+      '<div class="sp-modal">' +
+        '<button type="button" class="sp-close" aria-label="닫기">✕</button>' +
+        '<h2 class="sp-title" id="spTitle">✊ 문서선교 후원</h2>' +
+        '<p class="sp-desc">예장포커스는 독자 여러분의 기도와 후원으로 문서선교를 이어갑니다. 아래 계좌로 후원해 주시면 큰 힘이 됩니다.</p>' +
+        '<div class="sp-box">' +
+          '<div class="sp-label">문서선교 후원계좌</div>' +
+          '<div class="sp-bank">' + ACCOUNT_BANK + ' · 예금주 ' + ACCOUNT_HOLDER + '</div>' +
+          '<div class="sp-no">' + ACCOUNT_NO + '</div>' +
+        '</div>' +
+        '<button type="button" class="sp-copy">계좌번호 복사</button>' +
+        '<p class="sp-note">복사 후 사용하시는 은행 앱에서 붙여넣어 주세요.</p>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    var copyBtn = overlay.querySelector('.sp-copy');
+    var lastFocus = null;
+    var resetTimer = null;
+
+    function open() {
+      lastFocus = document.activeElement;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      overlay.querySelector('.sp-close').focus();
+    }
+    function close() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    function markCopied(ok) {
+      copyBtn.textContent = ok ? '✓ 복사되었습니다' : '길게 눌러 직접 복사해 주세요';
+      copyBtn.classList.toggle('done', ok);
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        copyBtn.textContent = '계좌번호 복사';
+        copyBtn.classList.remove('done');
+      }, 2000);
+    }
+    function fallbackCopy() {
+      var ta = document.createElement('textarea');
+      ta.value = ACCOUNT_NO;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { /* 무시 */ }
+      document.body.removeChild(ta);
+      markCopied(ok);
+    }
+
+    copyBtn.addEventListener('click', function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ACCOUNT_NO).then(function () { markCopied(true); }, fallbackCopy);
+      } else {
+        fallbackCopy();
+      }
+    });
+    triggers.forEach(function (t) { t.addEventListener('click', open); });
+    overlay.querySelector('.sp-close').addEventListener('click', close);
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) close();
     });
   }
 })();
