@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>무(無)란 무엇인가 · 우주의 공허를 탐험하다</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#fff8ec; --paper:#ffffff; --ink:#2b2a4a; --ink2:#4b4970;
+  --navy:#1f2a5c; --gold:#f2b632; --gold2:#ffd977; --coral:#f37d6b;
+  --mint:#5cc2a8; --sky:#5aa6e8; --lav:#9c8de0; --rose:#ef8fb1;
+  --line:#efe2c8; --shadow:0 10px 30px rgba(60,45,10,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:20px}
+body{
+  font-family:'Noto Sans KR',sans-serif; font-size:20px; line-height:1.75; color:var(--ink);
+  background:var(--cream);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(242,182,50,.18) 0 2px, transparent 3px),
+    radial-gradient(circle at 78% 12%, rgba(90,166,232,.18) 0 2px, transparent 3px),
+    radial-gradient(circle at 88% 72%, rgba(243,125,107,.16) 0 2px, transparent 3px),
+    radial-gradient(circle at 22% 82%, rgba(156,141,224,.18) 0 2px, transparent 3px),
+    radial-gradient(ellipse at 50% -10%, #ffeec9 0%, transparent 60%);
+  background-size:260px 260px,320px 320px,280px 280px,300px 300px,100% 100%;
+  min-height:100vh;
+}
+/* ---------- 메인 ---------- */
+.stage{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 16px 40px;gap:30px}
+.hero{text-align:center;max-width:980px}
+.badge{display:inline-block;font-family:'Jua';font-size:22px;color:#fff;background:linear-gradient(90deg,var(--coral),var(--gold));padding:6px 22px;border-radius:999px;box-shadow:var(--shadow);letter-spacing:.5px}
+.title{font-family:'Jua';color:var(--navy);font-size:clamp(46px,9vw,84px);line-height:1.15;margin:18px 0 6px}
+.title .hl{background:linear-gradient(transparent 62%,var(--gold2) 62%);padding:0 6px}
+.subtitle{font-size:clamp(22px,3.2vw,30px);font-weight:700;color:var(--ink2)}
+.eng{font-size:20px;color:#8a7f66;margin-top:4px;letter-spacing:.3px}
+.hero-verse{margin:20px auto 0;max-width:820px;font-family:'Gowun Batang';font-size:22px;background:var(--paper);border:2px dashed var(--gold);border-radius:22px;padding:14px 22px;box-shadow:var(--shadow)}
+.hero-verse b{color:var(--coral);font-family:'Noto Sans KR';font-size:20px;display:block;margin-top:4px}
+
+.menu-wrap{width:100%;max-width:1100px}
+.menu-hint{text-align:center;font-family:'Jua';font-size:24px;color:var(--navy);margin-bottom:14px}
+.menu-hint span{display:inline-block;animation:bob 1.6s ease-in-out infinite}
+.menu{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.mbtn{
+  position:relative;border:none;cursor:pointer;background:var(--paper);border-radius:26px;padding:22px 14px 20px;
+  box-shadow:var(--shadow);text-align:center;font-family:'Noto Sans KR';color:var(--ink);
+  border-bottom:7px solid var(--c);transition:transform .2s, box-shadow .2s;
+}
+.mbtn:hover,.mbtn:focus-visible{transform:translateY(-6px) rotate(-.6deg);box-shadow:0 18px 36px rgba(60,45,10,.2);outline:none}
+.mbtn .no{position:absolute;top:10px;left:14px;font-family:'Jua';font-size:20px;color:var(--c)}
+.mbtn .ic{width:78px;height:78px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;font-size:40px;background:color-mix(in srgb,var(--c) 18%,#fff);border:3px solid var(--c)}
+.mbtn .mt{font-family:'Jua';font-size:24px;line-height:1.3;color:var(--navy);display:block}
+.mbtn .ms{font-size:20px;color:#7c7462;display:block;margin-top:4px;line-height:1.4}
+.foot{font-size:20px;color:#8a7f66;text-align:center}
+
+/* ---------- 모달 ---------- */
+.overlay{position:fixed;inset:0;background:rgba(25,25,55,.55);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;z-index:50;overflow-y:auto;padding:24px 12px}
+.overlay.open{display:flex;animation:fade .25s}
+.modal{background:var(--paper);width:100%;max-width:940px;border-radius:30px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.35);animation:pop .3s}
+.mhead{position:relative}
+.mhead svg{display:block;width:100%;height:auto}
+.closeX{position:absolute;top:12px;right:12px;width:56px;height:56px;border-radius:50%;border:none;background:#fff;font-size:28px;cursor:pointer;box-shadow:var(--shadow);color:var(--navy);font-weight:900}
+.mbody{padding:26px 30px 30px}
+.mtag{display:inline-block;font-family:'Jua';font-size:20px;color:#fff;background:var(--c);padding:4px 16px;border-radius:999px}
+.mtitle{font-family:'Jua';font-size:clamp(32px,5vw,44px);color:var(--navy);line-height:1.25;margin:10px 0 4px}
+.mlead{font-size:22px;font-weight:500;color:var(--ink2);margin-bottom:18px}
+.verse{background:linear-gradient(135deg,#fff6dc,#ffeef0);border-left:8px solid var(--gold);border-radius:18px;padding:16px 20px;margin:18px 0;font-family:'Gowun Batang';font-size:22px;line-height:1.7}
+.verse .ref{display:block;font-family:'Jua';font-size:20px;color:var(--coral);margin-top:6px}
+h3{font-family:'Jua';font-size:28px;color:var(--navy);margin:24px 0 10px;display:flex;align-items:center;gap:10px}
+h3::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--c);box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 25%,#fff)}
+p{margin:8px 0}
+ul.dots{list-style:none;margin:6px 0}
+ul.dots li{position:relative;padding-left:34px;margin:10px 0}
+ul.dots li::before{content:"★";position:absolute;left:4px;top:0;color:var(--gold)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:12px 0}
+.card{background:#fffcf4;border:2px solid var(--line);border-radius:20px;padding:16px 18px}
+.card b.k{display:block;font-family:'Jua';font-size:24px;color:var(--c);margin-bottom:4px}
+.num{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}
+.num div{flex:1 1 180px;background:var(--navy);color:#fff;border-radius:20px;padding:14px 16px;text-align:center}
+.num strong{display:block;font-family:'Jua';font-size:34px;color:var(--gold2);line-height:1.2}
+.num span{font-size:20px}
+.callout{background:color-mix(in srgb,var(--c) 12%,#fff);border:2px solid var(--c);border-radius:20px;padding:16px 20px;margin:16px 0;font-weight:500}
+.callout b{color:var(--navy)}
+.note{font-size:20px;color:#8a7f66}
+.tl{border-left:5px solid var(--gold);margin:12px 0 0 10px;padding-left:22px}
+.tl div{position:relative;margin:0 0 16px}
+.tl div::before{content:"";position:absolute;left:-34px;top:8px;width:20px;height:20px;border-radius:50%;background:#fff;border:5px solid var(--coral)}
+.tl b{font-family:'Jua';font-size:24px;color:var(--coral);margin-right:8px}
+.mnav{display:flex;justify-content:space-between;gap:12px;margin-top:26px;flex-wrap:wrap}
+.mnav button{flex:1 1 200px;border:none;cursor:pointer;font-family:'Jua';font-size:22px;padding:14px 18px;border-radius:18px;background:var(--cream);color:var(--navy);border:2px solid var(--line)}
+.mnav button.home{background:var(--navy);color:#fff;border-color:var(--navy)}
+.mnav button:hover{filter:brightness(.96)}
+.panel{display:none}.panel.on{display:block}
+
+/* SVG 반짝임 */
+.tw{animation:tw 2.4s ease-in-out infinite}
+.tw.d2{animation-delay:.8s}.tw.d3{animation-delay:1.6s}
+.glow{animation:gl 3s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+@keyframes tw{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes gl{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{transform:translateY(24px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+
+@media (max-width:900px){.menu{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){
+  .stage{padding:26px 12px 30px;gap:22px}
+  .menu{gap:12px}
+  .mbtn{padding:18px 8px 16px;border-radius:22px}
+  .mbtn .ic{width:64px;height:64px;font-size:32px}
+  .mbtn .mt{font-size:22px}
+  .mbody{padding:20px 18px 24px}
+  .hero-verse{font-size:20px}
+  .verse{font-size:20px;padding:14px 16px}
+  h3{font-size:24px}
+  .mlead{font-size:20px}
+  .num strong{font-size:28px}
+  .closeX{width:50px;height:50px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<main class="stage">
+  <header class="hero">
+    <span class="badge">✦ 우주 다큐멘터리 특별 안내 ✦</span>
+    <h1 class="title"><span class="hl">무(無)</span>란 무엇인가?</h1>
+    <p class="subtitle">우주의 공허를 탐험하다 — 모래알 위에서 온 우주를 헤아린 이야기</p>
+    <p class="eng">What Is Nothing? Exploring the Void of Space · FULL DOCUMENTARY</p>
+    <div class="hero-verse">“하늘이 하나님의 영광을 선포하고 궁창이 그의 손으로 하신 일을 나타내는도다”<b>시편 19:1</b></div>
+  </header>
+
+  <section class="menu-wrap" aria-label="메뉴">
+    <p class="menu-hint"><span>👇</span> 궁금한 별을 눌러 보세요 <span>👇</span></p>
+    <div class="menu">
+      <button class="mbtn" style="--c:var(--gold)" data-open="1"><span class="no">01</span><span class="ic">🏖️</span><span class="mt">모든 것의 규모</span><span class="ms">모래알과 별</span></button>
+      <button class="mbtn" style="--c:var(--coral)" data-open="2"><span class="no">02</span><span class="ic">🌟</span><span class="mt">1572년의 새 별</span><span class="ms">디그스의 무한 우주</span></button>
+      <button class="mbtn" style="--c:var(--mint)" data-open="3"><span class="no">03</span><span class="ic">🔭</span><span class="mt">허셜의 은하 지도</span><span class="ms">별의 거리를 재다</span></button>
+      <button class="mbtn" style="--c:var(--sky)" data-open="4"><span class="no">04</span><span class="ic">🌌</span><span class="mt">레빗과 허블</span><span class="ms">섬 우주의 발견</span></button>
+      <button class="mbtn" style="--c:var(--lav)" data-open="5"><span class="no">05</span><span class="ic">🌀</span><span class="mt">휘어진 공간</span><span class="ms">유클리드에서 아인슈타인까지</span></button>
+      <button class="mbtn" style="--c:var(--rose)" data-open="6"><span class="no">06</span><span class="ic">💥</span><span class="mt">팽창과 대폭발</span><span class="ms">밤이 어두운 이유</span></button>
+      <button class="mbtn" style="--c:var(--navy)" data-open="7"><span class="no">07</span><span class="ic">🕸️</span><span class="mt">우주 웹과 미래</span><span class="ms">가속 팽창의 비밀</span></button>
+      <button class="mbtn" style="--c:#c9952a" data-open="8"><span class="no">08</span><span class="ic">📖</span><span class="mt">말씀으로 본 우주</span><span class="ms">연표 · 묵상</span></button>
+    </div>
+  </section>
+  <p class="foot">✦ 하늘을 올려다본 인류의 500년 여정 ✦</p>
+</main>
+
+<!-- ================= 모달 ================= -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+ <div class="modal" id="modal">
+
+  <!-- 1 -->
+  <article class="panel" data-p="1" style="--c:var(--gold)">
+   <div class="mhead">
+    <svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" aria-label="아브라함이 밤하늘의 별을 세는 동화풍 삽화">
+     <defs><linearGradient id="s1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b2257"/><stop offset="1" stop-color="#4b3f8f"/></linearGradient></defs>
+     <rect width="400" height="210" fill="url(#s1)"/>
+     <g fill="#fff6c9"><circle class="tw" cx="40" cy="30" r="2.4"/><circle class="tw d2" cx="90" cy="60" r="1.8"/><circle class="tw d3" cx="140" cy="22" r="2.2"/><circle class="tw" cx="200" cy="48" r="1.6"/><circle class="tw d2" cx="250" cy="18" r="2.6"/><circle class="tw d3" cx="300" cy="55" r="2"/><circle class="tw" cx="350" cy="28" r="2.4"/><circle class="tw d2" cx="375" cy="80" r="1.6"/><circle class="tw d3" cx="175" cy="85" r="1.6"/><circle class="tw" cx="60" cy="95" r="1.6"/><circle class="tw d2" cx="320" cy="100" r="1.8"/><circle class="tw d3" cx="225" cy="100" r="1.4"/></g>
+     <path class="glow" d="M270 70 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4z" fill="#ffd977"/>
+     <path d="M0 175 Q100 140 200 165 T400 155 V210 H0Z" fill="#e9c27a"/><path d="M0 190 Q120 170 230 188 T400 182 V210 H0Z" fill="#d9a85c"/>
+     <path d="M40 172 L75 128 L110 172Z" fill="#f3e6c9"/><path d="M75 128 L75 172" stroke="#b98f52" stroke-width="2"/><path d="M68 172 L75 150 L82 172Z" fill="#7a5a33"/>
+     <g transform="translate(220,128)">
+      <path d="M-24 52 Q-20 6 0 4 Q20 6 24 52Z" fill="#c7643f"/><path d="M-8 6 L0 52 L8 6Z" fill="#f2b632"/>
+      <circle cx="0" cy="-10" r="16" fill="#f5c9a3"/><path d="M-18 -10 Q0 -36 18 -10 L18 2 Q0 -18 -18 2Z" fill="#fff"/>
+      <circle cx="-5" cy="-13" r="1.9" fill="#3d2b20"/><circle cx="5" cy="-13" r="1.9" fill="#3d2b20"/><circle cx="-9" cy="-5" r="3" fill="#f39a9a" opacity=".6"/><circle cx="9" cy="-5" r="3" fill="#f39a9a" opacity=".6"/>
+      <path d="M-12 -4 Q0 26 12 -4 Q0 4 -12 -4Z" fill="#fff"/>
+      <path d="M18 14 Q34 -6 44 -30" stroke="#f5c9a3" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <path d="M-22 14 L-30 52" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/>
+     </g>
+     <text x="200" y="202" text-anchor="middle" font-family="Jua" font-size="15" fill="#5b3b16">“하늘을 우러러 뭇별을 셀 수 있나 보라”</text>
+    </svg>
+    <button class="closeX" aria-label="닫기">✕</button>
+   </div>
+   <div class="mbody">
+    <span class="mtag">01 · 모든 것의 규모</span>
+    <h2 class="mtitle">태양이 모래알 한 알이라면</h2>
+    <p class="mlead">우리는 모래알 곁을 도는 먼지 한 톨 위에서, 온 해변의 크기와 모양을 알아냈습니다.</p>
+    <div class="num">
+      <div><strong>약 2,000억 개</strong><span>우리 은하 안의 별<br>(원문 ‘200억’은 2,000억으로 추정)</span></div>
+      <div><strong>1,000억 개</strong><span>우주 전역에 흩어진 은하</span></div>
+      <div><strong>모래알보다 많다</strong><span>세상 모든 해변의 모래알 수를<br>넘는 별의 수</span></div>
+    </div>
+    <h3>상상해 보십시오</h3>
+    <ul class="dots">
+     <li>우리의 태양을 <b>모래알 한 알</b>이라고 해 봅시다. 태양은 별들의 광활한 해변에 놓인 한 톨의 먼지일 뿐입니다.</li>
+     <li>그런데 우리 은하조차 우주에 흩어진 1,000억 개 은하 가운데 하나에 불과합니다.</li>
+     <li>우주의 크기는 경외감을 줍니다. 그러나 과학자인 해설자가 더 놀라워하는 점은, <b>인류가 우주의 모습을 이토록 많이 추론해 냈다는 사실</b>입니다.</li>
+     <li>모래알 하나를 도는 먼지 위에서 모든 해변의 크기와 형태를 알아낸 것 — 해설자는 이것을 <b>인류의 가장 위대한 업적 중 하나</b>로 꼽습니다.</li>
+    </ul>
+    <div class="callout">이 영화는 고립되고 평범한 자리에서 하늘을 올려다보며 <b>존재하는 모든 것의 형태 · 크기 · 기원</b>을 추론해 간 이야기, 곧 <b>“모든 것의 이야기”</b>입니다.</div>
+    <h3>그다음에는 무엇이 있는가?</h3>
+    <p>밤하늘 아래 앉으면 머리 위에 대기권이, 그 너머에 달이, 저 멀리에 별들이 있습니다. 그렇다면 그다음은? <b>존재하는 모든 것의 총체</b>란 무엇일까요? 누구나 한 번쯤 품어 본 질문입니다.</p>
+    <p>해설자는 어린 시절 <b>바그다드</b>에서 여름을 보낼 때 침대를 지붕 위로 들고 올라가, 밤새 하늘을 보며 “우주는 영원히 이어질까, 끝이 있을까?” 궁금해했다고 회상합니다. 오늘날 우리는 이 질문이 얼마나 복잡한지 이제 막 깨닫기 시작했습니다.</p>
+    <div class="verse">“그를 이끌고 밖으로 나가 이르시되 하늘을 우러러 뭇별을 셀 수 있나 보라 또 그에게 이르시되 네 자손이 이와 같으리라”<span class="ref">창세기 15:5</span></div>
+    <div class="verse">“하늘의 만상은 셀 수 없으며 바다의 모래는 측량할 수 없나니…”<span class="ref">예레미야 33:22</span></div>
+    <div class="mnav"><button data-go="-1">◀ 이전</button><button class="home">메뉴로</button><button data-go="1">다음 ▶</button></div>
+   </div>
+  </article>
+
+  <!-- 2 -->
+  <article class="panel" data-p="2" style="--c:var(--coral)">
+   <div class="mhead">
+    <svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" aria-label="동방박사들이 빛나는 별을 따라가는 동화풍 삽화">
+     <defs><linearGradient id="s2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14204f"/><stop offset="1" stop-color="#6a4a8c"/></linearGradient><radialGradient id="st2"><stop offset="0" stop-color="#fffbe0"/><stop offset=".4" stop-color="#ffd977" stop-opacity=".7"/><stop offset="1" stop-color="#ffd977" stop-opacity="0"/></radialGradient></defs>
+     <rect width="400" height="210" fill="url(#s2)"/>
+     <circle class="glow" cx="300" cy="50" r="46" fill="url(#st2)"/>
+     <path class="glow" d="M300 18 L307 43 L332 50 L307 57 L300 82 L293 57 L268 50 L293 43Z" fill="#fffbe0"/>
+     <path d="M300 80 L250 200 L350 200Z" fill="#ffd977" opacity=".12"/>
+     <g fill="#fff"><circle class="tw" cx="40" cy="30" r="2"/><circle class="tw d2" cx="110" cy="50" r="1.6"/><circle class="tw d3" cx="170" cy="25" r="2"/><circle class="tw" cx="220" cy="70" r="1.4"/><circle class="tw d2" cx="375" cy="110" r="1.8"/><circle class="tw d3" cx="60" cy="90" r="1.5"/></g>
+     <path d="M0 178 Q120 150 230 172 T400 166 V210 H0Z" fill="#e3b46e"/>
+     <g transform="translate(320,150)" fill="#f3e2b9"><rect x="-20" y="0" width="40" height="28"/><path d="M-24 0 L0 -18 L24 0Z" fill="#c9955a"/><rect x="-5" y="12" width="10" height="16" fill="#7a5a33"/></g>
+     <g transform="translate(70,130)"><path d="M-18 46 Q-15 6 0 4 Q15 6 18 46Z" fill="#7b5cc4"/><circle cx="0" cy="-8" r="13" fill="#e8b48c"/><path d="M-10 -18 L-6 -30 L0 -20 L6 -30 L10 -18Z" fill="#f2b632"/><circle cx="-4" cy="-11" r="1.6" fill="#3d2b20"/><circle cx="4" cy="-11" r="1.6" fill="#3d2b20"/><path d="M-9 -4 Q0 14 9 -4Z" fill="#5a3b28"/><rect x="10" y="16" width="14" height="12" rx="2" fill="#f2b632"/></g>
+     <g transform="translate(130,126)"><path d="M-18 50 Q-15 6 0 4 Q15 6 18 50Z" fill="#e0614a"/><circle cx="0" cy="-8" r="13" fill="#f5c9a3"/><path d="M-12 -16 Q0 -30 12 -16 L10 -12 L-10 -12Z" fill="#5cc2a8"/><circle cx="-4" cy="-10" r="1.6" fill="#3d2b20"/><circle cx="4" cy="-10" r="1.6" fill="#3d2b20"/><circle cx="-8" cy="-3" r="2.6" fill="#f39a9a" opacity=".6"/><path d="M12 14 L26 -2" stroke="#f5c9a3" stroke-width="6" stroke-linecap="round"/></g>
+     <g transform="translate(190,132)"><path d="M-18 44 Q-15 6 0 4 Q15 6 18 44Z" fill="#3f8fd2"/><circle cx="0" cy="-8" r="13" fill="#b98463"/><path d="M-10 -18 L-5 -28 L0 -20 L5 -28 L10 -18Z" fill="#f2b632"/><circle cx="-4" cy="-10" r="1.6" fill="#2d1f17"/><circle cx="4" cy="-10" r="1.6" fill="#2d1f17"/><ellipse cx="-16" cy="22" rx="7" ry="9" fill="#fff3c4"/></g>
+     <text x="200" y="202" text-anchor="middle" font-family="Jua" font-size="15" fill="#5b3b16">“동방에서 그의 별을 보고 경배하러 왔노라”</text>
+    </svg>
+    <button class="closeX" aria-label="닫기">✕</button>
+   </div>
+   <div class="mbody">
+    <span class="mtag">02 · 1572년의 새 별</span>
+    <h2 class="mtitle">디그스, 별을 껍질 밖으로 꺼내다</h2>
+    <p class="mlead">한 번의 별 폭발이 ‘별의 껍질’ 우주관을 깨뜨리고, 끝없는 우주를 상상하게 했습니다.</p>
+    <h3>500년 전의 우주</h3>
+    <p>당시 지배적 믿음은 <b>지구가 고정된 자리에 있고, 회전하는 별들의 거대하고 얇은 껍질이 지구를 둘러싸고 있다</b>는 것이었습니다. 별이 빛나는 하늘을 보면 그렇게 믿을 만도 했습니다.</p>
+    <h3>그 현상 — Ia형 초신성</h3>
+    <div class="num"><div><strong>50억 배</strong><span>태양보다 밝게 빛나는 폭발하는 별</span></div><div><strong>1572년</strong><span>지구에서 보인 초신성 ‘그 현상’</span></div></div>
+    <ul class="dots">
+     <li>밤하늘의 이 새 빛은 <b>금성보다 밝았고 낮에도 보였습니다.</b> 목격한 이들에게 충격적이고 신비로운 광경이었기에 많은 이가 종교적 설명을 찾았습니다.</li>
+     <li>일부 지식인들은 이것이 <b>1,570년 전 현자들이 보았던 베들레헴의 별이 돌아온 것</b>이라고 해석했습니다. 하나님의 성육신만큼 우주적으로 중대한 무엇인가를 선포하는 별일지 모른다는 것이었습니다.</li>
+    </ul>
+    <h3>토마스 디그스의 통찰</h3>
+    <div class="cards">
+     <div class="card"><b class="k">토마스 디그스</b>옥스퍼드셔의 조용한 소도시 월링포드(원문 ‘링포드’)의 하원 의원. 새 별을 연구하기 시작하자마자 별은 희미해지기 시작했습니다.</div>
+     <div class="card"><b class="k">존 디</b>디그스의 친구 · 스승 · 동료 천문학자. 이것이 지구에 다가오며 밝아졌다가 멀어지며 희미해진 <b>‘움직이는 별’</b>일 수 있다고 추론했습니다(당시엔 불가능하다고 여긴 생각).</div>
+    </div>
+    <p>이 이론은 틀렸지만, 디그스로 하여금 별들의 참된 본성을 다시 생각하게 했습니다. 별들이 모두 얇은 껍질에 붙어 있다는 생각은 점점 그럴 법하지 않아 보였고, 그 껍질은 <b>환상일지 모른다</b>는 의심이 생겼습니다.</p>
+    <div class="cards">
+     <div class="card"><b class="k">코페르니쿠스의 모델</b>혁명적으로 태양을 중심에 두고 지구와 행성들이 그 주위를 돌게 했습니다. 가장 바깥은 여전히 <b>고정된 별들의 껍질</b>(stellarum fixarum).</div>
+     <div class="card"><b class="k">디그스의 도표 (4년 뒤)</b>코페르니쿠스 저작의 영어 번역본에 덧붙인 간단한 도표. 똑같은 그림이지만 <b>별들을 껍질에서 꺼내 끝없는 우주 속으로 흩어 놓았습니다.</b> “무한히 위로 고정된 별들의 구체.”</div>
+    </div>
+    <div class="callout">아마도 이때가 <b>유럽인들이 세계를 경계 없고, 무한하며, 끝없는 곳으로 생각하기 시작한 순간</b>입니다. 작은 별의 껍질 안에 갇혀 있던 우리는 이제 무한하고 정적인 우주 안에 매달리게 되었습니다.</div>
+    <h3>새로운 역설: 그런데 왜 밤은 어두운가?</h3>
+    <p>정적이고 무한한 우주라면 별도 무한히 많을 것이고, 우리에게서 뻗어 나가는 <b>모든 시선이 결국 어떤 별과 만나야</b> 합니다. 그렇다면 밤하늘은 어두울 수 없고 태양만큼 밝아야 합니다. 그러나 우리의 밤하늘은 어둡습니다.</p>
+    <p>디그스가 처음 제기한 이 질문은 훗날 <b>‘올베르스의 역설’</b>로 불리게 되었고, 단순해 보이는 이 질문에 진정 만족스러운 답을 얻기까지 <b>20세기</b>까지 기다려야 했습니다. <span class="note">(해답은 06번 메뉴에서!)</span></p>
+    <div class="verse">“유대인의 왕으로 나신 이가 어디 계시냐 우리가 동방에서 그의 별을 보고 그에게 경배하러 왔노라”<span class="ref">마태복음 2:2</span></div>
+    <div class="mnav"><button data-go="-1">◀ 이전</button><button class="home">메뉴로</button><button data-go="1">다음 ▶</button></div>
+   </div>
+  </article>
+
+  <!-- 3 -->
+  <article class="panel" data-p="3" style="--c:var(--mint)">
+   <div class="mhead">
+    <svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" aria-label="소년 다윗이 수금을 들고 달과 별을 바라보는 동화풍 삽화">
+     <defs><linearGradient id="s3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#172a5e"/><stop offset="1" stop-color="#3e6f9e"/></linearGradient></defs>
+     <rect width="400" height="210" fill="url(#s3)"/>
+     <circle cx="320" cy="50" r="28" fill="#fff4c4"/><circle cx="332" cy="44" r="26" fill="#2a4a80"/>
+     <g fill="#fff"><circle class="tw" cx="40" cy="28" r="2.2"/><circle class="tw d2" cx="95" cy="55" r="1.6"/><circle class="tw d3" cx="150" cy="30" r="2"/><circle class="tw" cx="205" cy="60" r="1.6"/><circle class="tw d2" cx="250" cy="25" r="2.2"/><circle class="tw d3" cx="370" cy="95" r="1.6"/><circle class="tw" cx="120" cy="95" r="1.4"/><circle class="tw d2" cx="265" cy="90" r="1.4"/></g>
+     <path d="M0 160 Q100 120 210 150 T400 140 V210 H0Z" fill="#6fbf8a"/><path d="M0 182 Q140 160 260 180 T400 176 V210 H0Z" fill="#4fa274"/>
+     <g transform="translate(300,160)"><ellipse cx="0" cy="0" rx="22" ry="14" fill="#fff"/><circle cx="-12" cy="-6" r="7" fill="#fff"/><circle cx="10" cy="-8" r="8" fill="#fff"/><circle cx="22" cy="-2" r="7" fill="#3d3d3d"/><rect x="-12" y="10" width="4" height="10" fill="#3d3d3d"/><rect x="8" y="10" width="4" height="10" fill="#3d3d3d"/></g>
+     <g transform="translate(345,172)"><ellipse cx="0" cy="0" rx="16" ry="10" fill="#fff"/><circle cx="14" cy="-2" r="5.5" fill="#3d3d3d"/></g>
+     <g transform="translate(170,120)">
+      <path d="M-22 56 Q-18 8 0 6 Q18 8 22 56Z" fill="#5aa6e8"/><path d="M-22 30 L22 30" stroke="#f2b632" stroke-width="4"/>
+      <circle cx="0" cy="-8" r="15" fill="#f5c9a3"/><path d="M-15 -10 Q-12 -28 0 -26 Q12 -28 15 -10 Q8 -20 0 -18 Q-8 -20 -15 -10Z" fill="#a0522d"/>
+      <circle cx="-5" cy="-12" r="1.8" fill="#3d2b20"/><circle cx="5" cy="-12" r="1.8" fill="#3d2b20"/><circle cx="-9" cy="-3" r="3" fill="#f39a9a" opacity=".6"/><circle cx="9" cy="-3" r="3" fill="#f39a9a" opacity=".6"/><path d="M-4 0 Q0 4 4 0" stroke="#3d2b20" stroke-width="1.5" fill="none"/>
+      <g transform="translate(26,14)"><path d="M0 0 Q18 -10 20 14 L4 24Z" fill="#c9955a" stroke="#8a5a2b" stroke-width="2"/><line x1="4" y1="4" x2="6" y2="22" stroke="#fff4c4"/><line x1="9" y1="2" x2="10" y2="20" stroke="#fff4c4"/><line x1="14" y1="1" x2="15" y2="17" stroke="#fff4c4"/></g>
+     </g>
+     <g transform="translate(60,130)"><rect x="-4" y="0" width="8" height="40" fill="#8a5a2b"/><rect x="-26" y="-10" width="52" height="14" rx="7" fill="#d2d6de" transform="rotate(-25)"/><circle cx="20" cy="-14" r="5" fill="#9fb6d8"/></g>
+     <text x="200" y="202" text-anchor="middle" font-family="Jua" font-size="15" fill="#1d4a33">“주께서 베풀어 두신 달과 별들을 내가 보오니”</text>
+    </svg>
+    <button class="closeX" aria-label="닫기">✕</button>
+   </div>
+   <div class="mbody">
+    <span class="mtag">03 · 허셜의 은하 지도</span>
+    <h2 class="mtitle">별을 세고, 거리를 재다</h2>
+    <p class="mlead">역설을 풀려면 급진적으로 다르게 생각하기를 두려워하지 않는 과학자들이 필요했습니다.</p>
+    <p>역설을 해결하는 일은 곧 <b>존재하는 모든 것의 형태 · 크기 · 기원</b>을 이해하는 일입니다. 지구에 갇힌 우리는 성간 여행을 할 수 없으니, <b>마음이 지적 도약을 하도록</b> 허락해야 했습니다.</p>
+    <h3>200년의 정체, 그리고 변화</h3>
+    <p>디그스 이후 200년간 우주의 먼 곳에 대한 이해는 거의 나아가지 못했습니다. 1700년대 말까지 천문학은 지구 · 행성 · 위성 · 혜성의 과학이었고, 별은 아름답지만 다소 흥미 없는 배경이었습니다. 이것이 <b>1800년 무렵</b> 바뀝니다.</p>
+    <h3>바스의 작은 집 — 윌리엄 & 캐롤라인 허셜</h3>
+    <div class="cards">
+     <div class="card"><b class="k">음악가에서 천문학자로</b>하노버 출생. 1761년 음악가 · 작곡가의 길을 찾아 영국으로 이주. 곧 천문학에 열정을 품고 여가 시간에 망원경을 만들었습니다.</div>
+     <div class="card"><b class="k">금속 거울 망원경</b>아이작 뉴턴에게서 빌려 온 제작 기술을 완성. 유리 렌즈보다 훨씬 많은 별빛을 모으는 <b>금속 거울</b>을 사용했습니다.</div>
+     <div class="card"><b class="k">위험한 작업장</b>집 뒤 작은 방의 용광로에서 금속을 녹여 반사율을 실험하고, 여동생 캐롤라인과 몇 시간씩 거울을 연마했습니다. 바닥에는 흘린 쇳물에 깨진 돌 흔적이 지금도 남아 있습니다.</div>
+     <div class="card"><b class="k">국왕의 천문학자</b>밤마다 하늘을 훑으며 별을 분류. 새 행성 <b>천왕성</b>을 발견하여 국왕의 천문학자가 되었고, 우주의 모든 별을 지도로 그릴 시간과 자원을 얻었습니다.</div>
+    </div>
+    <p>그들이 본 우주는 정적인 배경이 아니라 <b>자연스럽고 유기적인 운동이 가득한, 끝없는 경이의 장소</b>였습니다.</p>
+    <div class="callout"><b>1785년, 허셜의 은하 지도</b> — 태양이 중심에 놓인 우리 은하의 근사 그림. 우리는 <b>명확한 경계가 있어 보이는 거대한 별들의 원반</b>의 일부였습니다. 마치 모든 것의 끝을 본 것 같았습니다.</div>
+    <h3>골치 아픈 ‘성운’</h3>
+    <p>하늘 곳곳에 점처럼 흩어진 구름 같은 천체, <b>성운</b>이 문제였습니다. 일부는 독특한 형태와 복잡한 구조를 가졌습니다. 몇몇 천문학자는 “우리 은하가 전부가 아닐 수 있다, 어떤 성운은 깊은 우주에 있는 <b>우리와 같은 거대한 별들의 은하</b>일 수 있다”고 제안했지만 답할 길이 없었습니다. 허셜 남매의 길고 추운 밤들에도 풀 수 없었던 단 하나의 문제 — <b>우주 공간의 거리를 정확히 잴 방법이 없었던 것</b>입니다.</p>
+    <h3>연주시차 — 별까지의 거리 재기</h3>
+    <ul class="dots">
+     <li>손가락을 두 눈으로 번갈아 보면 배경에 대해 위치가 옮겨 보입니다. 가까운 손가락은 멀리 있는 건물보다 훨씬 크게 움직입니다. 그 이동량으로 거리를 계산할 수 있습니다.</li>
+     <li><b>프리드리히 베셀</b>은 지구가 공전 궤도의 양 끝에 있을 때 별을 찍으면 별이 옮겨 보일 것이라 계산했고, 가까운 별 <b>백조자리 61</b>이 약 <b>100조 km</b> 떨어져 있다고 밝혔습니다.</li>
+     <li>한계: 지구 공전 궤도 지름은 <b>3억 km</b>. 그래서 시차로는 약 <b>300조 km</b>까지만 잴 수 있는데, 이는 우리 은하 크기의 극히 일부입니다.</li>
+    </ul>
+    <h3>20세기 초의 대논쟁</h3>
+    <div class="cards">
+     <div class="card"><b class="k">단일 은하설</b>은하는 우리 은하 하나뿐이며, 구상 성단과 성운 등 보이는 모든 것은 그 안에 있다.</div>
+     <div class="card"><b class="k">섬 우주설</b>많은 성운은 상상할 수 없이 먼 곳에 있는 거대한 ‘섬 우주’ 그 자체다.</div>
+    </div>
+    <p>양쪽 모두 증거가 있었고, 이 수수께끼는 <b>1920년대 초</b>까지 치열한 논쟁으로 남았습니다.</p>
+    <div class="verse">“주의 손가락으로 만드신 주의 하늘과 주께서 베풀어 두신 달과 별들을 내가 보오니 사람이 무엇이기에 주께서 그를 생각하시며 인자가 무엇이기에 주께서 그를 돌보시나이까”<span class="ref">시편 8:3-4</span></div>
+    <div class="verse">“그가 별들의 수효를 세시고 그것들을 다 이름대로 부르시는도다”<span class="ref">시편 147:4</span></div>
+    <div class="mnav"><button data-go="-1">◀ 이전</button><button class="home">메뉴로</button><button data-go="1">다음 ▶</button></div>
+   </div>
+  </article>
+
+  <!-- 4 -->
+  <article class="panel" data-p="4" style="--c:var(--sky)">
+   <div class="mhead">
+    <svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" aria-label="이사야가 눈을 들어 은하를 바라보는 동화풍 삽화">
+     <defs><linearGradient id="s4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#101a45"/><stop offset="1" stop-color="#3a3f88"/></linearGradient><radialGradient id="g4"><stop offset="0" stop-color="#fff7d6"/><stop offset=".35" stop-color="#f6c97a" stop-opacity=".8"/><stop offset="1" stop-color="#9c8de0" stop-opacity="0"/></radialGradient></defs>
+     <rect width="400" height="210" fill="url(#s4)"/>
+     <g transform="translate(270,70) rotate(-28)"><ellipse rx="95" ry="30" fill="url(#g4)" class="glow"/><ellipse rx="60" ry="17" fill="none" stroke="#4a3f80" stroke-width="3" opacity=".55"/><ellipse rx="34" ry="10" fill="none" stroke="#4a3f80" stroke-width="2" opacity=".45"/><ellipse rx="12" ry="6" fill="#fffbe6"/></g>
+     <g fill="#fff"><circle class="tw" cx="30" cy="30" r="2"/><circle class="tw d2" cx="80" cy="70" r="1.6"/><circle class="tw d3" cx="140" cy="28" r="2.2"/><circle class="tw" cx="175" cy="90" r="1.4"/><circle class="tw d2" cx="370" cy="150" r="1.8"/><circle class="tw d3" cx="110" cy="110" r="1.4"/></g>
+     <path d="M0 170 Q110 140 220 165 T400 160 V210 H0Z" fill="#7c6b9e"/><path d="M0 188 Q150 170 270 186 T400 182 V210 H0Z" fill="#5b4c80"/>
+     <g transform="translate(110,128)">
+      <path d="M-24 56 Q-20 6 0 4 Q20 6 24 56Z" fill="#f2b632"/><path d="M-24 56 Q-20 6 0 4 L0 56Z" fill="#e0a21f"/>
+      <circle cx="0" cy="-10" r="16" fill="#f5c9a3"/><path d="M-18 -10 Q0 -34 18 -10 L16 6 Q0 -14 -16 6Z" fill="#7a4a8c"/>
+      <circle cx="-5" cy="-15" r="1.9" fill="#3d2b20"/><circle cx="5" cy="-15" r="1.9" fill="#3d2b20"/><circle cx="-9" cy="-6" r="3" fill="#f39a9a" opacity=".6"/><circle cx="9" cy="-6" r="3" fill="#f39a9a" opacity=".6"/>
+      <path d="M-11 -3 Q0 22 11 -3 Q0 4 -11 -3Z" fill="#8a6a55"/>
+      <path d="M-18 14 Q-34 -10 -36 -34" stroke="#f5c9a3" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M18 14 Q34 -10 36 -34" stroke="#f5c9a3" stroke-width="7" stroke-linecap="round" fill="none"/>
+     </g>
+     <text x="200" y="202" text-anchor="middle" font-family="Jua" font-size="15" fill="#fff4c4">“너희는 눈을 높이 들어 누가 이 모든 것을 창조하였나 보라”</text>
+    </svg>
+    <button class="closeX" aria-label="닫기">✕</button>
+   </div>
+   <div class="mbody">
+    <span class="mtag">04 · 레빗과 허블</span>
+    <h2 class="mtitle">우주는 하나의 은하가 아니었다</h2>
+    <p class="mlead">깜빡이는 별 하나가 우주의 크기를 하룻밤 사이에 수십억 배로 넓혀 놓았습니다.</p>
+    <h3>인정받지 못한 영웅, 헨리에타 레빗</h3>
+    <p>하버드 대학교 천문대에서 일한 레빗의 임무는 세계 각지 관측소의 사진 건판을 보고 별을 세고 분류하는 일이었습니다. 자기 일을 사랑한 훌륭한 과학자였던 그녀는, 건판 위 세부를 밝은 표시로 강조하며 별들의 수백 가지 미묘한 특징을 세심하게 기록했습니다. 이 능력이 <b>별의 ‘진짜 밝기’를 객관적으로 정하는 방법</b>을 낳았습니다.</p>
+    <div class="callout"><b>세페이드 변광성의 비밀</b> — 맥동하는 이 별들의 <b>밝기는 깜빡이는 속도와 정확히 관련</b>되어 있습니다. 같은 속도로 깜빡이는 두 별은 같은 밝기여야 하므로, 한쪽이 더 희미하다면 <b>얼마나 더 멀리 있는지</b> 계산할 수 있습니다. 시차가 닿지 않는 먼 별까지의 거리를 재는 길이 열린 것입니다.</div>
+    <p>그러나 레빗은 <b>남성 중심의 천문대 세계에서 망원경 사용이 금지</b>되어 연구를 더 이어 갈 수 없었습니다. 그럼에도 그녀의 발견은 신비로운 성운까지의 거리를 잴 도구가 되었습니다.</p>
+    <p>1920년대에는 우주가 은하 하나라는 견해가 전적으로 그럴듯했고, 미국의 손꼽히는 천문학자들도 좋은 증거를 들어 진지하게 그렇게 믿었습니다. 그러나 그들은 틀렸습니다.</p>
+    <h3>에드윈 허블과 후커 망원경</h3>
+    <div class="cards">
+     <div class="card"><b class="k">윌슨 산 관측소</b>로스앤젤레스 외곽에 세워진 강력한 새 <b>후커 망원경</b>이 대논쟁을 끝낼 증거를 찾게 됩니다.</div>
+     <div class="card"><b class="k">괴짜 천재</b>레빗과 전혀 다른 유형. 활기차고 과장이 심하며 자아가 거대한 외향적 인물이었지만, 대단히 재능 있고 비전 있는 과학자. 미국 출생이나 영국에서 지낸 뒤 과장된 영국 억양으로 “By Jove!”, “What ho!”를 외치며 천문대를 누볐습니다.</div>
+    </div>
+    <h3>1923년, 안드로메다 성운</h3>
+    <ul class="dots">
+     <li>허블과 조수 <b>밀턴 휴메이슨</b>에게 안드로메다 연구는 길고 고된 작업이었습니다. 오늘날에는 UCL 천문대에서 좌표(0시 43분)를 입력해 금세 찾아 정밀하게 촬영할 수 있습니다.</li>
+     <li>확대한 사진 속 <b>‘허블 세페이드’</b> — 그가 처음 발견한 세페이드 변광성이 문제 전체를 푸는 열쇠였습니다. 펄스 주기를 정확히 재고 레빗의 방법을 적용하자, 그것은 우리 은하 안에 있을 수 없고 <b>수백만 광년 밖</b>에 있어야 했습니다.</li>
+     <li>대비를 높이면 안드로메다 안 수십억 별을 배경으로 실루엣을 이루는 먼지 띠가 드러납니다.</li>
+     <li>허블이 새 세페이드에 표시한 사진 건판 — 안드로메다는 우리 은하의 가장 먼 끝보다 훨씬 더 멀리 있는 <b>진정한 섬 우주, 거대한 별들의 은하</b>였습니다.</li>
+    </ul>
+    <div class="num">
+     <div><strong>250만 광년+</strong><span>안드로메다까지의 거리</span></div>
+     <div><strong>1조 개+</strong><span>안드로메다가 품은 별 (추정)</span></div>
+     <div><strong>수십억 배</strong><span>1923년→1924년, 커진 우주</span></div>
+    </div>
+    <p>오늘 안드로메다에서 우리 눈에 닿는 빛은 <b>현생 인류가 진화하기도 전에</b> 여정을 시작했습니다. 우리 눈에 들어오는 것은 수백만 년을 날아온 진짜 광자입니다. 안드로메다는 우리의 가장 가까운 거대 은하 이웃이며, 우주에 흩어진 무수한 은하 중 하나일 뿐입니다.</p>
+    <div class="callout">1923년 우주는 우리 은하만 했고, 1924년 우주는 <b>수십억 배 더 크고 상상을 넘는 복잡성의 고향</b>이 되었습니다. 그러나 허블도 우주의 끝은 보지 못했습니다. 크기도, 형태도 여전히 미지였습니다. 그 진실을 알려면 관측을 넘어 <b>공간 자체의 기묘한 성질을 설명할 새로운 수학</b>이 필요했습니다.</div>
+    <div class="verse">“너희는 눈을 높이 들어 누가 이 모든 것을 창조하였나 보라 주께서는 수효대로 만상을 이끌어 내시고 그들의 모든 이름을 부르시나니 그의 권세가 크고 그의 능력이 강하므로 하나도 빠짐이 없느니라”<span class="ref">이사야 40:26</span></div>
+    <div class="mnav"><button data-go="-1">◀ 이전</button><button class="home">메뉴로</button><button data-go="1">다음 ▶</button></div>
+   </div>
+  </article>
+
+  <!-- 5 -->
+  <article class="panel" data-p="5" style="--c:var(--lav)">
+   <div class="mhead">
+    <svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" aria-label="욥이 허공에 매달린 지구를 바라보는 동화풍 삽화">
+     <defs><linearGradient id="s5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c1846"/><stop offset="1" stop-color="#4a3a86"/></linearGradient></defs>
+     <rect width="400" height="210" fill="url(#s5)"/>
+     <g stroke="#9c8de0" stroke-width="1.4" fill="none" opacity=".75">
+      <path d="M150 60 Q260 140 370 60"/><path d="M150 90 Q260 165 370 90"/><path d="M150 120 Q260 185 370 120"/><path d="M150 30 Q260 110 370 30"/>
+      <path d="M180 20 Q215 110 180 180"/><path d="M220 20 Q245 120 225 190"/><path d="M260 20 Q260 130 260 195"/><path d="M300 20 Q275 120 295 190"/><path d="M340 20 Q305 110 340 180"/>
+     </g>
+     <g class="glow"><circle cx="260" cy="105" r="30" fill="#5aa6e8"/><path d="M240 92 Q252 80 262 92 Q270 102 258 110 Q246 116 240 106Z" fill="#6fbf8a"/><path d="M266 112 Q280 104 284 116 Q280 128 270 126Z" fill="#6fbf8a"/><circle cx="252" cy="96" r="30" fill="#fff" opacity=".12"/></g>
+     <circle cx="330" cy="58" r="7" fill="#ccc6e8"/>
+     <g fill="#fff"><circle class="tw" cx="30" cy="30" r="2"/><circle class="tw d2" cx="90" cy="45" r="1.6"/><circle class="tw d3" cx="130" cy="20" r="2"/><circle class="tw" cx="385" cy="150" r="1.6"/><circle class="tw d2" cx="60" cy="80" r="1.4"/></g>
+     <path d="M0 175 Q80 150 170 172 L170 210 H0Z" fill="#8f7fb8"/>
+     <g transform="translate(80,132)">
+      <path d="M-22 48 Q-18 6 0 4 Q18 6 22 48Z" fill="#a9876b"/><path d="M-22 48 L22 48 L18 40 L-18 40Z" fill="#8a6a55"/>
+      <circle cx="0" cy="-8" r="15" fill="#f5c9a3"/><path d="M-16 -8 Q0 -30 16 -8 Q8 -16 0 -16 Q-8 -16 -16 -8Z" fill="#ddd"/>
+      <circle cx="0" cy="-12" r="1.8" fill="#3d2b20"/><circle cx="8" cy="-12" r="1.8" fill="#3d2b20"/><circle cx="-6" cy="-4" r="3" fill="#f39a9a" opacity=".6"/>
+      <path d="M-10 -2 Q2 24 12 -2 Q2 6 -10 -2Z" fill="#eee"/>
+      <path d="M16 12 Q36 4 50 -12" stroke="#f5c9a3" stroke-width="6" stroke-linecap="round" fill="none"/>
+     </g>
+     <text x="200" y="202" text-anchor="middle" font-family="Jua" font-size="15" fill="#fff4c4">“땅을 아무것도 없는 곳에 매다시며”</text>
+    </svg>
+    <button class="closeX" aria-label="닫기">✕</button>
+   </div>
+   <div class="mbody">
+    <span class="mtag">05 · 휘어진 공간</span>
+    <h2 class="mtitle">공간에도 모양이 있다</h2>
+    <p class="mlead">2,000년이 넘는 세월과 아인슈타인의 천재성이 필요했던, 상식 밖의 새로운 수학.</p>
+    <p>우주를 이해한다는 것이 관측을 잔뜩 모아 큰 그림을 맞추는 일 같지만, 그림이 어떠해야 할지 <b>아이디어가 없으면 어떤 관측이 중요한지조차 알 수 없습니다.</b> 그래서 과학사에는 때때로 새로운 수학적 아이디어가 먼저 등장해야 합니다.</p>
+    <h3>공간이란 무엇인가?</h3>
+    <ul class="dots">
+     <li>“이 방은 넓다”, “공간이 좁다”라고 말하지만 — 공간은 그 안에 무언가 있을 때만, 벽으로 둘러싸였을 때만 의미가 있을까요?</li>
+     <li>두 물체를 치워도 그 사이의 간격은 남아 있을까요? 시작점과 끝점 없이 거리를 말할 수 있을까요?</li>
+     <li>궁극적인 질문: <b>공간 자체에 형태 · 구조가 있는가, 아니면 일이 벌어지는 장소일 뿐인가?</b></li>
+    </ul>
+    <h3>네 명의 사상가, 하나의 혁명</h3>
+    <div class="cards">
+     <div class="card"><b class="k">유클리드 『원론』</b>직선 · 직각 · 평행선의 기하학. 창문 양변 같은 평행선은 영원히 만나지 않고, 모든 삼각형의 내각 합은 <b>180도</b>. 2,000년 동안 이것은 수학적 진리일 뿐 아니라 <b>물리적 현실 자체</b>로 여겨졌습니다. 그러나 늘 그렇지는 않습니다.</div>
+     <div class="card"><b class="k">가우스</b>약 250년 전 독일 북부의 작은 마을 출신. 곡면에는 다른 규칙의 기하학이 있음을 알아챘습니다. 구면 위 삼각형의 내각 합은 180도보다 클 수 있습니다. 곡률을 정확히 재는 <b>‘놀라운 정리’(Theorema Egregium)</b>를 남겼습니다.</div>
+     <div class="card"><b class="k">리만</b>가우스의 찬란한 제자. 불과 <b>26세</b>, <b>1854년 6월</b> 전설적 강연에서 곡면 개념을 <b>임의 차원의 공간</b>으로 일반화했습니다. 그러나 그에게 이는 순수한 수학으로 남았습니다.</div>
+     <div class="card"><b class="k">아인슈타인</b>휘어진 비유클리드 기하학을 <b>우리를 둘러싼 실제 공간</b>에 적용했습니다. 몇 년 만에 가장 난해한 수학과 씨름하던 사람에서 찰리 채플린과 저녁을 먹는 유명인이 되었습니다 — 모두 <b>일반상대성이론</b> 덕분입니다.</div>
+    </div>
+    <h3>지구본 위의 개미 실험</h3>
+    <p>표면에 갇힌 개미는 자기 세계가 휘었는지 어떻게 알까요? 북극에서 남쪽을 향해 적도로 내려가고, 적도에서는 계속 남쪽을 향한 채 옆걸음질하다가, 어느 지점에서 그대로 뒤로 걸어 북극으로 돌아옵니다. 내내 남쪽을 향했는데도 출발점에 돌아오면 <b>다른 방향을 보고 있습니다.</b> 이로써 표면을 떠나지 않고도 곡률을 잴 수 있습니다 — 다만 2차원 곡면에 한해서였습니다.</p>
+    <h3>3차원이 휘려면 4차원이 필요할까?</h3>
+    <p>2차원 종이를 구부리면 휜 모습이 보이는 것은 그것이 3차원 속에 있기 때문입니다. 그렇다면 3차원을 구부리려면 4차원에 서야 할까요? 우리는 우주 어디로 가든 3차원 밖으로 나갈 수 없습니다. 리만의 천재성은 <b>공간이 휘었는지 안쪽에서 알 수 있음</b>을 보여 준 데 있습니다.</p>
+    <div class="callout"><b>수학과 현실의 만남</b> — 수학자들은 “다른 기하학이 가능할까?” 순수한 호기심으로 탐구했고, 쓸모를 묻는다면 “전혀 모르겠다, 그냥 흥미롭다”고 답했을 것입니다. 그런데 때가 차자 아인슈타인이 나타나 <b>“바로 이것이 진짜 물리학이다”</b>라고 했고, 난해한 수학이 과학의 필수 도구가 되었습니다.</div>
+    <h3>중력의 새로운 그림</h3>
+    <div class="cards">
+     <div class="card"><b class="k">뉴턴의 그림</b>중력은 모든 물체를 서로 끌어당기는 힘. 사과를 떨어뜨리면 보이지 않는 고무줄이 지구 쪽으로 당기는 듯합니다.</div>
+     <div class="card"><b class="k">아인슈타인의 그림</b>중력은 힘처럼 보이지만 <b>공간 자체의 곡률</b>입니다. 떨어지는 물체는 끌려가는 것이 아니라 휜 공간을 지나는 가장 단순한 경로를 따를 뿐입니다. 그리고 <b>질량이 공간을 휘게</b> 합니다 — 지구가 주변 공간을 휘게 하기에 중력이 있습니다.</div>
+    </div>
+    <p>16~19세기에 지루하고 고요했던 공간은, 아인슈타인 이론에서 내용물에 반응해 기하학을 바꾸는 <b>동적인, 거의 살아 있는 몸</b>이 되었습니다. 공간과 시간은 우주의 연극이 펼쳐지는 고정된 무대가 아니라 <b>공연의 일부</b>입니다.</p>
+    <p>일반상대성이론은 모든 것에 적용되므로 우주 전체의 행동을 상상하게 해 주었습니다. 그런데 방정식은 터무니없어 보이는 그림, 곧 <b>팽창하는 우주</b>를 그렸습니다. 아인슈타인조차 믿기를 거부하고, 우주를 붙들어 둘 <b>‘우주 상수’</b>를 덧붙여 방정식을 고쳤습니다. 고장 나지 않은 것을 고치려 한 것이었습니다.</p>
+    <div class="verse">“그는 북쪽을 허공에 펴시며 땅을 아무것도 없는 곳에 매다시며”<span class="ref">욥기 26:7</span></div>
+    <div class="verse">“또한 그가 만물보다 먼저 계시고 만물이 그 안에 함께 섰느니라”<span class="ref">골로새서 1:17</span></div>
+    <div class="mnav"><button data-go="-1">◀ 이전</button><button class="home">메뉴로</button><button data-go="1">다음 ▶</button></div>
+   </div>
+  </article>
+
+  <!-- 6 -->
+  <article class="panel" data-p="6" style="--c:var(--rose)">
+   <div class="mhead">
+    <svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" aria-label="빛이 있으라 하신 창조의 첫 빛이 퍼져 나가는 동화풍 삽화">
+     <defs><radialGradient id="s6" cx=".5" cy=".55"><stop offset="0" stop-color="#fffbe6"/><stop offset=".18" stop-color="#ffd977"/><stop offset=".45" stop-color="#f37d6b"/><stop offset=".75" stop-color="#6a4a8c"/><stop offset="1" stop-color="#1b1a48"/></radialGradient></defs>
+     <rect width="400" height="210" fill="url(#s6)"/>
+     <g fill="none" stroke="#fff" opacity=".45"><circle class="glow" cx="200" cy="115" r="40" stroke-width="2"/><circle cx="200" cy="115" r="72" stroke-width="1.5"/><circle cx="200" cy="115" r="108" stroke-width="1"/><circle cx="200" cy="115" r="150" stroke-width="1"/></g>
+     <g stroke="#fffbe6" stroke-width="2.5" stroke-linecap="round" opacity=".8"><line x1="200" y1="115" x2="200" y2="40"/><line x1="200" y1="115" x2="270" y2="70"/><line x1="200" y1="115" x2="130" y2="70"/><line x1="200" y1="115" x2="285" y2="130"/><line x1="200" y1="115" x2="115" y2="130"/></g>
+     <g transform="translate(70,50) rotate(-20)"><ellipse rx="22" ry="7" fill="#ffe9a8" opacity=".8"/><ellipse rx="6" ry="3" fill="#fff"/></g>
+     <g transform="translate(340,60) rotate(25)"><ellipse rx="20" ry="7" fill="#c8bff0" opacity=".85"/><ellipse rx="5" ry="3" fill="#fff"/></g>
+     <g transform="translate(345,170) rotate(-10)"><ellipse rx="16" ry="5" fill="#ffe9a8" opacity=".7"/></g>
+     <g transform="translate(55,165) rotate(15)"><ellipse rx="16" ry="5" fill="#c8bff0" opacity=".7"/></g>
+     <path d="M168 104 q-8 -14 4 -18 q6 -2 8 6 q4 -10 12 -6 q8 6 -2 16" fill="#fff" opacity=".0"/>
+     <circle class="glow" cx="200" cy="115" r="16" fill="#fff"/>
+     <text x="200" y="202" text-anchor="middle" font-family="Jua" font-size="16" fill="#fff4c4">“빛이 있으라 하시니 빛이 있었고”</text>
+    </svg>
+    <button class="closeX" aria-label="닫기">✕</button>
+   </div>
+   <div class="mbody">
+    <span class="mtag">06 · 팽창과 대폭발</span>
+    <h2 class="mtitle">우주에는 시작이 있었다</h2>
+    <p class="mlead">400여 년 전 디그스의 질문 — “왜 밤은 어두운가?”에 마침내 답이 주어집니다.</p>
+    <h3>허블, 은하들의 움직임을 보다</h3>
+    <div class="cards">
+     <div class="card"><b class="k" style="color:#3f8fd2">청색편이</b>광원이 다가오면 빛의 파장이 압축되어 파랗게 보입니다.</div>
+     <div class="card"><b class="k" style="color:#e0614a">적색편이</b>광원이 멀어지면 파장이 늘어나 붉게 보입니다.</div>
+    </div>
+    <p>놀랍게도 <b>모든 먼 은하가 적색편이</b>되어 있었습니다. 모두 우리에게서 멀어지고 있었고, <b>멀리 있을수록 더 빨리</b> 멀어지고 있었습니다. 허블의 관측과 아인슈타인의 일반상대성이론이 일치한 것입니다.</p>
+    <div class="callout">가장 중요한 점: 은하들이 공간을 가로질러 달아나는 것이 아니라, <b>은하들 사이의 공간 그 자체(공간의 직물)가 팽창</b>하고 있습니다. 우주 전체가 커지고 있습니다.</div>
+    <p>아인슈타인은 곧 허블을 찾아가 데이터를 직접 확인했고, 방정식을 고친 일을 <b>자신의 가장 큰 과학적 실수</b>였다고 인정하게 됩니다.</p>
+    <h3>시계를 거꾸로 돌리면</h3>
+    <p>공간이 팽창한다면 예전에는 우주가 더 작았다는 뜻입니다. 충분히 되돌리면 <b>전체 우주가 시작된 한 점</b>이 있었던 것처럼 보였습니다. 데이터는 <b>창조의 순간</b>을 가리켰지만, 많은 과학자는 ‘빅뱅’이 너무 먼 도약이라며 확신하지 못했습니다. 모두를 설득할 결정적 증거가 필요했습니다 — 창조 직후 우주 전체로 방출되었을 <b>빛</b>입니다.</p>
+    <h3>텔레비전 속 창조의 흔적</h3>
+    <ul class="dots">
+     <li>풍선을 우주라고 상상해 봅시다. 불과 <b>수십만 년 된 우주</b>에서 원자가 형성되며 우주가 갑자기 가시광선에 <b>투명</b>해집니다. 안개가 걷히듯 빛이 자유롭게 여행하기 시작합니다.</li>
+     <li>모든 지점에서 광자가 출발하여 우주는 눈부신 빛으로 가득 찹니다. 그러나 우주가 팽창하며 이 빛은 가시광선에서 <b>마이크로파</b>로 늘어났습니다.</li>
+     <li>TV 안테나가 잡는 지지직거리는 <b>정적(노이즈)의 약 1%</b>가 바로 <b>창조 그 자체의 여광</b>, 우주에서 가장 오래된 빛의 늘어난 잔해입니다.</li>
+     <li>오늘날 위성으로 우주가 빛이 된 순간을 정밀하게 지도화합니다. 이것은 <b>최초의 새벽의 화석화된 빛</b>, 우주에 시작이 있었다는 설득력 있는 증거입니다.</li>
+    </ul>
+    <div class="num"><div><strong>137억 년</strong><span>마이크로파 복사로 측정한 우주의 나이<br>(오늘날 약 138억 년으로 보정)</span></div></div>
+    <h3>그래서 밤은 어둡다 — 올베르스의 역설 해답</h3>
+    <p>별이 멀수록 그 빛이 지구에 닿는 데 오래 걸립니다. 우주가 영원히 존재했다면 모든 빛이 도착했을 것이고 밤하늘은 불타올랐을 것입니다. 그러나 그렇지 않습니다.</p>
+    <p>우주가 젊고 작았을 때 반대편에서 출발한 빛 한 줄기를 상상해 보십시오. 공간이 팽창하면서 빛이 건너야 할 거리는 계속 늘어나고, 오늘날까지도 그 빛은 <b>아직 우리에게 도착하지 않았습니다.</b> 아무리 열심히 하늘을 보아도 볼 수 없습니다.</p>
+    <div class="callout">우리는 빅뱅 이후 137억 년 동안 빛이 도착할 시간이 있었던 별들만 볼 수 있습니다. 이 영역이 <b>‘관측 가능한 우주’</b>이며, 여기에는 밤하늘을 밝힐 만큼 별이 충분하지 않습니다. <b>그것이 밤하늘이 어두운 이유입니다.</b></div>
+    <p>우리가 당연하게 여기는 “밤은 어둡다”는 사실은 실로 심오합니다. 그 이유를 이해하기까지 <b>200년의 이론과 사색, 그리고 일반상대성이론</b>이 필요했습니다. 추론하고, 관측하고, 상상함으로써 우리는 우주를 떠도는 작은 돌멩이의 한계를 넘어 모든 것의 그림을 그려 왔습니다.</p>
+    <div class="verse">“태초에 하나님이 천지를 창조하시니라”<span class="ref">창세기 1:1</span></div>
+    <div class="verse">“하나님이 이르시되 빛이 있으라 하시니 빛이 있었고”<span class="ref">창세기 1:3</span></div>
+    <div class="verse">“그가 하늘을 차일 같이 펴셨으며 거주할 천막 같이 치셨고”<span class="ref">이사야 40:22</span></div>
+    <div class="mnav"><button data-go="-1">◀ 이전</button><button class="home">메뉴로</button><button data-go="1">다음 ▶</button></div>
+   </div>
+  </article>
+
+  <!-- 7 -->
+  <article class="panel" data-p="7" style="--c:var(--navy)">
+   <div class="mhead">
+    <svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" aria-label="하늘을 천막처럼 펴신 우주 그물 동화풍 삽화">
+     <defs><linearGradient id="s7" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f1438"/><stop offset="1" stop-color="#2c2a6b"/></linearGradient></defs>
+     <rect width="400" height="210" fill="url(#s7)"/>
+     <g stroke="#9c8de0" stroke-width="1.6" opacity=".8">
+      <line x1="40" y1="40" x2="120" y2="70"/><line x1="120" y1="70" x2="200" y2="35"/><line x1="200" y1="35" x2="280" y2="75"/><line x1="280" y1="75" x2="360" y2="40"/>
+      <line x1="120" y1="70" x2="150" y2="130"/><line x1="280" y1="75" x2="250" y2="130"/><line x1="150" y1="130" x2="250" y2="130"/><line x1="200" y1="35" x2="200" y2="95"/><line x1="200" y1="95" x2="150" y2="130"/><line x1="200" y1="95" x2="250" y2="130"/><line x1="40" y1="40" x2="60" y2="120"/><line x1="60" y1="120" x2="150" y2="130"/><line x1="360" y1="40" x2="345" y2="120"/><line x1="345" y1="120" x2="250" y2="130"/>
+     </g>
+     <g fill="#ffd977"><circle class="tw" cx="40" cy="40" r="6"/><circle class="tw d2" cx="120" cy="70" r="8"/><circle class="tw d3" cx="200" cy="35" r="7"/><circle class="tw" cx="280" cy="75" r="9"/><circle class="tw d2" cx="360" cy="40" r="6"/><circle class="tw d3" cx="150" cy="130" r="7"/><circle class="tw" cx="250" cy="130" r="8"/><circle class="tw d2" cx="200" cy="95" r="5"/><circle class="tw d3" cx="60" cy="120" r="5"/><circle class="tw" cx="345" cy="120" r="6"/></g>
+     <g fill="#fff"><circle cx="120" cy="70" r="3"/><circle cx="280" cy="75" r="3.5"/><circle cx="250" cy="130" r="3"/></g>
+     <path d="M0 210 L0 150 Q200 90 400 150 L400 210Z" fill="#3a3478" opacity=".6"/>
+     <path d="M0 192 Q200 160 400 192 V210 H0Z" fill="#5b4c80"/>
+     <g transform="translate(200,168)"><path d="M-10 26 Q-8 4 0 3 Q8 4 10 26Z" fill="#f37d6b"/><circle cx="0" cy="-4" r="8" fill="#f5c9a3"/><path d="M-8 -5 Q0 -16 8 -5Z" fill="#5a3b28"/><circle cx="-3" cy="-6" r="1.2" fill="#3d2b20"/><circle cx="3" cy="-6" r="1.2" fill="#3d2b20"/></g>
+     <text x="200" y="202" text-anchor="middle" font-family="Jua" font-size="14" fill="#fff4c4">“하늘도 주의 손으로 지으신 바니이다”</text>
+    </svg>
+    <button class="closeX" aria-label="닫기">✕</button>
+   </div>
+   <div class="mbody">
+    <span class="mtag">07 · 우주 웹과 미래</span>
+    <h2 class="mtitle">거대한 그물, 그리고 텅 빈 미래</h2>
+    <p class="mlead">가장 큰 규모의 우주는 그물처럼 엮여 있고, 그 그림은 지금도 변하고 있습니다.</p>
+    <h3>우주 웹(Cosmic Web)</h3>
+    <p>초기 우주의 컴퓨터 시뮬레이션으로 중력이 수십억 년에 걸쳐 우주를 빚어 온 모습을 볼 수 있습니다. 가장 밝은 흰색 · 노란색 영역이 <b>은하와 은하단</b>이 형성되는 곳이며, 우주가 진화할수록 숨겨진 구조가 드러납니다.</p>
+    <div class="cards">
+     <div class="card"><b class="k">은하단과 필라멘트</b>거대한 은하단들이 광대한 섬유 모양 필라멘트로 서로 연결되어 있고, 각각 <b>수조 개의 별</b>을 품고 있습니다.</div>
+     <div class="card"><b class="k">가늠하기 힘든 규모</b>이 그림의 한쪽 끝에서 다른 끝까지 빛이 가로지르는 데 <b>거의 10억 년</b>이 걸립니다.</div>
+    </div>
+    <p>이것이 가장 큰 규모에서 모든 것이 어떻게 생겼는지에 대한 우리의 가장 훌륭한 그림입니다.</p>
+    <h3>1998년의 놀라운 발견</h3>
+    <ul class="dots">
+     <li>한 천문학자 팀이 먼 은하들의 <b>초신성 폭발</b>을 관측해 우주의 팽창 속도를 정밀하게 재려 했습니다.</li>
+     <li>우주의 모든 물질이 서로 당기는 중력 때문에 팽창이 <b>느려지고</b> 있을 것이라 예상했지만 — 결과는 정반대였습니다.</li>
+     <li>우주는 <b>더 빨리</b> 커지고 있었습니다. 팽창이 <b>가속</b>되고 있었던 것입니다.</li>
+    </ul>
+    <div class="callout">모든 것을 서로 밀어내는 신비로운 힘 — 그 기원은 아직 모르지만 이름은 <b>‘암흑 에너지’(dark energy)</b>입니다.</div>
+    <h3>비어 가는 하늘</h3>
+    <p>팽창이 계속 가속된다면 먼 미래의 우주는 <b>끔찍하게 황량하고 쓸쓸한 곳</b>이 될 것입니다. 지금 지구에서 보이는 먼 은하도, 그 사이 공간이 늘어나 <b>빛이 따라잡지 못할 만큼 빠르게 팽창하는 때</b>가 오면 시야에서 사라집니다. 우리의 가시 우주는 점점 텅 비어 갈 것입니다.</p>
+    <div class="verse">“주께서 옛적에 땅의 기초를 놓으셨사오며 하늘도 주의 손으로 지으신 바니이다 천지는 없어지려니와 주는 영존하시겠고 그것들은 다 옷 같이 낡으리니 의복 같이 바꾸시면 바뀌려니와 주는 한결같으시고 주의 연대는 무궁하리이다”<span class="ref">시편 102:25-27</span></div>
+    <div class="mnav"><button data-go="-1">◀ 이전</button><button class="home">메뉴로</button><button data-go="1">다음 ▶</button></div>
+   </div>
+  </article>
+
+  <!-- 8 -->
+  <article class="panel" data-p="8" style="--c:#c9952a">
+   <div class="mhead">
+    <svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" aria-label="펼친 성경에서 별들이 피어오르는 동화풍 삽화">
+     <defs><linearGradient id="s8" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b2257"/><stop offset=".7" stop-color="#6a4a8c"/><stop offset="1" stop-color="#f3a07a"/></linearGradient></defs>
+     <rect width="400" height="210" fill="url(#s8)"/>
+     <g fill="#ffd977"><path class="tw" d="M200 30 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z"/><path class="tw d2" d="M160 60 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z"/><path class="tw d3" d="M245 55 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5 -7 -7 -2.5 7 -2.5z"/><path class="tw" d="M120 35 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/><path class="tw d2" d="M290 30 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
+     <g fill="#fff"><circle class="tw d3" cx="190" cy="95" r="2"/><circle class="tw" cx="215" cy="85" r="2.4"/><circle class="tw d2" cx="200" cy="110" r="1.8"/><circle class="tw d3" cx="60" cy="40" r="2"/><circle class="tw" cx="350" cy="70" r="2"/></g>
+     <path d="M200 140 L170 70 L230 70Z" fill="#ffd977" opacity=".18"/>
+     <path d="M0 182 Q200 150 400 182 V210 H0Z" fill="#7c5b3a"/>
+     <g transform="translate(200,150)"><path d="M0 0 Q-40 -16 -80 -4 L-80 26 Q-40 14 0 30Z" fill="#fffaf0" stroke="#c9955a" stroke-width="2"/><path d="M0 0 Q40 -16 80 -4 L80 26 Q40 14 0 30Z" fill="#fffaf0" stroke="#c9955a" stroke-width="2"/><line x1="0" y1="0" x2="0" y2="30" stroke="#c9955a" stroke-width="2"/><g stroke="#d9c49a" stroke-width="2"><line x1="-66" y1="4" x2="-14" y2="0"/><line x1="-66" y1="11" x2="-14" y2="8"/><line x1="14" y1="0" x2="66" y2="4"/><line x1="14" y1="8" x2="66" y2="11"/></g><path d="M-4 30 L-4 44 L0 40 L4 44 L4 30" fill="#e0614a"/></g>
+     <text x="200" y="202" text-anchor="middle" font-family="Jua" font-size="15" fill="#fff4c4">“모든 세계가 하나님의 말씀으로 지어진 줄을”</text>
+    </svg>
+    <button class="closeX" aria-label="닫기">✕</button>
+   </div>
+   <div class="mbody">
+    <span class="mtag">08 · 말씀으로 본 우주</span>
+    <h2 class="mtitle">한눈에 보는 500년의 여정</h2>
+    <p class="mlead">하늘을 올려다본 인류의 발자취를 연표로 정리하고, 말씀의 빛으로 묵상합니다.</p>
+    <div class="tl">
+     <div><b>1572</b>Ia형 초신성 ‘그 현상’ 출현 — 금성보다 밝고 낮에도 보임</div>
+     <div><b>4년 뒤</b>토마스 디그스, 별들을 껍질에서 꺼내 무한한 우주로 그린 도표 발표</div>
+     <div><b>1761</b>윌리엄 허셜, 음악가로 영국 이주 → 망원경 제작 · 천왕성 발견</div>
+     <div><b>1785</b>허셜, 태양을 중심에 둔 우리 은하 지도 발표</div>
+     <div><b>허셜 사후</b>베셀, 연주시차로 백조자리 61까지 약 100조 km 측정</div>
+     <div><b>1854</b>26세 리만, 임의 차원의 휘어진 공간 강연</div>
+     <div><b>20세기 초</b>레빗, 세페이드 변광성의 밝기–주기 관계 발견 · ‘대논쟁’</div>
+     <div><b>1923–24</b>허블, 안드로메다의 세페이드로 섬 우주 확증 — 우주가 수십억 배 커짐</div>
+     <div><b>그 뒤</b>아인슈타인 일반상대성이론 + 허블의 적색편이 → 팽창하는 우주, 빅뱅, 우주 배경 복사</div>
+     <div><b>1998</b>먼 초신성 관측으로 가속 팽창 발견 — ‘암흑 에너지’</div>
+    </div>
+    <h3>무(無)에서 유(有)로</h3>
+    <p>“무(無)란 무엇인가?”라는 다큐멘터리의 물음은, 텅 빈 듯한 공간조차 휘고 늘어나며 살아 움직이는 실재임을 보여 줍니다. 과학은 우주에 <b>시작</b>이 있었음을 가리키고, 성경은 그 시작이 <b>하나님의 말씀</b>이었다고 고백합니다.</p>
+    <div class="cards">
+     <div class="card"><b class="k">하늘은 말한다</b>모래알보다 많은 별, 수조 개의 별을 품은 은하들 — 이 모든 규모는 창조주의 위대하심을 선포하는 일반계시입니다.</div>
+     <div class="card"><b class="k">사람이 무엇이기에</b>먼지 한 톨 같은 지구 위의 인간에게 우주를 헤아릴 지성을 주시고, 그 인간을 생각하시고 돌보시는 하나님의 은혜를 봅니다.</div>
+     <div class="card"><b class="k">변하는 우주, 변치 않는 주님</b>우주는 팽창하고 언젠가 옷처럼 낡아지지만, 주님은 한결같으시고 그 연대는 무궁합니다.</div>
+    </div>
+    <div class="verse">“믿음으로 모든 세계가 하나님의 말씀으로 지어진 줄을 우리가 아나니 보이는 것은 나타난 것으로 말미암아 된 것이 아니니라”<span class="ref">히브리서 11:3</span></div>
+    <div class="verse">“하늘이 하나님의 영광을 선포하고 궁창이 그의 손으로 하신 일을 나타내는도다”<span class="ref">시편 19:1</span></div>
+    <div class="mnav"><button data-go="-1">◀ 이전</button><button class="home">메뉴로</button><button data-go="1">처음으로 ▶</button></div>
+   </div>
+  </article>
+
+ </div>
+</div>
+
+<script>
+(function(){
+  var ov=document.getElementById('overlay'), modal=document.getElementById('modal');
+  var panels=[].slice.call(document.querySelectorAll('.panel')), cur=1, lastBtn=null;
+  function show(n){
+    cur=((n-1+panels.length)%panels.length)+1;
+    panels.forEach(function(p){p.classList.toggle('on', +p.dataset.p===cur)});
+    ov.classList.add('open'); document.body.style.overflow='hidden'; ov.scrollTop=0;
+    var x=modal.querySelector('.panel.on .closeX'); if(x) x.focus({preventScroll:true});
+  }
+  function close(){ov.classList.remove('open');document.body.style.overflow='';if(lastBtn)lastBtn.focus();}
+  document.querySelectorAll('[data-open]').forEach(function(b){
+    b.addEventListener('click',function(){lastBtn=b;show(+b.dataset.open)});
+  });
+  modal.addEventListener('click',function(e){
+    var t=e.target;
+    if(t.closest('.closeX')||t.closest('.home')) close();
+    else if(t.closest('[data-go]')) show(cur + (+t.closest('[data-go]').dataset.go));
+  });
+  ov.addEventListener('click',function(e){if(e.target===ov)close()});
+  document.addEventListener('keydown',function(e){
+    if(!ov.classList.contains('open'))return;
+    if(e.key==='Escape')close();
+    if(e.key==='ArrowRight')show(cur+1);
+    if(e.key==='ArrowLeft')show(cur-1);
+  });
+})();
+</script>
+</body>
+</html>

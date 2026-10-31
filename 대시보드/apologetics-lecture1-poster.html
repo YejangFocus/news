@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기독교 변증학 제1강 · 알리스터 맥그래스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff8ec; --paper:#ffffff; --ink:#3d3226; --ink-soft:#6b5a48;
+  --line:#5b4636; --gold:#f6c453; --coral:#f08a5d; --sky:#8fc7e8;
+  --leaf:#8cc084; --plum:#b49fdc; --rose:#f2a7b5; --teal:#6cc1b5;
+  --shadow:0 10px 28px rgba(91,70,54,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:20px;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Gowun Dodum','Noto Sans KR',sans-serif;font-size:21px;line-height:1.75;
+  color:var(--ink);background:var(--bg);
+  background-image:
+    radial-gradient(circle at 12% 18%,rgba(246,196,83,.22) 0 120px,transparent 121px),
+    radial-gradient(circle at 88% 12%,rgba(143,199,232,.25) 0 150px,transparent 151px),
+    radial-gradient(circle at 85% 88%,rgba(242,167,181,.2) 0 140px,transparent 141px),
+    radial-gradient(circle at 8% 90%,rgba(140,192,132,.2) 0 130px,transparent 131px);
+  background-attachment:fixed;min-height:100vh;
+}
+.wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 16px 40px}
+
+/* ---------- 타이틀 ---------- */
+.hero{width:100%;max-width:1100px;text-align:center;margin-bottom:26px}
+.hero-art{width:100%;max-width:760px;margin:0 auto 10px;display:block;filter:drop-shadow(0 8px 18px rgba(91,70,54,.12))}
+.badge{display:inline-block;background:var(--coral);color:#fff;font-family:'Noto Sans KR';font-weight:700;
+  font-size:20px;padding:6px 22px;border-radius:999px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);margin-bottom:14px}
+.hero h1{font-family:'Gowun Batang',serif;font-weight:700;font-size:clamp(40px,7vw,72px);line-height:1.2;letter-spacing:-1px}
+.hero h1 .hl{background:linear-gradient(transparent 58%,var(--gold) 58% 92%,transparent 92%);padding:0 6px}
+.hero .who{font-family:'Noto Sans KR';font-weight:900;font-size:clamp(28px,4.4vw,42px);color:var(--coral);margin-top:6px}
+.hero .who span{color:var(--ink-soft);font-weight:500;font-size:clamp(20px,2.6vw,26px);display:block}
+.motto{display:inline-block;margin-top:18px;background:var(--paper);border:3px dashed var(--line);border-radius:22px;
+  padding:12px 26px;font-family:'Gowun Batang',serif;font-size:clamp(21px,2.6vw,26px);font-weight:700}
+
+/* ---------- 메뉴 ---------- */
+.menu-title{font-family:'Noto Sans KR';font-weight:700;font-size:22px;color:var(--ink-soft);text-align:center;margin:26px 0 16px}
+.menu{width:100%;max-width:1100px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:0 auto}
+.menu button{
+  font-family:'Noto Sans KR',sans-serif;cursor:pointer;text-align:center;
+  background:var(--paper);border:3px solid var(--line);border-radius:26px;padding:20px 12px 18px;
+  box-shadow:5px 5px 0 var(--line);transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden;color:var(--ink)
+}
+.menu button::before{content:"";position:absolute;inset:0 0 auto 0;height:12px;background:var(--c)}
+.menu button:hover,.menu button:focus-visible{transform:translate(-2px,-4px) rotate(-.6deg);box-shadow:8px 9px 0 var(--line);outline:none}
+.menu button:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--line)}
+.menu .ico{display:block;font-size:46px;line-height:1.1;margin:6px 0 4px}
+.menu .num{display:inline-block;background:var(--c);color:var(--ink);font-weight:900;font-size:20px;border:2px solid var(--line);
+  border-radius:999px;padding:0 12px;margin-bottom:6px}
+.menu .t{display:block;font-weight:900;font-size:23px;line-height:1.35;word-break:keep-all}
+.menu .s{display:block;font-size:20px;color:var(--ink-soft);line-height:1.4;margin-top:4px;word-break:keep-all}
+.menu button.wide{grid-column:span 2}
+.foot{margin-top:30px;text-align:center;font-size:20px;color:var(--ink-soft)}
+
+/* ---------- 상세 패널 ---------- */
+.overlay{position:fixed;inset:0;background:rgba(61,50,38,.55);backdrop-filter:blur(3px);display:none;
+  align-items:flex-start;justify-content:center;z-index:50;overflow-y:auto;padding:24px 16px}
+.overlay.open{display:flex;animation:fade .25s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.panel{width:100%;max-width:920px;background:var(--bg);border:4px solid var(--line);border-radius:30px;box-shadow:var(--shadow);
+  overflow:hidden;animation:pop .3s cubic-bezier(.2,1.3,.5,1)}
+@keyframes pop{from{transform:translateY(30px) scale(.97)}to{transform:none}}
+.p-head{background:var(--c);border-bottom:4px solid var(--line);padding:20px 22px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:2}
+.p-head .pi{font-size:44px;line-height:1}
+.p-head h2{font-family:'Gowun Batang',serif;font-weight:700;font-size:clamp(26px,4vw,36px);line-height:1.3;flex:1;word-break:keep-all}
+.p-head h2 small{display:block;font-family:'Noto Sans KR';font-weight:500;font-size:20px;color:var(--ink)}
+.close{flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--line);background:#fff;font-size:30px;font-weight:900;cursor:pointer;
+  box-shadow:3px 3px 0 var(--line);color:var(--ink);line-height:1}
+.p-body{padding:26px 24px 30px}
+.art{background:#fff;border:3px solid var(--line);border-radius:24px;overflow:hidden;margin-bottom:20px}
+.art svg{display:block;width:100%;height:auto}
+.verse{background:#fffdf6;border:3px solid var(--line);border-left:14px solid var(--c);border-radius:20px;padding:18px 22px;margin-bottom:26px;
+  font-family:'Gowun Batang',serif;font-size:23px;line-height:1.7;position:relative}
+.verse b{display:block;font-family:'Noto Sans KR';font-size:20px;color:var(--coral);margin-top:6px;text-align:right}
+.p-body h3{font-family:'Noto Sans KR';font-weight:900;font-size:25px;margin:28px 0 12px;display:flex;align-items:center;gap:10px;word-break:keep-all}
+.p-body h3::before{content:"";flex:none;width:16px;height:16px;border-radius:50%;background:var(--c);border:3px solid var(--line)}
+.p-body p{margin:0 0 14px;word-break:keep-all}
+.p-body ul,.p-body ol{margin:0 0 16px 4px;padding-left:26px}
+.p-body li{margin-bottom:8px;word-break:keep-all}
+.p-body strong{background:linear-gradient(transparent 60%,rgba(246,196,83,.6) 60%)}
+.quote{background:#fff;border:3px solid var(--line);border-radius:22px;padding:18px 22px 16px 58px;margin:16px 0 20px;position:relative;
+  font-family:'Gowun Batang',serif;font-size:22px;line-height:1.75}
+.quote::before{content:"“";position:absolute;left:14px;top:-6px;font-size:76px;color:var(--c);font-family:Georgia,serif;-webkit-text-stroke:2px var(--line)}
+.quote cite{display:block;font-style:normal;font-family:'Noto Sans KR';font-size:20px;color:var(--ink-soft);margin-top:8px;text-align:right}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:12px 0 18px}
+.card{background:#fff;border:3px solid var(--line);border-radius:20px;padding:16px 18px;box-shadow:4px 4px 0 var(--line)}
+.card .k{display:inline-block;font-family:'Noto Sans KR';font-weight:900;font-size:21px;background:var(--c);border:2px solid var(--line);border-radius:12px;padding:2px 12px;margin-bottom:8px}
+.card p{margin:0}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 18px}
+.vs .card:first-child{background:#eef7fd}.vs .card:last-child{background:#fff1ea}
+.key{background:var(--gold);border:3px solid var(--line);border-radius:22px;padding:16px 20px;font-family:'Gowun Batang',serif;font-weight:700;
+  font-size:23px;text-align:center;margin:18px 0;box-shadow:4px 4px 0 var(--line);word-break:keep-all}
+.p-nav{display:flex;justify-content:space-between;gap:12px;padding:0 24px 26px}
+.p-nav button{flex:1;font-family:'Noto Sans KR';font-weight:700;font-size:21px;padding:14px 10px;border-radius:18px;border:3px solid var(--line);
+  background:#fff;box-shadow:3px 3px 0 var(--line);cursor:pointer;color:var(--ink)}
+.p-nav button:disabled{opacity:.35;cursor:default}
+.p-nav .home{background:var(--gold)}
+
+@media (max-width:900px){.menu{grid-template-columns:repeat(3,1fr)} .menu button.wide{grid-column:span 3}}
+@media (max-width:640px){
+  .wrap{padding:22px 16px 30px}
+  .menu{grid-template-columns:repeat(2,1fr);gap:14px}
+  .menu button.wide{grid-column:span 2}
+  .menu button{padding:16px 8px 14px;border-radius:22px;box-shadow:4px 4px 0 var(--line)}
+  .menu .ico{font-size:38px}
+  .menu .t{font-size:21px}
+  .overlay{padding:10px 8px}
+  .p-head{padding:14px 14px}
+  .p-head .pi{font-size:34px}
+  .close{width:50px;height:50px;font-size:26px}
+  .p-body{padding:20px 16px 24px}
+  .quote{padding:16px 16px 14px 46px}
+  .quote::before{font-size:60px;left:8px}
+  .verse{font-size:21px;padding:14px 16px}
+  .vs{grid-template-columns:1fr}
+  .p-nav{padding:0 16px 20px}
+  .p-nav button{font-size:20px;padding:12px 6px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <!-- 동화풍 타이틀 삽화 -->
+    <svg class="hero-art" viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" aria-label="언덕 위 십자가와 등불을 든 순례자">
+      <defs>
+        <linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe8f7"/><stop offset="1" stop-color="#fff3d6"/></linearGradient>
+      </defs>
+      <rect x="4" y="4" width="752" height="242" rx="34" fill="url(#hsky)" stroke="#5b4636" stroke-width="4"/>
+      <g stroke="#f6c453" stroke-width="5" stroke-linecap="round" opacity=".8">
+        <line x1="560" y1="40" x2="560" y2="18"/><line x1="600" y1="56" x2="616" y2="40"/><line x1="520" y1="56" x2="504" y2="40"/>
+        <line x1="612" y1="92" x2="634" y2="92"/><line x1="508" y1="92" x2="486" y2="92"/>
+      </g>
+      <circle cx="560" cy="92" r="36" fill="#f6c453" stroke="#5b4636" stroke-width="4"/>
+      <g fill="#fff" stroke="#5b4636" stroke-width="3">
+        <path d="M90 70 q14 -20 34 -8 q18 -12 30 6 q16 2 12 16 h-80 q-10 -12 4 -14z"/>
+        <path d="M300 48 q12 -16 28 -6 q14 -10 26 4 q14 2 10 14 h-66 q-8 -10 2 -12z"/>
+      </g>
+      <path d="M4 196 Q150 120 300 176 T560 160 T756 170 V212 Q756 246 722 246 H38 Q4 246 4 212Z" fill="#a8d59a" stroke="#5b4636" stroke-width="4"/>
+      <path d="M4 222 Q200 170 420 210 T756 200 V212 Q756 246 722 246 H38 Q4 246 4 212Z" fill="#8cc084" stroke="#5b4636" stroke-width="4"/>
+      <!-- 언덕 위 십자가 -->
+      <g stroke="#5b4636" stroke-width="4" stroke-linecap="round" fill="#fff8ec">
+        <rect x="414" y="96" width="14" height="70" rx="4"/><rect x="398" y="112" width="46" height="13" rx="4"/>
+      </g>
+      <!-- 길 -->
+      <path d="M180 246 C230 214 300 206 360 186 C390 176 404 172 418 166" fill="none" stroke="#f3e2b8" stroke-width="18" stroke-linecap="round"/>
+      <path d="M180 246 C230 214 300 206 360 186 C390 176 404 172 418 166" fill="none" stroke="#5b4636" stroke-width="2" stroke-dasharray="6 8"/>
+      <!-- 순례자 -->
+      <g stroke="#5b4636" stroke-width="3.5" stroke-linejoin="round">
+        <path d="M246 214 q-4 -40 18 -44 q22 4 18 44z" fill="#f08a5d"/>
+        <circle cx="264" cy="156" r="15" fill="#ffe0bd"/>
+        <path d="M249 152 q15 -20 30 0" fill="#7a5a3c"/>
+        <line x1="280" y1="182" x2="300" y2="168" fill="none"/>
+        <rect x="294" y="150" width="16" height="20" rx="5" fill="#f6c453"/>
+        <circle cx="302" cy="146" r="4" fill="#5b4636"/>
+      </g>
+      <circle cx="302" cy="160" r="22" fill="#f6c453" opacity=".35"/>
+      <circle cx="259" cy="156" r="2" fill="#5b4636"/><circle cx="269" cy="156" r="2" fill="#5b4636"/>
+      <!-- 열린 책 -->
+      <g stroke="#5b4636" stroke-width="3.5" stroke-linejoin="round">
+        <path d="M600 200 q-30 -12 -64 -6 v-46 q34 -6 64 6z" fill="#fff"/>
+        <path d="M600 200 q30 -12 64 -6 v-46 q-34 -6 -64 6z" fill="#fff"/>
+        <path d="M548 164 q22 -4 40 4 M548 178 q22 -4 40 4 M612 168 q18 -8 40 -4 M612 182 q18 -8 40 -4" fill="none" stroke-width="2.5"/>
+      </g>
+      <!-- 꽃 -->
+      <g stroke="#5b4636" stroke-width="2.5">
+        <circle cx="90" cy="214" r="9" fill="#f2a7b5"/><circle cx="90" cy="214" r="3" fill="#f6c453"/>
+        <circle cx="130" cy="226" r="8" fill="#b49fdc"/><circle cx="130" cy="226" r="3" fill="#f6c453"/>
+        <circle cx="700" cy="218" r="9" fill="#fff"/><circle cx="700" cy="218" r="3" fill="#f6c453"/>
+      </g>
+    </svg>
+    <div class="badge">리전트 칼리지 변증학 강좌 · 제1강</div>
+    <h1><span class="hl">기독교 변증학</span> 입문</h1>
+    <div class="who">알리스터 맥그래스<span>Apologetics 1 · Introducing Christian Apologetics</span></div>
+    <div class="motto">“우리 신앙에 대한 효과적인 설명은 훌륭한 변증입니다”</div>
+  </header>
+
+  <div class="menu-title">👇 궁금한 주제를 눌러 보세요</div>
+  <nav class="menu" id="menu" aria-label="강의 메뉴"></nav>
+  <div class="foot">벧전 3:15 · 너희 속에 있는 소망에 관한 이유를 묻는 자에게는 대답할 것을 항상 준비하되 온유와 두려움으로 하고</div>
+</div>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <article class="panel" id="panel">
+    <div class="p-head"><span class="pi" id="pIco"></span><h2 id="pTitle"></h2><button class="close" id="closeBtn" aria-label="닫기">✕</button></div>
+    <div class="p-body">
+      <div class="art" id="pArt"></div>
+      <div class="verse" id="pVerse"></div>
+      <div id="pBody"></div>
+    </div>
+    <div class="p-nav">
+      <button id="prevBtn">◀ 이전</button>
+      <button class="home" id="homeBtn">메뉴로</button>
+      <button id="nextBtn">다음 ▶</button>
+    </div>
+  </article>
+</div>
+
+<script>
+const S = 'stroke="#5b4636" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"';
+const frame = (bg, inner) => `<svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg"><rect width="800" height="300" fill="${bg}"/>${inner}</svg>`;
+const ground = (c='#a8d59a') => `<path d="M0 250 Q200 214 400 240 T800 232 V300 H0Z" fill="${c}" ${S}/>`;
+const sparkle = (x,y,c='#f6c453') => `<path d="M${x} ${y-14} L${x+4} ${y-4} L${x+14} ${y} L${x+4} ${y+4} L${x} ${y+14} L${x-4} ${y+4} L${x-14} ${y} L${x-4} ${y-4}Z" fill="${c}" stroke="#5b4636" stroke-width="2.5"/>`;
+
+const ART = {
+  book: frame('#fdf0d5', `
+    <circle cx="400" cy="150" r="120" fill="#fff6c9"/><circle cx="400" cy="150" r="84" fill="#ffeaa0"/>
+    ${ground()}
+    <path d="M400 110 Q330 82 240 96 V226 Q330 212 400 240Z" fill="#fff" ${S}/>
+    <path d="M400 110 Q470 82 560 96 V226 Q470 212 400 240Z" fill="#fff" ${S}/>
+    <path d="M268 130 q50 -8 104 6 M268 160 q50 -8 104 6 M268 190 q50 -8 104 6 M432 136 q50 -14 102 -6 M432 166 q50 -14 102 -6 M432 196 q50 -14 102 -6" fill="none" stroke="#5b4636" stroke-width="3" stroke-linecap="round"/>
+    <path d="M400 110 V240" stroke="#5b4636" stroke-width="4"/>
+    <path d="M384 108 h32 v58 l-16 -12 l-16 12z" fill="#f08a5d" ${S}/>
+    ${sparkle(190,70)}${sparkle(620,60,'#8fc7e8')}${sparkle(650,170,'#f2a7b5')}${sparkle(150,170,'#b49fdc')}`),
+
+  dawn: frame('#2f4a6e', `
+    <rect x="400" width="400" height="300" fill="#ffe4b8"/>
+    <circle cx="640" cy="120" r="58" fill="#f6c453" ${S}/>
+    <circle cx="140" cy="70" r="30" fill="#fff6c9" ${S}/><circle cx="154" cy="62" r="26" fill="#2f4a6e"/>
+    <g fill="#fff6c9"><circle cx="240" cy="50" r="4"/><circle cx="300" cy="100" r="3"/><circle cx="80" cy="140" r="3"/><circle cx="330" cy="40" r="3"/></g>
+    <path d="M0 240 Q200 190 400 222 T800 210 V300 H0Z" fill="#8cc084" ${S}/>
+    <path d="M0 240 Q200 190 400 222 V300 H0Z" fill="#5d7f62"/>
+    <path d="M60 300 C200 260 300 250 400 232 C500 214 560 206 620 196" fill="none" stroke="#f3e2b8" stroke-width="20"/>
+    <g ${S}>
+      <path d="M480 228 q-6 -54 24 -58 q30 4 24 58z" fill="#8fc7e8"/>
+      <circle cx="504" cy="146" r="20" fill="#ffe0bd"/>
+      <path d="M486 140 q18 -24 36 0" fill="#7a5a3c"/>
+      <path d="M484 186 l-26 -36 M524 186 l26 -36" fill="none"/>
+    </g>
+    <path d="M497 152 q4 4 8 0 M509 152 q4 4 8 0" fill="none" stroke="#5b4636" stroke-width="2.5"/>
+    <path d="M498 160 q6 6 12 0" fill="none" stroke="#5b4636" stroke-width="2.5"/>
+    ${sparkle(560,70)}${sparkle(720,220,'#f2a7b5')}`),
+
+  heart: frame('#fde8ec', `
+    ${ground('#f7c9d2')}
+    <path d="M400 262 C260 190 240 90 320 74 C366 66 392 98 400 116 C408 98 434 66 480 74 C560 90 540 190 400 262Z" fill="#f08a5d" ${S}/>
+    <path d="M330 110 q20 -18 40 -6" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".7"/>
+    <g transform="rotate(-28 400 160)"><rect x="330" y="140" width="140" height="42" rx="18" fill="#fff6e0" ${S}/>
+      <rect x="380" y="140" width="40" height="42" fill="#f3d9b0" stroke="#5b4636" stroke-width="3"/>
+      <g fill="#c9a77d"><circle cx="390" cy="152" r="3"/><circle cx="410" cy="152" r="3"/><circle cx="390" cy="170" r="3"/><circle cx="410" cy="170" r="3"/></g></g>
+    <g ${S} fill="#fff"><path d="M590 80 q30 -6 46 14 q20 -16 46 -4 q-20 8 -30 22 q-10 22 -40 20 l-26 14 l6 -22 q-16 -16 -2 -44z"/></g>
+    <circle cx="616" cy="92" r="3" fill="#5b4636"/><path d="M590 82 l-12 4 l12 6" fill="#f6c453" stroke="#5b4636" stroke-width="2.5"/>
+    ${sparkle(170,90,'#f6c453')}${sparkle(220,200,'#b49fdc')}`),
+
+  feast: frame('#fff3e2', `
+    <rect x="560" y="40" width="150" height="210" rx="70" fill="#fff6c9" ${S}/>
+    <path d="M590 250 V110 a45 45 0 0 1 90 0 V250" fill="#ffe08a" stroke="#5b4636" stroke-width="3"/>
+    <g stroke="#f6c453" stroke-width="5" stroke-linecap="round" opacity=".8"><line x1="635" y1="24" x2="635" y2="6"/><line x1="720" y1="80" x2="740" y2="70"/><line x1="550" y1="80" x2="530" y2="70"/></g>
+    ${ground('#e7cfa6')}
+    <path d="M70 196 h440 v24 h-440z" fill="#f08a5d" ${S}/>
+    <path d="M70 220 q55 30 110 0 q55 30 110 0 q55 30 110 0 q55 30 110 0" fill="#fff" ${S}/>
+    <rect x="96" y="246" width="18" height="40" fill="#a57b52" ${S}/><rect x="466" y="246" width="18" height="40" fill="#a57b52" ${S}/>
+    <ellipse cx="170" cy="182" rx="56" ry="24" fill="#e6a65d" ${S}/>
+    <path d="M136 176 q8 -10 16 0 M162 172 q8 -10 16 0 M188 176 q8 -10 16 0" fill="none" stroke="#5b4636" stroke-width="3"/>
+    <path d="M270 120 h56 l-8 50 h-40z" fill="#b49fdc" ${S}/><rect x="290" y="170" width="16" height="16" fill="#b49fdc" ${S}/><ellipse cx="298" cy="190" rx="26" ry="7" fill="#b49fdc" ${S}/>
+    <g fill="#8c5fb8" stroke="#5b4636" stroke-width="2.5"><circle cx="400" cy="160" r="12"/><circle cx="424" cy="160" r="12"/><circle cx="412" cy="180" r="12"/><circle cx="436" cy="180" r="12"/><circle cx="388" cy="180" r="12"/></g>
+    <path d="M412 148 q4 -16 18 -18" fill="none" stroke="#5d7f62" stroke-width="4"/>`),
+
+  garden: frame('#eaf6e6', `
+    <circle cx="660" cy="74" r="44" fill="#f6c453" ${S}/>
+    ${ground()}
+    <g ${S}>
+      <path d="M200 260 V150" fill="none"/><path d="M200 210 q-30 -10 -40 -34 q30 4 40 34z" fill="#8cc084"/>
+      <g fill="#f2a7b5"><circle cx="200" cy="110" r="22"/><circle cx="230" cy="130" r="22"/><circle cx="170" cy="130" r="22"/><circle cx="216" cy="158" r="20"/><circle cx="184" cy="158" r="20"/></g>
+      <circle cx="200" cy="138" r="16" fill="#f6c453"/>
+      <path d="M400 260 V140" fill="none"/><path d="M400 200 q30 -10 40 -34 q-30 4 -40 34z" fill="#8cc084"/>
+      <path d="M400 70 l14 30 l32 4 l-24 22 l8 32 l-30 -16 l-30 16 l8 -32 l-24 -22 l32 -4z" fill="#8fc7e8"/>
+      <circle cx="400" cy="116" r="12" fill="#fff6c9"/>
+      <path d="M600 260 V160" fill="none"/><path d="M600 216 q-30 -8 -42 -30 q30 0 42 30z" fill="#8cc084"/>
+      <path d="M570 160 q-6 -50 30 -60 q36 10 30 60 q-14 -16 -30 0 q-16 -16 -30 0z" fill="#b49fdc"/>
+    </g>
+    ${sparkle(300,80,'#f08a5d')}${sparkle(500,90,'#f2a7b5')}`),
+
+  bread: frame('#eef7fd', `
+    ${ground('#cfe6bf')}
+    <ellipse cx="270" cy="200" rx="130" ry="56" fill="#e6a65d" ${S}/>
+    <path d="M190 190 q20 -26 40 0 M250 182 q20 -26 40 0 M310 190 q20 -26 40 0" fill="none" stroke="#5b4636" stroke-width="4" stroke-linecap="round"/>
+    <path d="M190 220 q80 20 160 0" fill="none" stroke="#c98a45" stroke-width="5" stroke-linecap="round"/>
+    <path d="M520 110 q-10 -30 20 -36 h60 q30 6 20 36 q50 30 30 110 q-10 40 -80 40 q-70 0 -80 -40 q-20 -80 30 -110z" fill="#8fc7e8" ${S}/>
+    <rect x="534" y="62" width="72" height="16" rx="6" fill="#6cc1b5" ${S}/>
+    <path d="M520 170 q50 20 100 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+    <path d="M570 110 q-12 18 0 28 q12 -10 0 -28z" fill="#fff" stroke="#5b4636" stroke-width="3"/>
+    <path d="M400 70 C370 40 330 60 350 90 C360 104 400 126 400 126 C400 126 440 104 450 90 C470 60 430 40 400 70Z" fill="#f2a7b5" ${S}/>
+    ${sparkle(130,90)}${sparkle(700,80,'#f2a7b5')}`),
+
+  weave: frame('#f3eefd', `
+    <circle cx="400" cy="150" r="118" fill="#fff" ${S}/>
+    <g fill="none" stroke-width="10" stroke-linecap="round">
+      <path d="M290 100 Q400 160 510 100" stroke="#f08a5d"/><path d="M286 160 Q400 110 514 160" stroke="#8fc7e8"/>
+      <path d="M300 210 Q400 150 500 210" stroke="#8cc084"/><path d="M340 50 Q380 150 340 250" stroke="#f6c453"/>
+      <path d="M460 50 Q420 150 460 250" stroke="#b49fdc"/>
+    </g>
+    <g ${S} fill="#fff6c9"><rect x="388" y="90" width="24" height="120" rx="6"/><rect x="356" y="122" width="88" height="22" rx="6"/></g>
+    <circle cx="400" cy="150" r="140" fill="none" stroke="#f6c453" stroke-width="4" stroke-dasharray="4 14"/>
+    <g ${S}><circle cx="140" cy="230" r="34" fill="#f08a5d"/><path d="M140 196 q30 -40 70 -30" fill="none"/></g>
+    <g ${S}><circle cx="660" cy="230" r="34" fill="#8fc7e8"/><path d="M660 196 q-30 -40 -70 -30" fill="none"/></g>
+    ${sparkle(130,80,'#b49fdc')}${sparkle(680,80,'#8cc084')}`),
+
+  scroll: frame('#fff6e6', `
+    ${ground('#e7d6b4')}
+    <rect x="200" y="70" width="300" height="170" fill="#fffaf0" ${S}/>
+    <rect x="180" y="58" width="30" height="194" rx="14" fill="#e6a65d" ${S}/><rect x="490" y="58" width="30" height="194" rx="14" fill="#e6a65d" ${S}/>
+    <path d="M240 110 h220 M240 140 h200 M240 170 h220 M240 200 h160" stroke="#5b4636" stroke-width="4" stroke-linecap="round"/>
+    <path d="M600 90 h110 v70 q0 60 -55 84 q-55 -24 -55 -84z" fill="#8fc7e8" ${S}/>
+    <path d="M655 110 v100 M620 148 h70" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+    <path d="M70 250 q30 -70 90 -110" fill="none" stroke="#5d7f62" stroke-width="5" stroke-linecap="round"/>
+    <g fill="#8cc084" stroke="#5b4636" stroke-width="3">
+      <ellipse cx="96" cy="200" rx="16" ry="8" transform="rotate(-40 96 200)"/><ellipse cx="120" cy="170" rx="16" ry="8" transform="rotate(-50 120 170)"/>
+      <ellipse cx="78" cy="226" rx="16" ry="8" transform="rotate(30 78 226)"/><ellipse cx="136" cy="196" rx="16" ry="8" transform="rotate(20 136 196)"/>
+      <ellipse cx="150" cy="148" rx="16" ry="8" transform="rotate(-60 150 148)"/>
+    </g>
+    ${sparkle(660,50)}`),
+
+  athens: frame('#e8f3fb', `
+    <circle cx="120" cy="70" r="36" fill="#f6c453" ${S}/>
+    <path d="M0 250 Q200 160 420 190 T800 200 V300 H0Z" fill="#cfe6bf" ${S}/>
+    <g ${S} fill="#fffaf0">
+      <path d="M420 70 L620 70 L520 30Z"/><rect x="420" y="70" width="200" height="16"/>
+      <rect x="434" y="86" width="20" height="96"/><rect x="474" y="86" width="20" height="96"/><rect x="546" y="86" width="20" height="96"/><rect x="586" y="86" width="20" height="96"/>
+      <rect x="414" y="182" width="212" height="16"/>
+    </g>
+    <g ${S}>
+      <rect x="250" y="190" width="70" height="20" rx="6" fill="#c9a77d"/>
+      <path d="M266 190 q-4 -50 20 -54 q24 4 20 54z" fill="#f08a5d"/>
+      <circle cx="286" cy="118" r="18" fill="#ffe0bd"/><path d="M268 122 q18 30 36 0" fill="#7a5a3c"/>
+      <path d="M302 150 l34 -26" fill="none"/>
+    </g>
+    <g ${S}>
+      <circle cx="120" cy="214" r="16" fill="#ffe0bd"/><path d="M100 262 q0 -34 20 -32 q20 -2 20 32z" fill="#b49fdc"/>
+      <circle cx="176" cy="226" r="16" fill="#ffe0bd"/><path d="M156 274 q0 -34 20 -32 q20 -2 20 32z" fill="#6cc1b5"/>
+      <circle cx="680" cy="228" r="16" fill="#ffe0bd"/><path d="M660 276 q0 -34 20 -32 q20 -2 20 32z" fill="#f2a7b5"/>
+    </g>`),
+
+  bridge: frame('#eaf4fb', `
+    <circle cx="400" cy="70" r="40" fill="#f6c453" ${S}/>
+    <path d="M0 140 h230 l20 160 H0Z" fill="#a8d59a" ${S}/><path d="M800 140 h-230 l-20 160 H800Z" fill="#a8d59a" ${S}/>
+    <path d="M250 300 Q400 230 550 300Z" fill="#8fc7e8" ${S}/>
+    <path d="M230 150 Q400 230 570 150" fill="none" stroke="#a57b52" stroke-width="10" stroke-linecap="round"/>
+    <g stroke="#5b4636" stroke-width="3"><line x1="280" y1="170" x2="280" y2="150"/><line x1="330" y1="186" x2="330" y2="150"/><line x1="400" y1="190" x2="400" y2="150"/><line x1="470" y1="186" x2="470" y2="150"/><line x1="520" y1="170" x2="520" y2="150"/></g>
+    <path d="M230 150 Q400 230 570 150" fill="none" stroke="#5b4636" stroke-width="3"/>
+    <path d="M230 120 Q400 150 570 120" fill="none" stroke="#5b4636" stroke-width="4"/>
+    <g ${S}>
+      <path d="M120 140 q-4 -44 20 -48 q24 4 20 48z" fill="#f08a5d"/><circle cx="140" cy="76" r="16" fill="#ffe0bd"/>
+      <path d="M660 140 q-4 -44 20 -48 q24 4 20 48z" fill="#b49fdc"/><circle cx="680" cy="76" r="16" fill="#ffe0bd"/>
+      <path d="M170 40 h110 q14 0 14 14 v26 q0 14 -14 14 h-80 l-18 16 l2 -16 h-14 q-14 0 -14 -14 v-26 q0 -14 14 -14z" fill="#fff"/>
+      <path d="M520 40 h110 q14 0 14 14 v26 q0 14 -14 14 h-14 l2 16 l-18 -16 h-80 q-14 0 -14 -14 v-26 q0 -14 14 -14z" fill="#fff"/>
+    </g>
+    <path d="M196 66 h70 M546 66 h70" stroke="#5b4636" stroke-width="4" stroke-linecap="round"/>
+    <path d="M308 66 l14 0 m-6 -6 l6 6 l-6 6 M500 66 l-14 0 m6 -6 l-6 6 l6 6" stroke="#f08a5d" stroke-width="4" fill="none" stroke-linecap="round"/>`),
+
+  lamp: frame('#fff3d6', `
+    <circle cx="640" cy="110" r="54" fill="#ffe08a" ${S}/>
+    <path d="M0 230 Q200 190 420 214 T800 200 V300 H0Z" fill="#a8d59a" ${S}/>
+    <path d="M120 300 C260 260 420 240 640 200" fill="none" stroke="#f3e2b8" stroke-width="26" stroke-linecap="round"/>
+    <path d="M120 300 C260 260 420 240 640 200" fill="none" stroke="#5b4636" stroke-width="2" stroke-dasharray="8 10"/>
+    <circle cx="260" cy="170" r="74" fill="#f6c453" opacity=".3"/>
+    <g ${S}>
+      <path d="M200 196 q60 30 120 0 q-6 -36 -60 -36 q-54 0 -60 36z" fill="#e6a65d"/>
+      <path d="M320 186 q30 -6 34 -24 q-24 -2 -38 14" fill="#e6a65d"/>
+      <path d="M200 186 q-24 -4 -28 -24 q-2 -14 14 -12 q2 16 20 22" fill="none"/>
+      <path d="M352 150 q-14 -26 4 -46 q18 22 4 46z" fill="#f08a5d"/>
+    </g>
+    <path d="M356 136 q-6 -12 2 -22 q8 10 2 22z" fill="#fff6c9"/>
+    ${sparkle(470,90)}${sparkle(120,90,'#f2a7b5')}${sparkle(760,240,'#b49fdc')}`)
+};
+
+const SECTIONS = [
+{ c:'#f6c453', ico:'🎙️', t:'인사말과 강의 목표', s:'자신만의 변증 방식을 찾도록', art:'book',
+  verse:'철이 철을 날카롭게 하는 것 같이 사람이 그의 친구의 얼굴을 빛나게 하느니라', ref:'잠언 27:17',
+  body:`
+  <h3>리전트 칼리지와의 인연</h3>
+  <p>알리스터 맥그래스는 밴쿠버 리전트 칼리지를 위해 강연하게 된 것을 기뻐하며, <strong>1992년부터 이어진 인연</strong>을 기독교 변증학 분야를 소개하고 탐구하는 <strong>15개의 강연 시리즈</strong>로 이어가게 된 것을 진정한 특권으로 여깁니다. 현장에 함께하지 못한 것, 그리고 코로나19로 옥스퍼드 강의실에서 촬영하지 못한 것을 아쉬워합니다.</p>
+  <h3>이 강좌의 목적</h3>
+  <ul>
+    <li>변증을 하는 “올바르고 가장 좋은 방법”을 알려주려는 것이 <strong>아닙니다.</strong> 자신의 변증 방식을 사용하라고 제안하지도 않습니다.</li>
+    <li>목적은 단순합니다. 여러분이 <strong>자신만의 독특한 변증 방식</strong>을 개발하는 데 도움이 될 아이디어, 인물, 접근 방식을 소개하는 것입니다.</li>
+    <li>여러분을 <strong>C.S. 루이스나 다른 누군가의 복사본</strong>으로 만들고 싶지 않습니다. 자신감과 확신을 가지고 작업할 자신만의 접근 방식을 스스로 찾도록 생각을 자극하고자 합니다.</li>
+  </ul>
+  <div class="key">“여러분은 이것을 해낼 수 있으며, 제가 그것을 도울 것입니다.”</div>
+  <h3>40년의 교훈</h3>
+  <p>40년 이상 변증학적 문제를 생각해 왔으며, 그동안 배운 교훈의 일부 — 그중 일부는 큰 어려움 속에서 배웠지만 매우 중요했던 것들 — 를 이 시리즈로 전하고자 합니다. 변증학이 <strong>정말 흥미롭다는 것</strong>을 확신시키고 싶으며, 이는 그 자신의 경험이기도 합니다. 이제 변증학이 왜 중요한지 생각하기 시작하십시오.</p>`},
+
+{ c:'#8fc7e8', ico:'🌅', t:'무신론자에서 그리스도인으로', s:'개인적인 회심 여정', art:'dawn',
+  verse:'…내가 맹인으로 있다가 지금 보는 그것이니이다', ref:'요한복음 9:25',
+  body:`
+  <h3>변증학은 왜 흥미롭고 중요한가?</h3>
+  <p>이미 변증학이 자신의 사역이나 교회 생활에 매우 중요함을 발견한 분도 있고, 기독교 지성 생활의 이 측면을 더 알고 싶어 시청하는 분도 있을 것입니다. 변증학은 <strong>21세기에 들어서면서 점점 더 중요</strong>해졌으며, 강연 과정을 통해 그 이유를 설명하겠다고 말합니다.</p>
+  <h3>십대 시절, 공격적인 무신론자</h3>
+  <ul>
+    <li>기독교는 비현실적이고 비이성적이며, 생각하는 사람이 진지하게 받아들일 수 없는 것이라고 믿었습니다.</li>
+    <li>인간 삶의 현실과 명백한 연관성이 없어 보였습니다.</li>
+    <li>기독교는 몇 가지 이상한 신학적 신념이 덧붙은 <strong>흥미롭지 못한 도덕 규범</strong>에 불과했고, 아무 의미도 없으며 미래도 없다고 가정했습니다.</li>
+  </ul>
+  <h3>과학과 무신론은 동전의 양면?</h3>
+  <p>벨파스트의 <strong>메서디스트 칼리지</strong>에서 자연과학을 공부하며 옥스퍼드 대학교 장학금을 받아 연구 과학자가 되기를 희망했습니다. 그 시절 과학과 무신론은 서로 연결된 <strong>동일한 동전의 양면</strong>처럼 보였고, 과학을 사랑하면 당연히 무신론을 받아들여야 한다고 생각했습니다. 그러나 상황은 그렇게 단순하지 않았습니다.</p>
+  <h3>예상치 못한 두 가지 일</h3>
+  <div class="cards">
+    <div class="card"><span class="k">첫째</span><p>다소 독단적이었던 자신의 무신론이 지닌 <strong>지적 정직성</strong>에 의문을 품기 시작했습니다.</p></div>
+    <div class="card"><span class="k">둘째</span><p>기독교를 진정으로 이해한 적이 없었음을 깨달았습니다. 기독교의 <strong>지적 비전과 변혁적 잠재력</strong>을 파악하지 못한 채 그 <strong>캐리커처</strong>를 거부했던 것입니다.</p></div>
+  </div>
+  <p><strong>1971년의 마지막 달들</strong>에 그는 무신론을 뒤로하고 기독교를 받아들였습니다. 그보다 앞선 C.S. 루이스처럼, 무신론에서 기독교로 향한 지적 여정이 그에게 변증학의 중요성을 확신시켜 주었습니다. 기독교를 진정으로 이해하지 못했던 경험 때문에 변증학이 그에게 정말 중요해진 것입니다.</p>`},
+
+{ c:'#f2a7b5', ico:'💗', t:'설명이 곧 변증이다', s:'치유와 회복의 복음 · 청중 이해', art:'heart',
+  verse:'건강한 자에게는 의사가 쓸 데 없고 병든 자에게라야 쓸 데 있느니라', ref:'마가복음 2:17',
+  body:`
+  <h3>회심이 일깨운 두 가지 변증 주제</h3>
+  <div class="cards">
+    <div class="card"><span class="k">① 취약성 성찰</span><p>대안적 신앙 체계의 취약성에 대해 성찰하도록 사람들을 초대하기. 무신론이 지적으로 물샐 틈 없다고 생각했지만 그렇지 않았습니다.</p></div>
+    <div class="card"><span class="k">② 기독교 설명</span><p>기독교가 무엇에 관한 것인지 설명하기. 옥스퍼드의 친구들이 설명해 줄 때까지 그 깊이와 풍요로움을 발견할 수 없었습니다.</p></div>
+  </div>
+  <p>기독교 신앙에 대한 세심한 설명은 변증학적으로 매우 효과적일 수 있습니다. 그처럼 처음에 제대로 이해하지 못한 채 기독교를 거부한 사람이 많을 것입니다.</p>
+  <div class="key">“우리 신앙에 대한 효과적인 설명은 훌륭한 변증입니다.”<br>— 이 강좌 내내 반복될 주제</div>
+  <h3>신앙의 깊이로 들어가는 초대</h3>
+  <p>변증학은 우리 자신의 신앙을 더 깊이 파고들도록 하는 초대이기도 합니다. 신앙의 <strong>개별 요소들</strong>(각각 변증학적 잠재력이 풍부함)과 그것들이 속한 <strong>더 큰 그림</strong>을 함께 전하는 것입니다. 기독교의 큰 그림은 정말 흥미로우며, 맥그래스를 신앙으로 이끈 것도 바로 그것이었습니다(다음 강연에서 더 다룸). 신앙의 각 측면이 지닌 변증학적 잠재력을 식별하고 음미하는 것은 우리 신앙을 더욱 감사하게 여기도록 돕습니다.</p>
+  <h3>예시: 그리스도는 치유와 회복을 가져오신다</h3>
+  <ul>
+    <li>그리스도의 사역에서, 그리고 신약성경이 그분의 의미를 풀어내는 풍부한 <strong>시각적 이미지</strong>들 속에서 이를 봅니다.</li>
+    <li><strong>아우구스티누스</strong>는 그리스도를 인간 본성에 치유를 가져다주는 <strong>의사(Medicus)</strong>로 보았습니다.</li>
+    <li>이 구원 이해는 상처 입고 손상된 깨진 세상에서 수용과 치유, 회복을 어디서 찾을지 궁금해하는 사람들에게 정말 강력하게 말을 건넵니다.</li>
+  </ul>
+  <h3>모든 측면이 중요하다</h3>
+  <p>기독교 신앙의 각 측면은 서로 다른 사람들에게 서로 다른 방식으로 다가갑니다. 어떤 이에게는 단 하나의 요소가 복음을 온전히 탐구하고 싶게 이끄는 연결점이 될 수 있습니다. 기독교는 엄청나게 풍부하고 다면적이며, 그 각각이 사람들에게 깊이 말을 건넬 수 있습니다.</p>
+  <h3>청중을 이해하라</h3>
+  <div class="quote">기독교 복음의 이 많은 풍부한 주제들 중 어떤 것이 이 청중이나 내가 말을 건네는 이 사람에게 특별히 강력하게 말을 건넬 수 있을까? 나는 복음의 각 측면이 지닌 특정한 매력이 무엇일지 파악해야 한다.<cite>— 변증가가 스스로에게 던져야 할 질문</cite></div>`},
+
+{ c:'#f08a5d', ico:'🍞', t:'변증과 전도', s:'잔치 비유로 보는 차이', art:'feast',
+  verse:'주인이 종에게 이르되 길과 산울타리 가로 나가서 사람을 강권하여 데려다가 내 집을 채우라', ref:'누가복음 14:23',
+  body:`
+  <h3>이론적으로는 구별, 실제로는 구별하기 어려움</h3>
+  <p>많은 사람들은 변증학을 <strong>세례 요한이 그리스도의 오심을 예비한 것처럼</strong> 전도를 위해 그라운드를 닦는 일로 봅니다. 그렇다면 변증학은 <strong>신앙에 이르는 장애물을 제거하는 것</strong>입니다.</p>
+  <p>변증학은 이성과 문화 역사를 바탕으로 지적 사례를 개발하거나, 하나님과 우리의 진정한 운명으로부터의 소외의 표시로서 많은 사람이 느끼는 <strong>영적 갈망의 경험</strong>에 호소함으로써 그리스도 복음의 <strong>그럴듯함과 합리성</strong>을 확립하는 것을 목표로 합니다. 우리는 길을 잃었고 하나님으로부터 소외되었지만, 그것에 대해 조치가 취해질 수 있습니다. 변증의 임무는 통로에서 바위와 장애물을 치우듯 그리스도의 오심을 위해 길을 예비하는 것입니다.</p>
+  <h3>‘궁극적인 질문들’과의 진지한 씨름</h3>
+  <p>철학자 <strong>칼 포퍼</strong>가 ‘궁극적인 질문들’이라 부른 것에 대한 지속적 참여로 이해할 수 있습니다. 기독교 신앙이 이 질문들에 의미 있는 답을 줄 수 있음을 보여주는 것입니다.</p>
+  <ul><li>삶에 의미가 있는가?</li><li>세상의 고통 속에 하나님은 어디에 계시는가?</li><li>하나님을 향한 믿음은 합리적인가?</li></ul>
+  <div class="vs">
+    <div class="card"><span class="k" style="background:#8fc7e8">변증학</span><p><strong>동의</strong>를 얻는 것이 목표<br>대화식<br>오해를 풀고, 아이디어를 설명하고, 신앙의 개인적 관련성을 탐구</p></div>
+    <div class="card"><span class="k" style="background:#f08a5d">전도</span><p><strong>헌신</strong>을 얻는 것이 목표<br>초청적<br>사람들이 복음에 응답하도록 초대</p></div>
+  </div>
+  <h3>데이비드 보쉬의 전도 정의</h3>
+  <div class="quote">전도는 그를 믿지 않는 사람들에게 그리스도 안의 구원을 선포하는 것이며, 그들에게 회개와 회심을 촉구하고, 죄 용서를 선포하며, 그리스도의 지상 공동체의 살아있는 구성원이 되도록 초대하고, 성령의 능력으로 다른 사람들을 섬기는 삶을 시작하도록 부르는 것이다.<cite>— David Bosch</cite></div>
+  <h3>모호하지만 유익한 경계선</h3>
+  <p>둘 사이의 경계선은 모호하지만 구분하려는 노력은 유익합니다. 변증적 대화가 신앙으로의 초대로 쉽게 이어질 수 있어도, 변증학은 오해를 풀고 아이디어를 설명하며 신앙의 개인적 관련성을 탐구하는 일에 훨씬 더 가깝습니다.</p>
+  <p><strong>작업 정의</strong> — 전도는 누군가를 그리스도인이 되도록 초대하는 것입니다(물론 그 이상이 있습니다). 변증학은 그 초대가 <strong>긍정적인 응답을 받을 가능성이 더 높도록</strong> 기반을 닦는 것입니다.</p>
+  <div class="cards">
+    <div class="card"><span class="k">🍞 빵 비유</span><p>전도가 누군가에게 빵을 제공하는 것이라면, 변증학은 ① 빵이 제공되고 있다는 것, ② 그 빵을 먹는 것이 좋다는 것을 확신시키는 것입니다.</p></div>
+    <div class="card"><span class="k">🎉 잔치 비유</span><p>(눅 14:15–24) 변증학은 잔치가 정말 열린다고 설명하고, 거기서 무엇을 찾을지 — 음식, 음료, 동반자 — 성찰하게 합니다. “이것이 사실이기만 하다면 얼마나 좋을까!”</p></div>
+  </div>
+  <div class="quote">좋은 사람들이 기독교 신앙이 진실이기를 바라게 만들고, 그런 다음 그것이 진실임을 보여주어야 한다.<cite>— 블레즈 파스칼</cite></div>
+  <p>사람들이 기독교 신앙이 약속하는 것을 <strong>갈망</strong>하도록 도운 다음, 그것이 진실하고 신뢰할 수 있음을 보여주는 것입니다. 무언가에 대한 갈망은 그것을 확인해 보고자 하는 동기를 제공합니다.</p>
+  <p>반면 전도는 개인적인 초대를 발행합니다. <strong>“당신은 잔치에 초대되었습니다. 제발 오십시오.”</strong> 변증학은 초대의 토대를 마련하고, 전도는 실제로 초대를 제공합니다. 변증학은 복음의 <strong>그럴듯함과 바람직성</strong>을 확립하고 선포하며, 전도는 그 안으로 들어와 혜택을 나누도록 요구합니다. <strong>둘 모두 교회의 사명에 필수적</strong>입니다.</p>
+  <h3>변증학의 고유한 자리</h3>
+  <ul>
+    <li>변증학은 전도가 아니며, <strong>전도 없이는 불충분</strong>합니다.</li>
+    <li>그러나 세상과 교류하는 기독교 공동체 안에서 독특하고 중요한 역할을 담당합니다.</li>
+    <li>표면적인 신앙에 머물지 않고 믿는 바를 더 깊이 파고들게 하여 <strong>신자들의 신앙을 고무하고 심화</strong>시킵니다.</li>
+    <li>변증학은 세례 요한처럼, 신앙이 말이 되며 삶에 변화를 만든다고 안심시키고, 전도는 누군가를 잔치로 초대합니다.</li>
+  </ul>`},
+
+{ c:'#8cc084', ico:'🌷', t:'나만의 변증 방식', s:'마이클 그린 · 경험을 규범화하지 말라', art:'garden',
+  verse:'은사는 여러 가지나 성령은 같고', ref:'고린도전서 12:4',
+  body:`
+  <h3>전도자, 변증가, 혹은 둘 다</h3>
+  <p>어떤 이는 전도자로, 어떤 이는 변증가로, 어떤 이는 둘 다로 부름 받았다고 느낄 수 있습니다. 맥그래스의 가장 친한 친구였던 <strong>마이클 그린</strong>은 1980년대 후반과 1990년대 초반 리전트 칼리지의 <strong>전도학 교수</strong>로 봉직했습니다. 그는 매우 효과적인 전도 설교자이면서 변증에도 매우 능숙했고, 사역 속에서 이 둘을 완벽하게 엮어냈습니다.</p>
+  <div class="cards">
+    <div class="card"><span class="k">1989</span><p>『그는 자신이 누구라고 말했는가』</p></div>
+    <div class="card"><span class="k">1990</span><p>『이 사람 예수는 누구인가』</p></div>
+  </div>
+  <p>두 책은 전도적이지만, 리전트 칼리지 재직 시절 선교 활동 중 마주친 <strong>변증학적 질문들</strong>로부터 통찰을 얻은 작품입니다. 그는 그 질문들과 호감 가고 접근하기 쉬운 방식으로 교류했으며, 우리는 그가 <strong>말한 내용뿐 아니라 말한 방식</strong>에서도 배울 수 있습니다.</p>
+  <h3>자신만의 접근 방식을 개발하라</h3>
+  <p>전도와 변증의 관계를 어떻게 이해할지에 확정적인 정답은 없습니다. 이 강좌의 목적 중 하나는 여러분이 <strong>자신만의 독특한 변증 접근 방식</strong>을 개발하도록 격려하는 것입니다. C.S. 루이스, 도로시 세이어즈, 팀 켈러 등 많은 사람에게서 배울 수 있지만, 그들을 활용해 여러분의 <strong>역사와 정체성을 반영하는</strong> 방식으로 기독교 신앙을 설명하고 변호해야 합니다.</p>
+  <div class="key">⚠️ 주의 — 여러분 자신의 경험이 규범적이라고 가정하지 마십시오.</div>
+  <h3>“여러분은 중요하지만 모두와 똑같지는 않습니다”</h3>
+  <p>맥그래스는 사람들을 모아 신앙 여정을 나누게 하고, 무신론이나 대안적 신앙을 거쳐 기독교를 발견한 이들에게 무엇이 그들을 기독교로 이끌었는지 묻는 실험을 해왔습니다. 매번 <strong>매우 다양한 답변</strong>이 나왔습니다.</p>
+  <ul>
+    <li>어떤 이에게는 <strong>죄 사함의 기쁨</strong></li>
+    <li>어떤 이에게는 <strong>삶에 의미가 있다는 발견</strong></li>
+    <li>맥그래스 자신에게는 기독교가 <strong>세상과 자신을 이치에 맞게 해 준다</strong>는 깨달음 — 십대 시절 무신론보다 훨씬 더</li>
+  </ul>
+  <h3>위험: 내 경험을 준거점으로 삼기</h3>
+  <p>‘세상이 이치에 맞게 되는 것’이 자기 회심의 핵심이었다고 해서 모든 사람에게 그래야 한다고 생각하면, 그 주제를 변증 저술과 강연의 중심으로 삼는 우를 범합니다. 일부와는 연결되겠지만, 그 접근에 전혀 공감하지 못하는 사람이 훨씬 더 많습니다.</p>
+  <h3>해결: 나를 엮어 넣되 나에게 국한되지 않기</h3>
+  <ul>
+    <li>자신의 아젠다나 역사를 강요하지 않으면서 자신의 역사, 통찰, 경험을 변증 사역 속에 엮어 넣을 수 있습니다.</li>
+    <li>맥그래스는 신앙이 만드는 차이, 복음이 먼저 식별하고 충족시키는 <strong>깊은 인간의 필요</strong>를 이야기하며, 혼란스럽고 무의미해 보이던 세상을 이해할 렌즈를 기독교에서 얻은 사람의 예로 자신을 제시합니다.</li>
+    <li>그러나 거기서 멈추지 않고 복음이 사람들을 변화시키는 다른 방식들 — <strong>기독교가 주는 소망, 용서받는다는 기쁜 소식, 하나님께 사랑받는다는 놀라운 통찰</strong> — 을 함께 말합니다.</li>
+    <li>C.S. 루이스 같은 이들을 신앙으로 이끈 것을 들려주며, 특정한 이유로 기독교에 이끌려 <strong>마음의 갈망</strong>을 충족한 사람들의 이야기를 목록에 더할 수 있습니다.</li>
+  </ul>
+  <p>자신을 포함하되 자신에게 국한되지 않는 <strong>더 넓은 접근 방식</strong>을 만드십시오. 맥그래스는 15개 강연에서 기독교 신앙에 대한 감상을 넓혀 줄 사람과 아이디어를 소개할 것입니다.</p>`},
+
+{ c:'#6cc1b5', ico:'💧', t:'진단과 치유, 그리고 갈망', s:'안셀무스 · 아우구스티누스 · 루이스', art:'bread',
+  verse:'예수께서 이르시되 나는 생명의 떡이니 내게 오는 자는 결코 주리지 아니할 것이요 나를 믿는 자는 영원히 목마르지 아니하리라', ref:'요한복음 6:35',
+  body:`
+  <h3>이 강연에서 만날 인물들</h3>
+  <p><strong>C.S. 루이스, G.K. 체스터튼, 마릴린 로빈슨, 도로시 세이어즈, J.R.R. 톨킨</strong> — 작가로서 그 자체로 매력적이며, 그들의 아이디어를 자신만의 변증 방식에 어떻게 활용할지 보여줍니다. 강연에서 다룰 시간이 없는 다른 흥미로운 작가들도 만나 목록에 더하고 그 주제를 엮어 넣을 수 있습니다.</p>
+  <h3>“기독교는 치료가 아니라 진리 아닌가?”</h3>
+  <p>좋은 질문입니다. 신약성경의 가장 중요한 진리 중 하나는 기독교가 우리의 <strong>가장 깊은 필요를 채우고, 가장 깊은 두려움을 진정시키며, 가장 깊은 주림을 다룬다</strong>는 것입니다. 요한복음의 주제를 빌리면 그리스도는 목마름을 해갈하시는 <strong>생수</strong>, 주림을 채우시는 <strong>생명의 떡</strong>이십니다.</p>
+  <div class="key">복음은 진단과 치유를 동시에 제공합니다.</div>
+  <p>복음은 무엇이 잘못되었는지 말해 주고 — 그것이 어렵고 고통스러울지라도 — 그 필요를 채워 줍니다. 그리스도를 <strong>우리 영혼에 거울을 비추는 의사</strong>로 생각해 보십시오. 우리가 부서지고 상처 입었음을 보게 하시고, 우리가 그분을 초청할 때 그 상처를 치유하십니다.</p>
+  <h3>캔터베리의 안셀무스의 기도 (11세기)</h3>
+  <div class="quote">주님, 당신이 만드신 것을 저에게 주소서. 당신이 고취하신 갈망을 찬양하고 감사드립니다. 당신이 되게 하신 것을 온전케 하시고, 당신이 저로 하여금 갈망하게 만드신 것을 허락하소서.<cite>— 캔터베리의 안셀무스</cite></div>
+  <ul>
+    <li>안셀무스는 먼저 <strong>필요(갈망)</strong>를 확인하고, 곧바로 신학적 해석을 붙입니다. 하나님께서 그 필요를 만드신 것은 <strong>우리를 그분께로 이끌기 위함</strong>입니다.</li>
+    <li>우리는 종종 우리가 창조된 목적인 최고선보다 더 열등한 선들에 애착합니다.</li>
+    <li>갈망은 억누르거나 무시할 것이 아니라 창조주가 심어 두신 <strong>‘귀가 본능(homing instinct)’</strong>입니다. 우리가 누구이며 무엇이 되도록 의도되었는지에 대한 단서이며, <strong>하나님께 집으로 돌아감</strong>으로 성취됩니다.</li>
+  </ul>
+  <h3>오직 하나님만이 채우시는 공허</h3>
+  <p>히포의 아우구스티누스, 파스칼, C.S. 루이스는 모두 하나님께서 우리 안에 공허함을 만드신 이유가 <strong>오직 하나님만이 가장 깊은 갈망을 만족시킬 수 있음</strong>을 깨닫게 하시려는 것이라고 말합니다. 루이스는 이 깊은 갈망을 <strong>‘기쁨(Joy)’</strong>이라 부르며 하나님을 기쁨의 원천이자 목표로 봅니다.</p>
+  <div class="quote">나는 이제 어린 시절부터 그 기쁨의 화살들이 나에게 발사되었던 원천에 다가가고 있었다. 나는 실재의 심장부가 우리가 장소로서 가장 잘 상징화할 수 있는 그런 종류일지 모른다고 희망했었다. 대신에 나는 그것이 한 인격임을 발견했다.<cite>— C.S. 루이스, 『기쁨에 놀라다』</cite></div>
+  <h3>진리와 체험이 만나는 곳</h3>
+  <p>기독교 신앙은 우리 자신을 볼 수 있는 <strong>진실한 틀</strong>을 제공합니다. 우리는 하나님과 관계를 맺도록 하나님에 의해 창조되었고, 이 진리는 깊은 체험적 함의를 지닙니다. 하나님과 관계를 맺을 때까지 우리는 결코 만족하지 못합니다.</p>
+  <div class="quote">주님, 당신은 우리를 당신을 위해 창조하셨기에 우리의 마음은 당신 안에서 안식을 찾을 때까지 불안합니다.<cite>— 히포의 아우구스티누스</cite></div>
+  <p>기독교는 세상과 우리 자신을 이해하게 하는 <strong>큰 그림</strong>을 제공합니다. 그러므로 변증학은 <strong>경험</strong>과, 톨킨이 특별히 지적하듯 <strong>상상의 세계</strong>와, 그리고 나중 강연에서 다룰 <strong>아름다움</strong>과도 연결될 수 있습니다.</p>`},
+
+{ c:'#b49fdc', ico:'🧶', t:'큰 그림(Big Picture)', s:'체스터튼과 C.S. 루이스', art:'weave',
+  verse:'또한 그가 만물보다 먼저 계시고 만물이 그 안에 함께 섰느니라', ref:'골로새서 1:17',
+  body:`
+  <h3>두 작가, 체스터튼과 루이스</h3>
+  <p>변증학의 ‘큰 그림’ 접근과 가장 깊이 연관된 작가는 <strong>G.K. 체스터튼</strong>과 <strong>C.S. 루이스</strong>입니다.</p>
+  <ul>
+    <li>기독교 신앙이 가장 깊은 수준에서 인간 존재와 어떻게 연결되는지 깊이 감지했습니다.</li>
+    <li>두 사람 모두 기독교 신앙을 <strong>재발견</strong>했고, 그 과정에서 신앙의 <strong>상상적·합리적 힘과 매력</strong>을 인식했습니다.</li>
+    <li>그들에게 변증학은 기독교 신앙 전체가 어떻게 상황을 조명하고 <strong>은혜를 통한 변혁</strong>을 가능하게 하는지 보도록 돕는 일입니다.</li>
+  </ul>
+  <h3>상자가 아니라 실타래</h3>
+  <p>우리 신앙은 <strong>창조</strong>, 그리고 우리가 <strong>구원</strong>이라 부르는 인간 존재의 변혁·방향 전환·갱신 같은 놀라운 주제들을 펼쳐 보입니다. 그러나 이것들은 상자나 파일 모음 같은 <strong>고립된 신학적 구획이 아닙니다.</strong> 각각 가치 있고 독특한 <strong>실타래</strong>이며, 함께 엮여 더 큰 전체, 즉 큰 그림을 이룹니다. 많은 사람에게 바로 이 큰 그림이 특별한 의미를 가집니다.</p>
+  <div class="key">기독교는 우리 자신과 세상에 대한 일관된 견해를 제공합니다 — 모든 것이 그리스도 안에서 함께 붙들려 있습니다.</div>
+  <h3>무의미해 보이던 것이 의미를 얻다</h3>
+  <p>루이스는 기독교의 큰 그림을 파악하면 그렇지 않으면 의미 없어 보이던 것들이 이해되고 의미를 갖게 된다고 강조합니다. 예컨대 우리를 진정으로 만족시킬 무언가를 향한 <strong>갈망</strong>이라는 겉보기엔 무의미한 경험이 기독교적 틀 안에서는 완벽하게 이치에 맞으며, <strong>그리스도 안에서의 성취</strong>를 가리킵니다. 이 접근은 나중 강연에서 더 다룹니다.</p>`},
+
+{ c:'#e6a65d', ico:'🛡️', t:'아폴로기아의 뜻', s:'베드로전서 3:15의 변증', art:'scroll',
+  verse:'너희 마음에 그리스도를 주로 삼아 거룩하게 하고 너희 속에 있는 소망에 관한 이유를 묻는 자에게는 대답할 것을 항상 준비하되 온유와 두려움으로 하고', ref:'베드로전서 3:15',
+  body:`
+  <h3>‘사과(sorry)’가 아닌 ‘변호(defense)’</h3>
+  <p>‘변증학(apologetics)’이라는 말은 어떤 이들에게 너무 쉽게 <strong>사과하는 것</strong>을 떠올리게 합니다. 더 나은 표현을 찾으려 노력해야 하지만, 이 말의 뿌리는 <strong>‘방어’를 뜻하는 그리스어 ‘아폴로기아(apologia)’</strong>입니다. 변증학은 기독교 신앙이 무엇인지 설명하고 사람들의 반대 의견을 다룸으로써 신앙을 변호하는 일입니다.</p>
+  <div class="cards">
+    <div class="card"><span class="k">⚖️ 법정에서</span><p>피고인의 무죄를 입증하는 변론</p></div>
+    <div class="card"><span class="k">🏛️ 철학 아카데미에서</span><p>논증이나 신념이 정확함을 증명하는 것</p></div>
+  </div>
+  <p>신약성경 시대에 아폴로기아는 이런 의미로 쓰였으며, 많은 이들이 변증학의 본질과 중요성에 대한 <strong>고전적인 성경적 진술</strong>로 보는 <strong>베드로전서 3장 15절</strong>에 이 단어가 등장합니다.</p>
+  <h3>베드로가 염려한 것</h3>
+  <ul>
+    <li>이 편지는 로마 제국 내 당시 <strong>‘소아시아(아시아 미노르)’, 오늘날 터키</strong> 지역의 그리스도인들에게 보내졌습니다.</li>
+    <li>베드로는 기독교 사상이 <strong>오해되고 왜곡</strong>되는 것을 염려하며, 기록을 바로잡되 <strong>은혜롭고 사려 깊게</strong> 하라고 촉구합니다.</li>
+    <li>비판자와 질문자들과 교류하며 <strong>온유함과 두려움(존중)</strong>으로 신앙의 기초와 내용을 설명하라고 격려합니다.</li>
+  </ul>
+  <div class="key">변증학은 진리를 변호하되, 온유하고 존중하는 태도로 해야 합니다.</div>
+  <p>변증학의 목적은 교회 밖 사람들을 <strong>적대시하거나 모욕하는 것이 아니라</strong>, 기독교 신앙의 <strong>신뢰성·실재성·관련성</strong>에 대해 그들의 눈과 마음을 열어 주는 것입니다.</p>`},
+
+{ c:'#8fc7e8', ico:'🏛️', t:'변증의 세 가지 과제', s:'사도행전의 사례와 핵심 과제', art:'athens',
+  verse:'…너희가 알지 못하고 위하는 그것을 내가 너희에게 알게 하리라', ref:'사도행전 17:23',
+  body:`
+  <h3>신약성경 속 초기 변증</h3>
+  <div class="vs">
+    <div class="card"><span class="k" style="background:#f6c453">사도행전 2장 · 베드로</span><p>오순절 설교 — 예수는 <strong>이스라엘의 소망의 절정</strong>. 유대인 청중에게 매우 중요한 포인트.</p></div>
+    <div class="card"><span class="k" style="background:#b49fdc">사도행전 17장 · 바울</span><p>아테네 철학자들에게 — 예수는 <strong>지혜를 향한 오랜 인간 탐구의 절정</strong>. 그리스인들에게 호소력.</p></div>
+  </div>
+  <p>두 설교 모두 청중의 신앙과 관심사에 맞게 적응된 방식으로 특정 청중과 교류합니다. 이 두 구절은 <strong>13강</strong>에서 훨씬 자세히 다룹니다.</p>
+  <h3>반응적·방어적인 것만이 아니다</h3>
+  <div class="cards">
+    <div class="card"><span class="k">① 응답</span><p>사람들이 기독교 신앙에 제기하는 질문과 우려에 응답하기 — <strong>위협이 아닌 토론의 기회</strong>로.</p></div>
+    <div class="card"><span class="k">② 소통</span><p><strong>지적·관계적·상상적</strong> 수준에서 기독교 신앙의 근본적 중요성과 매력을 설명하고 소통하기.</p></div>
+    <div class="card"><span class="k">③ 설명</span><p>청중과 연결되는 <strong>접근하기 쉬운 언어와 이미지</strong>로 신앙의 주제들을 설명하기.</p></div>
+  </div>
+  <p>교회는 역사 전반에 걸쳐 이 세 과제와 마주해 왔습니다. 모든 시대가 미지의 상황, 전례 없는 도전을 두려워했지만, 과거의 변증가들은 그 도전에 부응했고 후계자인 우리에게 오늘의 상황에 참여할 <strong>가치 있는 자원</strong>을 물려주었습니다.</p>
+  <h3>1. 문화적 공감</h3>
+  <p>특정한 문화적 맥락에서 기독교 신앙이 마주하는 <strong>민감성과 어려움</strong>을 인식하는 것입니다. 구체적 반박, 잠재적 오해, 청중이 복음에 응답하는 길을 막는 <strong>역사적 왜곡</strong>을 다루는 형태를 띠기도 합니다. 최고의 변증가는 문화적 상황과 그 민감성·관심사·불안을 잘 압니다. 이것은 지역과 청취자 그룹마다 다르므로 <strong>지역적 이슈에 민감</strong>해야 합니다.</p>
+  <h3>2. 복음적 깊이</h3>
+  <p>변증학은 기독교 복음에 대한 깊은 이해에 기반합니다. 그 이해가 애초에 <strong>신앙을 전하려는 동기</strong>를 낳고, <strong>전하는 방식</strong>을 알려줍니다. 최고의 변증가는 기독교 신앙에 깊이 침잠하여 특정 문화 맥락 안에서 그 풍성함이 어떻게 신실하게 전달될지 분별하는 사람입니다.</p>
+  <h3>3. 문화적 토속어(Vernacular)로의 번역</h3>
+  <p>기독교 신앙은 전통적으로 추상적 개념 용어로 표현되어 왔는데, 이것들은 현대 서구 문화와 점점 단절되고 있습니다. <strong>‘칭의’, ‘구원’, ‘죄’</strong> 같은 말은 오해받기 쉽고, 사람들은 흔히 가장 가까운 문화적 동등물과 동일시해 버립니다. 이 아이디어들을 더 넓은 청중과 연결되는 <strong>내러티브나 이미지</strong>로 번역·재구현해야 합니다 — <strong>복음적 뿌리는 지키되</strong>, 청중의 상황에는 민감하게.</p>
+  <p>처음 두 측면은 나중 강연에서 집중적으로 다루므로, 이번 강의에서는 세 번째 — 기독교 아이디어를 일상 언어로 번역할 필요성 — 를 먼저 이야기합니다.</p>`},
+
+{ c:'#f6c453', ico:'🌉', t:'‘칭의’를 번역하라', s:'C.S. 루이스에게 배우는 언어', art:'bridge',
+  verse:'그러므로 우리가 믿음으로 의롭다 하심을 받았으니 우리가 우리 주 예수 그리스도로 말미암아 하나님과 화평을 누리자', ref:'로마서 5:1',
+  body:`
+  <h3>루이스도 배워야 했다</h3>
+  <p>오늘날 우리는 루이스를 매우 시각적인 언어로 기독교 아이디어를 접근하기 쉽고 매력적으로 표현한 <strong>타고난 소통가</strong>로 생각하지만, 사실 그는 그 기술을 배워야 했습니다. 1933년 첫 책 <strong>『순례자의 회심(The Pilgrim’s Regress)』</strong>은 읽기 쉽지 않으며, 안타깝게도 가장 적게 읽히는 책 중 하나입니다. 그는 자신의 문체와 접근을 위해 열심히 노력했고, <strong>힘든 방식으로 배웠습니다.</strong></p>
+  <h3>1945년 ‘기독교 변증학’ 강연의 두 가지 교훈</h3>
+  <div class="cards">
+    <div class="card"><span class="k">① 들어라</span><p>평범한 사람들이 어떻게 말하는지, 어떤 언어를 쓰는지 알아내십시오 — <strong>관찰과 만남</strong>을 통해.</p></div>
+    <div class="card"><span class="k">② 번역하라</span><p>종교적 아이디어를 청중의 <strong>경험과 안락지대</strong> 안에 있는 용어와 이미지로 어떻게 번역할지 성찰하십시오.</p></div>
+  </div>
+  <div class="quote">우리는 우리 청중의 언어를 배워야 합니다. 평범한 사람이 무엇을 이해하고 무엇을 이해하지 못하는지 사전에(a priori) 단정 짓는 것은 전혀 쓸모가 없습니다. 여러분은 경험을 통해 알아내야 합니다.<cite>— C.S. 루이스</cite></div>
+  <div class="key">말하기 전에 들으십시오. 말하기 전에 들으십시오.</div>
+  <p>청중이 사용하는 언어를 듣고 그것에 적응하여, 그들에게 말이 되도록 표현하십시오.</p>
+  <div class="quote">당신은 모든 신학의 조각을 토속어로 번역해야 합니다. 만약 당신이 자신의 생각을 교육받지 못한 언어로 번역할 수 없다면 당신의 생각은 혼란스러운 것입니다. 번역할 수 있는 능력은 자신의 의미를 진정으로 이해했다는 테스트입니다.<cite>— C.S. 루이스</cite></div>
+  <p>전문가의 언어인 신학 언어를 청중의 일상 언어로 번역하는 것은 <strong>효과적인 소통에 필수</strong>이며, 동시에 <strong>내가 기독교를 진정으로 이해하는지 시험하는 좋은 방법</strong>입니다.</p>
+  <h3>맥그래스의 실천 과제</h3>
+  <p>‘성육신’, ‘구속’, ‘죄’, ‘구원’ 같은 전문 용어를 각각 <strong>단 하나의 짧은 문단</strong>으로 설명하는 것을 목표로 삼습니다. 여러분도 신앙을 이야기할 때 반복해서 쓰는 단어 목록을 적어 두고, 청중에게 간단한 말로 어떻게 설명할지 스스로 물어보십시오.</p>
+  <h3>예시: 로마서 5:1의 ‘칭의’</h3>
+  <p>바울에게 이는 아주 흥미진진한 일이며 복음의 핵심 주제에 대한 분명한 진술이지만, 현대 청중에게는 이해되지 않습니다. ‘칭의(justification)’는 다음 두 가지로 오해되기 쉽습니다.</p>
+  <div class="vs">
+    <div class="card"><span class="k">오해 ①</span><p>“나는 고용주에게 내 행동의 <strong>정당화</strong>를 제공했다” — 우리가 옳다는 것을 보여주는 것, <strong>변명</strong>을 대는 것.</p></div>
+    <div class="card"><span class="k">오해 ②</span><p>워드 프로세서에서 텍스트를 <strong>오른쪽 여백에 정렬</strong>하는 것 — 울퉁불퉁한 텍스트를 곧게 펴는 것.</p></div>
+  </div>
+  <p>둘 다 바울의 의미를 조명하지 못하며 오히려 사람들을 오도합니다. 우리는 ‘칭의’와 같은 단어들을 <strong>원래 의도에 충실하면서</strong> 현대 청중이 이해할 수 있는 말로 번역하고 그 진정한 뜻을 설명해야 합니다.</p>
+  <div class="key">그것이 우리의 역할이며, 특권이고, 중요합니다.</div>`},
+
+{ c:'#f2a7b5', ico:'🪔', t:'마무리와 다음 강의', s:'남은 질문들과 예고', art:'lamp', wide:true,
+  verse:'주의 말씀은 내 발에 등이요 내 길에 빛이니이다', ref:'시편 119:105',
+  body:`
+  <h3>목회자라면 누구나 익숙한 변증 질문들</h3>
+  <div class="cards">
+    <div class="card"><span class="k">❓</span><p>왜 고통이 존재하는가?</p></div>
+    <div class="card"><span class="k">❓</span><p>삼위일체를 어떻게 이해할 수 있는가?</p></div>
+    <div class="card"><span class="k">❓</span><p>내가 키우는 반려동물은 죽으면 천국에 갈 것인가?</p></div>
+  </div>
+  <p>이 모든 질문은 <strong>답변되어야 합니다.</strong></p>
+  <h3>제1강을 마치며</h3>
+  <p>이것으로 기독교 변증학의 배경을 개괄한 제1강을 마칩니다.</p>
+  <h3>다음 강의 예고</h3>
+  <p>다음 강연에서는 변증학의 주요 주제인 <strong>기독교적 관점에서 우리의 세상과 인간 상황을 어떻게 이해할 수 있는가</strong>를 다룹니다. 이번 강연에서 간략히 소개한 <strong>‘큰 그림으로서의 기독교’</strong>라는 아이디어를 발전시키고, 그것이 변증학적으로 얼마나 큰 도움이 되는지 보여 줄 것입니다.</p>
+  <div class="key">“아주 곧 다시 뵙기를 기대합니다. 경청해 주셔서 정말 감사합니다.”<br>— 알리스터 맥그래스</div>`}
+];
+
+const menu = document.getElementById('menu');
+SECTIONS.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.style.setProperty('--c',s.c);
+  if(s.wide) b.className='wide';
+  b.innerHTML=`<span class="num">${String(i+1).padStart(2,'0')}</span><span class="ico">${s.ico}</span><span class="t">${s.t}</span><span class="s">${s.s}</span>`;
+  b.onclick=()=>openSec(i);
+  menu.appendChild(b);
+});
+
+const ov=document.getElementById('overlay'), panel=document.getElementById('panel');
+let cur=0;
+function openSec(i){
+  cur=i; const s=SECTIONS[i];
+  panel.style.setProperty('--c',s.c);
+  document.getElementById('pIco').textContent=s.ico;
+  document.getElementById('pTitle').innerHTML=`<small>${String(i+1).padStart(2,'0')} · ${s.s}</small>${s.t}`;
+  document.getElementById('pArt').innerHTML=ART[s.art];
+  document.getElementById('pVerse').innerHTML=`${s.verse}<b>— ${s.ref}</b>`;
+  document.getElementById('pBody').innerHTML=s.body;
+  document.getElementById('prevBtn').disabled=i===0;
+  document.getElementById('nextBtn').disabled=i===SECTIONS.length-1;
+  ov.classList.add('open'); ov.scrollTop=0; document.body.style.overflow='hidden';
+}
+function closeSec(){ov.classList.remove('open');document.body.style.overflow='';}
+document.getElementById('closeBtn').onclick=closeSec;
+document.getElementById('homeBtn').onclick=closeSec;
+document.getElementById('prevBtn').onclick=()=>cur>0&&openSec(cur-1);
+document.getElementById('nextBtn').onclick=()=>cur<SECTIONS.length-1&&openSec(cur+1);
+ov.addEventListener('click',e=>{if(e.target===ov)closeSec();});
+document.addEventListener('keydown',e=>{
+  if(!ov.classList.contains('open'))return;
+  if(e.key==='Escape')closeSec();
+  if(e.key==='ArrowRight'&&cur<SECTIONS.length-1)openSec(cur+1);
+  if(e.key==='ArrowLeft'&&cur>0)openSec(cur-1);
+});
+</script>
+</body>
+</html>
