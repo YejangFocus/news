@@ -223,15 +223,16 @@ def extract_description(html_text: str) -> str | None:
     )
 
 
-def extract_body_image(html_text: str) -> str | None:
-    """og:image가 없을 때, 본문 <figure><img>에 실제로 쓰인 첫 사진의 src를 그대로 돌려준다.
-    (상대경로 자산이든 data: base64든 그대로 반환 — 저장 방식은 find_article_photo가 정한다.)"""
-    m = re.search(r"<figure[^>]*>.*?<img[^>]+src=([\"'])(.*?)\1", html_text, re.S)
-    if m:
-        src = html.unescape(m.group(2).strip())
-        if src:
-            return src
-    return None
+def _body_images(html_text: str) -> list[str]:
+    """본문 <figure> 안 <img>의 src를 문서 순서대로 돌려준다(상대경로든 data: base64든
+    그대로 — 저장 방식은 find_article_photo가 정한다)."""
+    out = []
+    for fig in re.finditer(r"<figure[^>]*>(.*?)</figure>", html_text, re.S | re.I):
+        for m in re.finditer(r"<img[^>]+src=([\"'])(.*?)\1", fig.group(1), re.S | re.I):
+            src = html.unescape(m.group(2).strip())
+            if src:
+                out.append(src)
+    return out
 
 
 def save_data_uri_image(data_uri: str) -> Path | None:
@@ -344,14 +345,13 @@ def _public_url(local: Path) -> str:
 
 
 def find_article_photo(html_text: str, rel_path: Path) -> tuple[str, Path | None] | None:
-    """기사의 대표 사진을 찾는다. og:image → 본문 첫 <figure><img> 순으로 보고,
+    """기사의 대표 사진 = 기사 본문 안의 첫 번째 사진(<figure><img>).
+    본문에 사진이 없을 때만 None을 돌려주고, 호출 쪽에서 예장포커스 CI를 쓴다.
+    (og:image는 보지 않는다 — 예전에 박아 둔 값이 본문 첫 사진과 달라도 본문
+    첫 사진이 우선이다. 이 스크립트가 쓴 og:image는 본문 첫 사진에서 나온 값이다.)
     CI/로고이거나, 저장소에 실제 파일이 없거나, 너무 작은 이미지는 건너뛴다.
-    돌려주는 값: (원본 URL, 저장소 안 파일 경로 또는 None[외부 URL]). 없으면 None."""
-    candidates = [
-        _meta_content(html_text, "og:image", "property"),
-        extract_body_image(html_text),
-    ]
-    for src in candidates:
+    돌려주는 값: (원본 URL, 저장소 안 파일 경로 또는 None[외부 URL])."""
+    for src in _body_images(html_text):
         if not src:
             continue
         if src.startswith("data:"):
