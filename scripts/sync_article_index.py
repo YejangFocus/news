@@ -41,6 +41,13 @@ sync_article_index.py
      같은 커밋에 여러 기사가 한꺼번에 올라와도 각 기사에 발행 시각을 명시해두면
      그 안에서의 순서까지 정확히 구분된다.
 
+  5. 링크 미리보기 정리(normalize_share_meta): 카카오톡·네이버 등에 기사 링크를
+     올렸을 때 제목 위에 기사 사진이 뜨도록 각 기사 <head>의 og:image /
+     twitter:image / og:url / canonical 등을 고친다. 기사 사진(og:image → 본문 첫
+     사진)을 쓰고, 사진이 없으면 예장포커스 CI(assets/images/og-default.jpg)를 쓴다.
+     data: base64 사진은 파일로 뽑아 URL로 바꾸고, webp·대용량 사진은 1200px JPG
+     사본(assets/og/)을 만들어 쓴다. (이미지 변환에 Pillow 필요: pip install pillow)
+
 이 스크립트 자체는 파일을 읽고/쓰기만 한다. 실제 "발행할 때마다 자동 동기화"는
 함께 제공하는 GitHub Actions 워크플로(.github/workflows/sync-article-index.yml)가
 push 이벤트마다 이 스크립트를 실행하고, 바뀐 내용이 있으면 커밋·푸시까지 자동으로 한다.
@@ -57,6 +64,7 @@ import os
 import re
 import subprocess
 import sys
+from urllib.parse import quote, unquote
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -65,6 +73,20 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 ARTICLE_INDEX_PATH = REPO_ROOT / "data" / "articles.json"
 IMAGES_DIR = REPO_ROOT / "assets" / "images"
 SITE_BASE = "https://yejangfocus.github.io/news"
+# 카카오톡·네이버·페이스북 등이 링크 미리보기(og:*)를 만들 때 쓰는 실제 도메인(CNAME)
+SITE_URL = "https://yejangfocus.com"
+
+# 링크 미리보기(카카오톡 등)용 이미지 설정
+#  - 사진이 없는 기사는 예장포커스 CI(1200x630 JPG)를 대신 보여준다.
+#  - 크롤러는 data: URI·webp·너무 큰 파일을 못 읽는 경우가 있어, 그런 사진은
+#    1200px JPG로 줄인 사본(assets/og/)을 만들어 og:image로 쓴다.
+OG_DEFAULT_REL = "assets/images/og-default.jpg"
+OG_DIR = REPO_ROOT / "assets" / "og"
+OG_MAX_WIDTH = 1200
+OG_MAX_BYTES = 1_500_000
+OG_MIN_WIDTH = 200
+# 이 이름이 들어간 이미지는 '기사 사진'이 아니라 CI/로고로 보고 사진 없음으로 취급한다.
+CI_IMAGE_MARKERS = ("yejang-focus-ci", "38701da0735806f0", "og-default")
 
 # 기사 목록에 남기는 날짜는 한국 독자 기준(KST)으로 표기한다.
 KST = timezone(timedelta(hours=9))
@@ -203,7 +225,7 @@ def extract_description(html_text: str) -> str | None:
 
 def extract_body_image(html_text: str) -> str | None:
     """og:image가 없을 때, 본문 <figure><img>에 실제로 쓰인 첫 사진의 src를 그대로 돌려준다.
-    (상대경로 자산이든 data: base64든 그대로 반환 — 저장 방식은 extract_image가 정한다.)"""
+    (상대경로 자산이든 data: base64든 그대로 반환 — 저장 방식은 find_article_photo가 정한다.)"""
     m = re.search(r"<figure[^>]*>.*?<img[^>]+src=([\"'])(.*?)\1", html_text, re.S)
     if m:
         src = html.unescape(m.group(2).strip())
@@ -212,34 +234,16 @@ def extract_body_image(html_text: str) -> str | None:
     return None
 
 
-def resolve_image_url(src: str, rel_path: Path) -> str:
-    """본문 <img src>(상대경로)를 articles.json에 쓸 절대 URL로 바꾼다."""
-    if re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*:", src):
-        # 이미 절대 URL(http, https, data 등)이면 그대로 사용
-        return src
+def save_data_uri_image(data_uri: str) -> Path | None:
+    """<figure>·og:image 안에 data: base64로 통째 박제된 사진을 실제 파일로 뽑아
+    assets/images/에 저장하고 그 파일 경로를 돌려준다.
 
-    parts: list[str] = []
-    for part in (*rel_path.parent.parts, *Path(src).parts):
-        if part in ("", "."):
-            continue
-        if part == "..":
-            if parts:
-                parts.pop()
-            continue
-        parts.append(part)
-    return f"{SITE_BASE}/{'/'.join(parts)}"
-
-
-def save_data_uri_image(data_uri: str) -> str | None:
-    """<figure> 안에 data: base64로 통째 박제된 사진을 실제 파일로 뽑아
-    assets/images/에 저장하고 사이트 URL을 돌려준다.
-
-    브라우저로 페이지를 통째 "저장"해서 올린 파일은 본문 사진이 base64로
-    파일 안에 그대로 들어있다. 이걸 그대로 articles.json 문자열로 옮기면
-    파일 하나가 수백 KB~수 MB로 불어나고, 이 파일은 모든 페이지가 매번
-    내려받으므로 사이트 전체가 느려진다. 그래서 디코딩해 실제 이미지
-    파일로 뽑아두고, articles.json에는 다른 사진들처럼 짧은 경로만 담는다.
-    내용이 같은 사진은 해시가 같아 다시 저장하지 않는다(중복 방지).
+    브라우저로 페이지를 통째 "저장"해서 올린 파일은 사진이 base64로 파일
+    안에 그대로 들어있다. 이걸 <head>의 og:image에 그대로 두면 카카오톡 등
+    크롤러가 링크 미리보기 사진을 읽지 못하고, articles.json으로 옮기면 모든
+    페이지가 내려받는 파일이 수 MB로 불어난다. 그래서 디코딩해 실제 이미지
+    파일로 뽑아두고 짧은 URL만 쓴다. 내용이 같은 사진은 해시가 같아 다시
+    저장하지 않는다(중복 방지).
     """
     m = DATA_URI_IMAGE_RE.match(data_uri.strip())
     if not m:
@@ -260,26 +264,186 @@ def save_data_uri_image(data_uri: str) -> str | None:
     out_path = IMAGES_DIR / f"{digest}.{ext}"
     if not out_path.exists():
         out_path.write_bytes(raw)
-    return f"{SITE_BASE}/assets/images/{digest}.{ext}"
+    return out_path
 
 
-def extract_image(html_text: str, rel_path: Path) -> str | None:
-    """홈페이지 카드 썸네일 URL. og:image 우선, 없으면 본문 첫 사진, 그마저 없으면
-    예포 CI 기본 이미지(DEFAULT_IMAGE_URL)로 대체한다."""
-    image = _meta_content(html_text, "og:image", "property")
-    if image:
-        return image
+def _site_relpath(src: str, rel_path: Path) -> str | None:
+    """src(절대 URL·상대경로)가 이 사이트 안의 파일이면 저장소 기준 상대경로를,
+    외부 URL이면 None을 돌려준다."""
+    for base in (SITE_URL, SITE_BASE):
+        if src.startswith(base + "/"):
+            return unquote(src[len(base) + 1:].split("#")[0].split("?")[0])
+    if re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*:|^//", src):
+        return None
+    if src.startswith("/"):
+        return unquote(src.lstrip("/").split("#")[0].split("?")[0])
+    parts: list[str] = []
+    for part in (*rel_path.parent.parts, *Path(unquote(src.split("#")[0].split("?")[0])).parts):
+        if part in ("", "."):
+            continue
+        if part == "..":
+            if parts:
+                parts.pop()
+            continue
+        parts.append(part)
+    return "/".join(parts)
 
-    body_image = extract_body_image(html_text)
-    if body_image:
-        if body_image.startswith("data:"):
-            decoded = save_data_uri_image(body_image)
-            if decoded:
-                return decoded
+
+def _is_ci_image(src: str) -> bool:
+    return any(marker in src for marker in CI_IMAGE_MARKERS)
+
+
+def _image_width(path: Path) -> int | None:
+    try:
+        from PIL import Image
+        with Image.open(path) as im:
+            return im.width
+    except Exception:
+        return None
+
+
+def make_og_copy(local: Path) -> Path:
+    """webp이거나 너무 크거나 넓은 사진은 카카오톡 등이 못 읽을 수 있어 1200px JPG
+    사본(assets/og/)을 만들어 돌려준다. 이미 괜찮은 사진이거나 Pillow가 없으면
+    원본을 그대로 돌려준다."""
+    try:
+        from PIL import Image
+    except ImportError:
+        return local
+    too_big = local.stat().st_size > OG_MAX_BYTES
+    width = _image_width(local) or 0
+    if local.suffix.lower() in (".jpg", ".jpeg", ".png") and not too_big and width <= OG_MAX_WIDTH:
+        return local
+
+    key = hashlib.sha1(local.relative_to(REPO_ROOT).as_posix().encode("utf-8")).hexdigest()[:16]
+    out = OG_DIR / f"{key}.jpg"
+    if out.exists() and out.stat().st_mtime >= local.stat().st_mtime:
+        return out
+    try:
+        with Image.open(local) as im:
+            if im.mode in ("RGBA", "LA", "P"):
+                im = im.convert("RGBA")
+                bg = Image.new("RGB", im.size, (255, 255, 255))
+                bg.paste(im, mask=im.split()[-1])
+                im = bg
+            else:
+                im = im.convert("RGB")
+            if im.width > OG_MAX_WIDTH:
+                im = im.resize((OG_MAX_WIDTH, round(im.height * OG_MAX_WIDTH / im.width)), Image.LANCZOS)
+            OG_DIR.mkdir(parents=True, exist_ok=True)
+            im.save(out, "JPEG", quality=85, optimize=True)
+        return out
+    except Exception as e:
+        print(f"[경고] {local.name} 미리보기 사본 생성 실패: {e}", file=sys.stderr)
+        return local
+
+
+def _public_url(local: Path) -> str:
+    rel = local.relative_to(REPO_ROOT).as_posix()
+    return f"{SITE_URL}/{quote(rel, safe='/')}"
+
+
+def find_article_photo(html_text: str, rel_path: Path) -> tuple[str, Path | None] | None:
+    """기사의 대표 사진을 찾는다. og:image → 본문 첫 <figure><img> 순으로 보고,
+    CI/로고이거나, 저장소에 실제 파일이 없거나, 너무 작은 이미지는 건너뛴다.
+    돌려주는 값: (원본 URL, 저장소 안 파일 경로 또는 None[외부 URL]). 없으면 None."""
+    candidates = [
+        _meta_content(html_text, "og:image", "property"),
+        extract_body_image(html_text),
+    ]
+    for src in candidates:
+        if not src:
+            continue
+        if src.startswith("data:"):
+            local = save_data_uri_image(src)
+            if local is None:
+                continue
         else:
-            return resolve_image_url(body_image, rel_path)
+            if _is_ci_image(src):
+                continue
+            site_rel = _site_relpath(src, rel_path)
+            if site_rel is None:
+                return src, None  # 외부 이미지: 확인할 수 없으니 그대로 사용
+            local = REPO_ROOT / site_rel
+            if not local.is_file():
+                continue
+        width = _image_width(local)
+        if width is not None and width < OG_MIN_WIDTH:
+            continue
+        return f"{SITE_BASE}/{local.relative_to(REPO_ROOT).as_posix()}", local
+    return None
 
-    return DEFAULT_IMAGE_URL
+
+def _set_meta(head_html: str, attr: str, key: str, value: str, overwrite: bool = True) -> str:
+    """<meta {attr}="{key}" content="...">를 value로 맞춘다. 있으면 제자리에서 교체
+    (overwrite=False면 건드리지 않음), 없으면 </head> 앞에 추가한다."""
+    tag_re = re.compile(rf'<meta\s[^>]*{attr}=["\']{re.escape(key)}["\'][^>]*>', re.I)
+    new_tag = f'<meta {attr}="{key}" content="{html.escape(value, quote=True)}">'
+    m = tag_re.search(head_html)
+    if m:
+        if not overwrite or _meta_content(m.group(0), key, attr) == value:
+            return head_html
+        return head_html[:m.start()] + new_tag + head_html[m.end():]
+    return _insert_in_head(head_html, new_tag)
+
+
+def _insert_in_head(text: str, tag: str) -> str:
+    m = re.search(r"</head\s*>", text, re.I)
+    if m:
+        return text[:m.start()] + tag + "\n" + text[m.start():]
+    m = re.search(r"<head[^>]*>", text, re.I)
+    if m:
+        return text[:m.end()] + "\n" + tag + text[m.end():]
+    m = re.search(r"<html[^>]*>", text, re.I)
+    if m:
+        return text[:m.end()] + "\n<head>\n" + tag + "\n</head>" + text[m.end():]
+    return text
+
+
+def normalize_share_meta(full_path: Path, rel_path: Path, title: str | None, desc: str | None):
+    """기사 <head>의 링크 미리보기(og:*, twitter:*, canonical) 태그를 정리한다.
+
+    카카오톡·네이버 등에 기사 링크를 올렸을 때 제목 위에 기사 사진이 나오도록
+      - og:image: 기사 사진(없으면 예장포커스 CI)의 짧은 https URL로 맞춘다.
+        data: base64 사진은 파일로 뽑아 URL로 바꾼다.
+      - og:url / canonical / og:title / og:description / og:type / og:site_name /
+        twitter:card / twitter:image 가 없으면 채운다(이미 있는 값은 유지).
+    바뀐 게 있을 때만 파일을 다시 쓴다(줄바꿈 형식 보존).
+
+    돌려주는 값: (갱신된 html 문자열, 홈페이지 카드 썸네일 URL)
+    """
+    with open(full_path, "r", encoding="utf-8", errors="ignore", newline="") as f:
+        original = f.read()
+
+    photo = find_article_photo(original, rel_path)
+    if photo:
+        src_url, local = photo
+        og_local = make_og_copy(local) if local else None
+        og_url = _public_url(og_local) if og_local else src_url
+        index_image = src_url
+    else:
+        og_url = f"{SITE_URL}/{OG_DEFAULT_REL}"
+        index_image = DEFAULT_IMAGE_URL
+
+    page_url = f"{SITE_URL}/{quote(rel_path.as_posix(), safe='/')}"
+    text = original
+    text = _set_meta(text, "property", "og:image", og_url)
+    text = _set_meta(text, "name", "twitter:image", og_url)
+    text = _set_meta(text, "name", "twitter:card", "summary_large_image", overwrite=False)
+    text = _set_meta(text, "property", "og:type", "article", overwrite=False)
+    text = _set_meta(text, "property", "og:site_name", "예장포커스", overwrite=False)
+    text = _set_meta(text, "property", "og:url", page_url, overwrite=False)
+    if title:
+        text = _set_meta(text, "property", "og:title", title, overwrite=False)
+    if desc:
+        text = _set_meta(text, "property", "og:description", desc, overwrite=False)
+    if not re.search(r'<link[^>]+rel=["\']canonical["\']', text, re.I):
+        text = _insert_in_head(text, f'<link rel="canonical" href="{html.escape(page_url, quote=True)}">')
+
+    if text != original:
+        with open(full_path, "w", encoding="utf-8", newline="") as f:
+            f.write(text)
+    return text, index_image
 
 
 def extract_published_time(html_text: str) -> int | None:
@@ -412,7 +576,9 @@ def main():
             title = existing_by_url.get(url, {}).get("title", rel_path.stem)
 
         desc = extract_description(html_text) or existing_by_url.get(url, {}).get("desc", "")
-        image = extract_image(html_text, rel_path) or existing_by_url.get(url, {}).get("image", "")
+        # 링크 미리보기(og:image 등) 정리 + 홈페이지 썸네일 결정. 기사 사진이 없으면
+        # 예장포커스 CI가 쓰인다.
+        _, image = normalize_share_meta(full_path, rel_path, title, desc)
 
         # 정렬 기준 = "업로드된 시각"(git에 파일이 추가된 커밋 시각). 매번 git
         # 기록에서 다시 계산하므로 별도 보관이 필요 없다.

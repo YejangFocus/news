@@ -35,16 +35,19 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: ARTICLE_INDEX 동기화 스크립트 실행
+      - name: 이미지 처리 라이브러리(Pillow) 설치
+        run: pip install pillow
+
+      - name: ARTICLE_INDEX 동기화 + 링크 미리보기(og:image) 정리 스크립트 실행
         run: python3 scripts/sync_article_index.py
 
       - name: 변경 사항 커밋 & 푸시
         run: |
           git config user.name "yejangfocus-bot"
           git config user.email "actions@users.noreply.github.com"
-          # data/articles.json 외에, 본문 사진이 base64로 박제된 파일에서
-          # 스크립트가 새로 뽑아낸 assets/images/ 이미지 파일도 함께 커밋한다.
-          git add data/articles.json assets/images
+          # data/articles.json 외에, 스크립트가 고친 기사 HTML(og:image 등 링크
+          # 미리보기 태그)과 새로 뽑아낸 이미지(assets/images, assets/og)도 함께 커밋한다.
+          git add -A -- data/articles.json assets/images assets/og '*.html'
           if git diff --cached --quiet; then
             echo "변경 없음 — 커밋 생략"
           else
