@@ -104,7 +104,7 @@ DATA_URI_EXT = {"jpeg": "jpg", "jpg": "jpg", "png": "png", "webp": "webp", "gif"
 EXCLUDE_DIRS = {".git", ".github", "data", "assets", "images", "img", "css", "js", "메인화면", "ETC", "scripts"}
 
 # 기사로 취급하지 않는 루트 파일
-EXCLUDE_ROOT_FILES = {"index.html", "404.html", "공지.html", "대시보드.html"}
+EXCLUDE_ROOT_FILES = {"index.html", "404.html", "공지.html"}
 
 # 검색엔진 소유 확인용 파일(naver-site-verification 등)은 내용으로 판별해 제외한다.
 SITE_VERIFICATION_RE = re.compile(r"^(?:naver|google)-site-verification:", re.I)
