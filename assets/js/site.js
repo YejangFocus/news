@@ -118,14 +118,18 @@
 
     var points = (is.points || []).map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('');
     // 사건의 흐름은 최신 기사가 맨 위에 오도록 뒤집어 그린다(D+n·'시작' 표기는 원래 순서 기준).
-    var tl = arts.map(function (a, i) {
+    var rows = arts.map(function (a, i) {
       var isLast = i === arts.length - 1, d = dayNum(a.date) - dayNum(first);
       return '<li class="fh-item' + (isLast ? ' latest' : '') + '">' +
         '<div class="fh-meta"><span>' + esc(a.date.slice(5).replace('-', '.')) + (i === 0 ? ' · 시작' : ' · D+' + d) + '</span>' +
         '<span class="tag">' + esc(a.tag) + '</span>' + (isLast ? '<span class="new">최신</span>' : '') + '</div>' +
         '<a class="fh-link" href="' + esc(a.url) + '">' + esc(a.title) + '</a>' +
         (a.desc ? '<p class="fh-desc">' + esc(a.desc) + '</p>' : '') + '</li>';
-    }).reverse().join('');
+    }).reverse();
+    // 홈에서는 최신 기사 opts.limit건만 보여주고, 나머지는 이슈 페이지에서 이어 읽게 한다.
+    var hidden = 0;
+    if (opts.limit && rows.length > opts.limit) { hidden = rows.length - opts.limit; rows = rows.slice(0, opts.limit); }
+    var tl = rows.join('') + (hidden ? '<li class="fh-rest"><a href="' + esc(link) + '">이전 보도 ' + hidden + '건 더 보기 〉</a></li>' : '');
 
     return '<div class="fh-card">' +
       '<div class="fh-top"><span class="fh-badge">' + (opts.page ? '이슈 타임라인' : '오늘의 포커스') + '</span>' +
@@ -139,7 +143,7 @@
           '<div class="fh-stat"><b>' + st.agoText + '</b><span>최근 업데이트</span></div>' +
         '</div>' +
         '<div class="fh-glance"><h3>한눈에 보기</h3><ul>' + points + '</ul></div></div>' +
-        '<div><div class="fh-tl-head">사건의 흐름 · 최신순</div><ol class="fh-timeline">' + tl + '</ol></div>' +
+        '<div><div class="fh-tl-head">사건의 흐름 · 최신순' + (hidden ? ' · 최근 ' + opts.limit + '건' : '') + '</div><ol class="fh-timeline">' + tl + '</ol></div>' +
       '</div></div>';
   }
 
@@ -173,7 +177,7 @@
   function buildHub(hub, list) {
     var current = 0;
     function render() {
-      hub.innerHTML = hubHtml(list, current, { tabs: true });
+      hub.innerHTML = hubHtml(list, current, { tabs: true, limit: 3 });
       hub.classList.add('ready');
       Array.prototype.forEach.call(hub.querySelectorAll('.fh-tab'), function (b) {
         b.addEventListener('click', function () { current = +b.dataset.i; render(); });

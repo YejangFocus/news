@@ -163,3 +163,7 @@
   .br-week b { font-size: 19px; }
   .br-nav button { padding: 7px 10px; font-size: 12px; }
 }
+
+.focus-hub .fh-rest { padding: 2px 0 0; }
+.focus-hub .fh-rest a { display: inline-block; font-size: 13px; font-weight: 700; color: #ffe38a; border: 1px dashed rgba(255,227,138,.6); border-radius: 14px; padding: 5px 14px; }
+.focus-hub .fh-rest a:hover { background: rgba(255,227,138,.15); text-decoration: none; color: #fff; }
