@@ -517,16 +517,17 @@
   /* 메인 2단: 양쪽 컬럼을 같은 높이로 늘려 하단 공백 제거 */
   .home-grid { display: grid; grid-template-columns: minmax(0,1fr) 340px; gap: 20px; align-items: stretch; padding: 0; margin-bottom: 20px; }
   .col-main, .col-side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-  .col-side .latest { display: flex; flex-direction: column; }
+  .col-side .latest { flex: 1; display: flex; flex-direction: column; }
+  .col-side .mod-hero .cap { display: none; }
   .col-side .num-list { margin: 0; }
   .col-side .num-list li { padding: 12px 0; }
   .col-side #modHero { margin-bottom: 6px; }
   .col-side .mod-hero { margin: 0; }
   .col-side .mod-hero .thumb { height: auto; aspect-ratio: 16/10; }
-  .col-side .num-list li { padding: 11px 0; }
+  .col-side .num-list { flex: 1; display: flex; flex-direction: column; margin-bottom: 4px; }
+  .col-side .num-list li { flex: 1; align-items: center; padding: 8px 0; }
   .col-side .fit-hide { display: none; }
-  .col-side .col-panel { padding: 16px 20px 6px; flex: 1; display: flex; flex-direction: column; }
-  .col-side .col-panel .side-list { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .col-side .col-panel { padding: 16px 20px 4px; }
   .col-side .side-list li { padding: 10px 0; }
   .col-side .side-list .thumb { width: 64px; height: 64px; aspect-ratio: 1/1; }
   .col-main .plain-list { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
@@ -746,33 +747,6 @@
 
 <script>window.SITE_ROOT = '';</script>
 <script src="assets/js/site.js"></script>
-<script>
-/* 오른쪽 '최신 소식'을 왼쪽 컬럼 높이에 딱 맞게 채워 중간 공백을 없앤다 */
-(function () {
-  function fit() {
-    var side = document.querySelector('.col-side'), main = document.querySelector('.col-main');
-    var list = document.getElementById('numList');
-    if (!side || !main || !list || window.innerWidth <= 980) {
-      [].forEach.call(document.querySelectorAll('.col-side .fit-hide'), function (li) { li.classList.remove('fit-hide'); });
-      return;
-    }
-    var cols = [].slice.call((document.getElementById('sideList') || {children: []}).children);
-    var items = [].slice.call(list.children);
-    items.concat(cols).forEach(function (li) { li.classList.remove('fit-hide'); });
-    side.style.alignSelf = 'start'; main.style.alignSelf = 'start';
-    var target = main.offsetHeight, i;
-    for (i = items.length - 1; i > 2 && side.offsetHeight > target; i--) items[i].classList.add('fit-hide');
-    for (i = cols.length - 1; i > 0 && side.offsetHeight > target; i--) cols[i].classList.add('fit-hide');
-    for (i = 2; i > 0 && side.offsetHeight > target; i--) items[i].classList.add('fit-hide');
-    side.style.alignSelf = ''; main.style.alignSelf = '';
-  }
-  var t; function later() { clearTimeout(t); t = setTimeout(fit, 60); }
-  window.addEventListener('resize', later);
-  window.addEventListener('load', function () { later(); setTimeout(fit, 800); setTimeout(fit, 2000); });
-  ['numList', 'sideList'].forEach(function (id) { var el = document.getElementById(id); if (el && window.MutationObserver) new MutationObserver(later).observe(el, { childList: true }); });
-  document.querySelectorAll('img').forEach(function (im) { im.addEventListener('load', later); });
-})();
-</script>
 
 </body>
 </html>
