@@ -484,8 +484,8 @@
   .support-btn { border-radius: 20px; box-shadow: none; border: 0; background: linear-gradient(90deg,#ff9f1c,#e8322a); animation: none; height: 36px; }
   .support-btn:hover { transform: translateY(-1px); background: linear-gradient(90deg,#ff9f1c,#e8322a); filter: brightness(1.05); }
 
-  .masthead { padding: 0 0 14px; background: var(--paper); }
-  .masthead .masthead-row { grid-template-columns: 1fr minmax(0, 460px) 1fr; gap: 12px; padding-top: 0; }
+  .masthead { padding: 0 0 8px; background: var(--paper); }
+  .masthead .masthead-row { grid-template-columns: 1fr minmax(0, 400px) 1fr; gap: 12px; padding-top: 0; align-items: center; }
   .masthead .ci-logo { margin: 0 auto; }
   .masthead .tv-logo, .masthead .gapck-logo { max-width: 110px; }
   .masthead .tv-logo { box-shadow: none; }
@@ -515,7 +515,7 @@
   a:hover > .thumb, a:hover .thumb { transform: scale(1.02); }
 
   /* 메인 2단: 양쪽 컬럼을 같은 높이로 늘려 하단 공백 제거 */
-  .home-grid { display: grid; grid-template-columns: minmax(0,1fr) 360px; gap: 20px; align-items: stretch; padding: 0; margin-bottom: 20px; }
+  .home-grid { display: grid; grid-template-columns: minmax(0,1fr) 340px; gap: 20px; align-items: stretch; padding: 0; margin-bottom: 20px; }
   .col-main, .col-side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
   .col-side .latest { flex: 1; display: flex; flex-direction: column; }
   .col-side .num-list { margin: 0; }
@@ -523,8 +523,9 @@
   .col-side #modHero { margin-bottom: 6px; }
   .col-side .mod-hero { margin: 0; }
   .col-side .mod-hero .thumb { height: auto; aspect-ratio: 16/10; }
-  .col-side .num-list { flex: 1; display: flex; flex-direction: column; }
-  .col-side .num-list li { flex: 1; align-items: center; }
+  .col-side .num-list { flex: 1; }
+  .col-side .num-list li { padding: 11px 0; }
+  .col-side .num-list li.fit-hide { display: none; }
   .col-main .plain-list { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
   .col-main .plain-list li { flex: 1; align-items: center; padding: 8px 0; }
 
@@ -554,7 +555,9 @@
   }
   .card-pair .feature-item .thumb { width: 100%; height: auto; aspect-ratio: 16/9; border-radius: 0; }
   .card-pair .feature-item .body { padding: 14px 18px 18px; }
-  .card-pair .feature-item h3 { font-size: 18px; }
+  .card-pair .feature-item h3 { font-size: 18px; min-height: 2.84em; }
+  .card-pair .feature-item p { -webkit-line-clamp: 3; min-height: 4.95em; }
+  .card-pair .feature-item .body { flex: 1; }
   :root[data-theme="dark"] .card-pair .feature-item { background: #1a1a16; }
 
   .plain-list { padding: 8px 20px; }
@@ -567,7 +570,8 @@
   /* 하단 3열: 칼럼 / 소개 카드 / 광고 — 높이를 맞춰 깔끔하게 마감 */
   .bottom-grid { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 20px; align-items: stretch; margin-bottom: 28px; }
   .bottom-grid .social-card { margin: 0; border: 0; border-radius: var(--radius); box-shadow: var(--shadow); background: #fff; display: flex; flex-direction: column; }
-  .bottom-grid .social-card .sc-body { flex: 1; }
+  .bottom-grid .social-card .sc-body { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 16px; }
+  .bottom-grid .ad-vert { justify-content: space-around; gap: 10px; }
   .bottom-grid .ad-vert { aspect-ratio: auto; margin: 0; border-radius: var(--radius); box-shadow: var(--shadow); }
   .bottom-grid .side-list { display: flex; flex-direction: column; justify-content: space-between; }
   .bottom-grid .side-list .thumb { width: 72px; height: 72px; aspect-ratio: 1/1; }
@@ -770,6 +774,31 @@
 
 <script>window.SITE_ROOT = '';</script>
 <script src="assets/js/site.js"></script>
+<script>
+/* 오른쪽 '최신 소식'을 왼쪽 컬럼 높이에 딱 맞게 채워 중간 공백을 없앤다 */
+(function () {
+  function fit() {
+    var side = document.querySelector('.col-side'), main = document.querySelector('.col-main');
+    var list = document.getElementById('numList');
+    if (!side || !main || !list || window.innerWidth <= 980) {
+      if (list) [].forEach.call(list.children, function (li) { li.classList.remove('fit-hide'); });
+      return;
+    }
+    var items = [].slice.call(list.children);
+    items.forEach(function (li) { li.classList.remove('fit-hide'); });
+    side.style.alignSelf = 'start'; main.style.alignSelf = 'start';
+    var target = main.offsetHeight;
+    for (var i = items.length - 1; i > 1 && side.offsetHeight > target; i--) items[i].classList.add('fit-hide');
+    side.style.alignSelf = ''; main.style.alignSelf = '';
+  }
+  var t; function later() { clearTimeout(t); t = setTimeout(fit, 60); }
+  window.addEventListener('resize', later);
+  window.addEventListener('load', function () { later(); setTimeout(fit, 800); setTimeout(fit, 2000); });
+  var list = document.getElementById('numList');
+  if (list && window.MutationObserver) new MutationObserver(later).observe(list, { childList: true });
+  document.querySelectorAll('img').forEach(function (im) { im.addEventListener('load', later); });
+})();
+</script>
 
 </body>
 </html>
