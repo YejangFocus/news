@@ -117,6 +117,7 @@
       : '<div class="fh-tabs" style="margin-left:' + (tabs ? '0' : 'auto') + '"><a class="fh-more" href="' + esc(link) + '">이슈 전체보기 〉</a> <a class="fh-more" style="margin-left:10px" href="' + root + '주간브리핑.html">주간 브리핑 〉</a></div>';
 
     var points = (is.points || []).map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('');
+    // 사건의 흐름은 최신 기사가 맨 위에 오도록 뒤집어 그린다(D+n·'시작' 표기는 원래 순서 기준).
     var tl = arts.map(function (a, i) {
       var isLast = i === arts.length - 1, d = dayNum(a.date) - dayNum(first);
       return '<li class="fh-item' + (isLast ? ' latest' : '') + '">' +
@@ -124,7 +125,7 @@
         '<span class="tag">' + esc(a.tag) + '</span>' + (isLast ? '<span class="new">최신</span>' : '') + '</div>' +
         '<a class="fh-link" href="' + esc(a.url) + '">' + esc(a.title) + '</a>' +
         (a.desc ? '<p class="fh-desc">' + esc(a.desc) + '</p>' : '') + '</li>';
-    }).join('');
+    }).reverse().join('');
 
     return '<div class="fh-card">' +
       '<div class="fh-top"><span class="fh-badge">' + (opts.page ? '이슈 타임라인' : '오늘의 포커스') + '</span>' +
@@ -138,7 +139,7 @@
           '<div class="fh-stat"><b>' + st.agoText + '</b><span>최근 업데이트</span></div>' +
         '</div>' +
         '<div class="fh-glance"><h3>한눈에 보기</h3><ul>' + points + '</ul></div></div>' +
-        '<div><div class="fh-tl-head">사건의 흐름 · 오래된 순</div><ol class="fh-timeline">' + tl + '</ol></div>' +
+        '<div><div class="fh-tl-head">사건의 흐름 · 최신순</div><ol class="fh-timeline">' + tl + '</ol></div>' +
       '</div></div>';
   }
 
