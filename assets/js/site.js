@@ -781,25 +781,25 @@
       }).join('');
     }
 
-    // 중앙 컬럼: 최신 소식 — 카테고리와 무관하게 사이트 전체 최신 5건
-    var topFive = ARTICLE_INDEX.slice(0, 5);
+    // 중앙 컬럼: 최신 소식 — 카테고리와 무관하게 사이트 전체 최신 3건
+    var topThree = ARTICLE_INDEX.slice(0, 3);
     var numList = document.getElementById('numList');
     if (numList) {
-      var numerals = ['①', '②', '③', '④', '⑤'];
-      numList.innerHTML = topFive.map(function (item, i) {
+      var numerals = ['①', '②', '③'];
+      numList.innerHTML = topThree.map(function (item, i) {
         return '<li><span class="num">' + numerals[i] + '</span><a href="' + item.url + '">' + esc(item.title) + '</a></li>';
       }).join('');
     }
     var modHero = document.getElementById('modHero');
-    if (modHero && topFive[0]) {
+    if (modHero && topThree[0]) {
       modHero.innerHTML =
-        '<a class="mod-hero" href="' + topFive[0].url + '">' +
-          thumbImgHtml(topFive[0], 'thumb') +
-          (topFive[0].desc ? '<p class="cap">' + esc(topFive[0].desc) + '</p>' : '') +
+        '<a class="mod-hero" href="' + topThree[0].url + '">' +
+          thumbImgHtml(topThree[0], 'thumb') +
+          (topThree[0].desc ? '<p class="cap">' + esc(topThree[0].desc) + '</p>' : '') +
         '</a>';
     }
-    // 우측 컬럼: 칼럼 — 최신 2건
-    var columns = pickMany(['칼럼'], 2);
+    // 우측 컬럼: 칼럼 — 최신 3건
+    var columns = pickMany(['칼럼'], 3);
     var sideList = document.getElementById('sideList');
     if (sideList) {
       sideList.innerHTML = columns.map(function (item) {
