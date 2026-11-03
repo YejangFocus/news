@@ -785,8 +785,8 @@
     var topThree = ARTICLE_INDEX.slice(0, 3);
     var numList = document.getElementById('numList');
     if (numList) {
-      var numerals = ['①', '②', '③'];
-      numList.innerHTML = topThree.map(function (item, i) {
+      var numerals = ['①', '②', '③', '④', '⑤'];
+      numList.innerHTML = ARTICLE_INDEX.slice(0, 5).map(function (item, i) {
         return '<li><span class="num">' + numerals[i] + '</span><a href="' + item.url + '">' + esc(item.title) + '</a></li>';
       }).join('');
     }
