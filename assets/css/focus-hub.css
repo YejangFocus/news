@@ -120,3 +120,46 @@
 .focus-hub .fh-glance li { font-size: 13.5px; padding-left: 16px; }
 .focus-hub .fh-glance li + li { margin-top: 6px; }
 .is-card h3 { margin: 6px 0 12px; padding: 0; font-family: 'Noto Serif KR', serif; color: inherit; }
+
+/* ---------- 주간 브리핑 ---------- */
+.br { color: var(--ink, #111); }
+.br a { text-decoration: none; color: inherit; }
+.br-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 0; border-top: 3px solid #111; border-bottom: 1px solid var(--rule-soft, #ddd); }
+.br-nav button, .br-copy {
+  font: 700 13px 'Noto Sans KR', sans-serif; cursor: pointer; color: var(--ink, #111); background: var(--paper, #fff);
+  border: 2px solid #111; border-radius: 14px 3px 14px 3px; padding: 7px 14px; box-shadow: 2px 2px 0 #111;
+}
+.br-nav button:hover:not(:disabled), .br-copy:hover { background: #ffe38a; color: #1c1a16; }
+.br-nav button:disabled { opacity: .35; cursor: default; box-shadow: none; }
+.br-week { text-align: center; }
+.br-week small { display: block; font: 400 12px 'Do Hyeon', sans-serif; color: #e8322a; }
+.br-week b { font: 400 24px 'Do Hyeon', sans-serif; }
+.br-sum { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 16px 0 4px; }
+.br-count b { font: 400 40px/1 'Do Hyeon', sans-serif; color: #e8322a; margin-right: 4px; }
+.br-count span { font-size: 14px; font-weight: 700; }
+.br-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.br-chip { font-size: 12px; font-weight: 700; border: 1.5px solid; border-radius: 12px; padding: 2px 10px; }
+.br-leads { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0 26px; }
+.br-lead { display: block; padding: 14px 0; border-bottom: 1px solid var(--rule-soft, #ddd); }
+.br-lead.first { grid-row: span 3; border-bottom: none; padding-right: 20px; border-right: 1px solid var(--rule-soft, #ddd); }
+.br-lead .g { font-size: 12px; font-weight: 700; }
+.br-lead h3 { margin: 6px 0 8px; padding: 0; font: 700 17px/1.5 'Noto Serif KR', serif; color: var(--ink, #111); word-break: keep-all; }
+.br-lead.first h3 { font-size: 24px; line-height: 1.4; font-weight: 900; }
+.br-lead:hover h3 { text-decoration: underline; }
+.br-lead p { margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-soft, #555); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.br-lead:not(.first) p { -webkit-line-clamp: 2; font-size: 12.5px; }
+.br-list { list-style: none; margin: 0; padding: 0; }
+.br-list li { padding: 9px 0; border-bottom: 1px dashed var(--rule-soft, #ddd); font-size: 14.5px; line-height: 1.55; }
+.br-list li:last-child { border-bottom: none; }
+.br-list .g { font-size: 12px; font-weight: 700; margin-right: 8px; }
+.br-list a:hover { text-decoration: underline; }
+.br-day { margin-top: 12px; }
+.br-dh { font: 400 15px 'Do Hyeon', sans-serif; padding: 3px 10px; display: inline-block; background: #111; color: #fff; border-radius: 3px; }
+.br-dh small { opacity: .75; }
+@media (max-width: 720px) {
+  .br-leads { grid-template-columns: 1fr; }
+  .br-lead.first { grid-row: auto; border-right: none; padding-right: 0; border-bottom: 1px solid var(--rule-soft, #ddd); }
+  .br-lead.first h3 { font-size: 20px; }
+  .br-week b { font-size: 19px; }
+  .br-nav button { padding: 7px 10px; font-size: 12px; }
+}
