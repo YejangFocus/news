@@ -38,6 +38,7 @@
       initCategoryOverlay(articles);
       initSiteSearch(articles);
       renderHomepage(articles);
+      renderFocusHub(articles);
     })
     .catch(function (err) {
       console.error('기사 목록(articles.json)을 불러오지 못했습니다.', err);
@@ -46,6 +47,120 @@
   initThemeToggle();
   initPlaceholderButtons();
   initSupportModal();
+
+  // 오늘의 포커스: data/issues.json(편집자가 직접 묶은 이슈)과 articles.json을 이어
+  // "이슈 하나의 전체 흐름"을 타임라인으로 보여준다. 기사 제목·날짜·요약은 articles.json에서
+  // 그대로 가져오므로 issues.json에는 기사 경로만 적으면 된다. 가장 최근에 업데이트된 이슈가
+  // 기본으로 올라온다. 홈이 아닌 페이지에는 #focusHub가 없어 조용히 종료한다.
+  function renderFocusHub(ARTICLE_INDEX) {
+    var hub = document.getElementById('focusHub');
+    if (!hub) return;
+    fetch(root + 'data/issues.json')
+      .then(function (res) { return res.json(); })
+      .then(function (issues) { buildHub(hub, issues, ARTICLE_INDEX); })
+      .catch(function (err) { console.error('이슈 목록(issues.json)을 불러오지 못했습니다.', err); });
+  }
+
+  function buildHub(hub, issues, ARTICLE_INDEX) {
+    var DAY = 86400000;
+    function dayNum(d) { var t = Date.parse(d); return isNaN(t) ? 0 : Math.floor(t / DAY); }
+    function find(path) {
+      for (var i = 0; i < ARTICLE_INDEX.length; i++) {
+        if (ARTICLE_INDEX[i].url.slice(-(path.length + 1)) === '/' + path) return ARTICLE_INDEX[i];
+      }
+      return null;
+    }
+    var list = issues.map(function (is) {
+      // 날짜순으로 정렬하되, 같은 날짜 기사는 issues.json에 적은 순서를 따른다(편집자가 사건 순서를 정함).
+      var arts = (is.articles || []).map(function (p, i) {
+        var a = find(p); return a ? { a: a, i: i } : null;
+      }).filter(Boolean).sort(function (x, y) {
+        return x.a.date.localeCompare(y.a.date) || x.i - y.i;
+      }).map(function (x) { return x.a; });
+      return { def: is, arts: arts, last: arts.length ? arts[arts.length - 1].date : '' };
+    }).filter(function (x) { return x.arts.length; });
+    if (!list.length) return;
+    list.sort(function (a, b) { return b.last.localeCompare(a.last); });
+
+    var current = 0, io = null;
+
+    function render() {
+      var it = list[current], is = it.def, arts = it.arts;
+      var first = arts[0].date, last = arts[arts.length - 1].date;
+      var today = Math.floor(Date.now() / DAY);
+      var span = Math.max(dayNum(last) - dayNum(first), 0) + 1;
+      var ago = Math.max(today - dayNum(last), 0);
+      var recent = ago <= 3;
+
+      var tabs = list.length > 1 ? '<div class="fh-tabs" role="tablist">' + list.map(function (x, i) {
+        return '<button type="button" class="fh-tab" role="tab" data-i="' + i + '" aria-selected="' + (i === current) + '">' + esc(x.def.kicker.split(' · ').pop()) + '</button>';
+      }).join('') + '</div>' : '';
+
+      var points = (is.points || []).map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('');
+
+      var tl = arts.map(function (a, i) {
+        var isLast = i === arts.length - 1;
+        var d = dayNum(a.date) - dayNum(first);
+        return '<li class="fh-item' + (isLast ? ' latest' : '') + '">' +
+          '<div class="fh-meta"><span>' + esc(a.date.slice(5).replace('-', '.')) + (i === 0 ? ' · 시작' : ' · D+' + d) + '</span>' +
+          '<span class="tag">' + esc(a.tag) + '</span>' + (isLast ? '<span class="new">최신</span>' : '') + '</div>' +
+          '<a class="fh-link" href="' + esc(a.url) + '">' + esc(a.title) + '</a>' +
+          (a.desc ? '<p class="fh-desc">' + esc(a.desc) + '</p>' : '') + '</li>';
+      }).join('');
+
+      hub.innerHTML =
+        '<div class="fh-card">' +
+          '<div class="fh-top"><span class="fh-badge">오늘의 포커스</span>' +
+          (recent ? '<span class="fh-live">진행 중인 이슈</span>' : '') + tabs + '</div>' +
+          '<div class="fh-body">' +
+            '<div><div class="fh-kicker">' + esc(is.kicker) + '</div>' +
+            '<h2 class="fh-title">' + esc(is.title) + '</h2>' +
+            '<div class="fh-stats">' +
+              '<div class="fh-stat"><b>' + arts.length + '건</b><span>관련 기사</span></div>' +
+              '<div class="fh-stat"><b>' + span + '일</b><span>보도 기간</span></div>' +
+              '<div class="fh-stat"><b>' + (ago === 0 ? '오늘' : ago + '일 전') + '</b><span>최근 업데이트</span></div>' +
+            '</div>' +
+            '<div class="fh-glance"><h3>한눈에 보기</h3><ul>' + points + '</ul></div></div>' +
+            '<div><div class="fh-tl-head">사건의 흐름 · 오래된 순</div><ol class="fh-timeline">' + tl + '</ol></div>' +
+          '</div>' +
+        '</div>';
+      hub.classList.add('ready');
+
+      Array.prototype.forEach.call(hub.querySelectorAll('.fh-tab'), function (b) {
+        b.addEventListener('click', function () { current = +b.dataset.i; render(); });
+      });
+      animate();
+    }
+
+    // 타임라인: 화면에 들어오는 순서대로 하나씩 나타나고, 진행선이 따라 내려온다.
+    function animate() {
+      var items = hub.querySelectorAll('.fh-item');
+      var tl = hub.querySelector('.fh-timeline');
+      if (io) io.disconnect();
+      if (!('IntersectionObserver' in window)) {
+        Array.prototype.forEach.call(items, function (n) { n.classList.add('in'); });
+        tl.style.setProperty('--fh-fill', '100%');
+        return;
+      }
+      io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+          var k = Array.prototype.indexOf.call(items, e.target);
+          var pct = Math.round(((k + 1) / items.length) * 100);
+          var cur = parseInt(tl.style.getPropertyValue('--fh-fill'), 10) || 0;
+          if (pct > cur) tl.style.setProperty('--fh-fill', pct + '%');
+        });
+      }, { threshold: 0.25 });
+      Array.prototype.forEach.call(items, function (n, i) {
+        n.style.transitionDelay = Math.min(i * 70, 420) + 'ms';
+        io.observe(n);
+      });
+    }
+
+    render();
+  }
 
   function initCategoryOverlay(ARTICLE_INDEX) {
     var buttons = document.querySelectorAll('#catNav button');
