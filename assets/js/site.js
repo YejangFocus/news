@@ -273,7 +273,7 @@
       '.yf-nav a{display:block;padding:10px 12px;border:1px solid var(--rule-soft,#ddd);border-radius:8px;font-size:13.5px;line-height:1.5}' +
       '.yf-nav a:hover{border-color:#e8322a}' +
       '.yf-nav small{display:block;font-size:11.5px;font-weight:700;color:var(--muted,#777);margin-bottom:2px}' +
-      '.yf-nav .nx{text-align:right;grid-column:2}' +
+      '.yf-nav .pv{text-align:right;grid-column:2}' +
       '.yf-more{display:inline-block;margin-top:12px;font-size:12.5px;font-weight:700;color:#e8322a !important}' +
       '.yf-more:hover{text-decoration:underline}' +
       '.yf-rel{list-style:none;margin:10px 0 0;padding:0}' +
@@ -281,7 +281,7 @@
       '.yf-rel li:last-child{border-bottom:none}' +
       '.yf-rel .g{font-weight:700;font-size:12px;margin-right:6px;color:#e8322a}' +
       '.yf-rel a:hover{text-decoration:underline}' +
-      '@media (max-width:520px){.yf-nav{grid-template-columns:1fr}.yf-nav .nx{grid-column:1;text-align:left}}' +
+      '@media (max-width:520px){.yf-nav{grid-template-columns:1fr}.yf-nav .pv{grid-column:1;text-align:left}}' +
       '@media print{.yf-progress,.yf-end{display:none}}';
     document.head.appendChild(css);
     var fl = document.createElement('link');
@@ -355,12 +355,12 @@
         slot.innerHTML = '<div class="yf-box"><div class="k">이 기사가 속한 이슈</div>' +
           '<a class="t" href="' + esc(link) + '">' + esc(it.def.title) + '</a>' +
           '<div class="yf-steps">' + arts.map(function (a, j) {
-            return '<a href="' + esc(a.url) + '" class="' + (j === idx ? 'on' : '') + '" title="' + esc(a.title) + '" aria-label="' + (j + 1) + '번째 기사"></a>';
-          }).join('') + '</div>' +
-          '<div class="yf-pos">관련 기사 ' + arts.length + '건 중 ' + (idx + 1) + '번째</div>' +
+            return '<a href="' + esc(a.url) + '" class="' + (j === idx ? 'on' : '') + '" title="' + esc(a.title) + '" aria-label="최신순 ' + (arts.length - j) + '번째 기사"></a>';
+          }).reverse().join('') + '</div>' +
+          '<div class="yf-pos">관련 기사 ' + arts.length + '건 · 최신순 ' + (arts.length - idx) + '번째</div>' +
           ((prev || next) ? '<div class="yf-nav">' +
-            (prev ? '<a class="pv" href="' + esc(prev.url) + '"><small>← 앞선 보도</small>' + esc(prev.title) + '</a>' : '') +
-            (next ? '<a class="nx" href="' + esc(next.url) + '"><small>이어진 보도 →</small>' + esc(next.title) + '</a>' : '') + '</div>' : '') +
+            (next ? '<a class="nx" href="' + esc(next.url) + '"><small>← 이어진 보도(더 최신)</small>' + esc(next.title) + '</a>' : '') +
+            (prev ? '<a class="pv" href="' + esc(prev.url) + '"><small>앞선 보도(더 이전) →</small>' + esc(prev.title) + '</a>' : '') + '</div>' : '') +
           '<a class="yf-more" href="' + esc(link) + '">이슈 타임라인 전체 보기 〉</a></div>';
       })
       .catch(renderRelated);
