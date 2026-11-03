@@ -822,53 +822,136 @@
     var resultsBox = document.getElementById('searchResults');
     if (!input || !resultsBox) return;
     var wrap = input.closest('.wrap');
+    input.placeholder = '기사 검색 (제목·내용 모두 검색)';
+    var st = document.createElement('style');
+    st.textContent =
+      '.search-results .count{padding:8px 14px;font-size:11.5px;font-weight:700;opacity:.7;}' +
+      '.search-results .snip{display:block;margin-top:3px;font-size:12.5px;line-height:1.5;opacity:.75;font-weight:400;}' +
+      '.search-results mark{background:#ffe38a;color:#1c1a16;border-radius:2px;padding:0 1px;}' +
+      '.search-results a{display:block;}';
+    document.head.appendChild(st);
+
+    // 기사 본문 검색용 데이터(data/search-index.json: {기사 URL: 본문}).
+    // 검색창을 처음 쓸 때 한 번만 내려받고, 받는 동안에는 제목·요약만으로 먼저 보여준다.
+    var BODY = null, bodyLoading = false;
+    function loadBodies(done) {
+      if (BODY || bodyLoading) return;
+      bodyLoading = true;
+      fetch(root + 'data/search-index.json')
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) { BODY = data; })
+        .catch(function () { BODY = {}; })
+        .then(function () { bodyLoading = false; if (done) done(); });
+    }
 
     function normalize(s) {
       // 자모 결합 형태 차이(NFC/NFD)까지 흡수해 한글 검색이 안정적으로 걸리게 함
       return (s || '').normalize('NFC').toLowerCase();
     }
+    function escHtml(s) {
+      return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+    }
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
-    function render(list, query) {
+    // 검색어를 공백 기준 단어로 나눠 모두 포함하는 기사만 찾는다(AND).
+    function terms(query) {
+      return normalize(query).split(/\s+/).filter(Boolean);
+    }
+
+    function search(query) {
+      var ts = terms(query);
+      if (!ts.length) return [];
+      var out = [];
+      ARTICLE_INDEX.forEach(function (item, idx) {
+        var title = normalize(item.title), tag = normalize(item.tag), desc = normalize(item.desc);
+        var body = normalize((BODY && BODY[item.url]) || '');
+        var score = 0, ok = true;
+        ts.forEach(function (q) {
+          if (title.indexOf(q) !== -1) score += 100;
+          else if (tag.indexOf(q) !== -1) score += 60;
+          else if (desc.indexOf(q) !== -1) score += 30;
+          else if (body.indexOf(q) !== -1) score += 10 + Math.min(body.split(q).length - 1, 20);
+          else ok = false;
+        });
+        if (ok) out.push({ item: item, score: score, idx: idx, body: (BODY && BODY[item.url]) || '' });
+      });
+      // 제목 > 카테고리 > 요약 > 본문 순으로 정렬, 같으면 최신 기사 먼저
+      out.sort(function (x, y) { return y.score - x.score || x.idx - y.idx; });
+      return out;
+    }
+
+    // 본문에서 검색어가 처음 나오는 곳 주변을 잘라 보여준다.
+    function snippet(text, ts) {
+      if (!text) return '';
+      var low = normalize(text), pos = -1;
+      for (var i = 0; i < ts.length; i++) {
+        var p = low.indexOf(ts[i]);
+        if (p !== -1 && (pos === -1 || p < pos)) pos = p;
+      }
+      if (pos === -1) return '';
+      var from = Math.max(0, pos - 24), to = Math.min(text.length, pos + 80);
+      return (from > 0 ? '…' : '') + text.slice(from, to) + (to < text.length ? '…' : '');
+    }
+    function highlight(text, ts) {
+      var html = escHtml(text);
+      ts.forEach(function (q) {
+        html = html.replace(new RegExp('(' + escRe(escHtml(q)) + ')', 'gi'), '<mark>$1</mark>');
+      });
+      return html;
+    }
+
+    var MAX_SHOWN = 12;
+    function render(results, query) {
       resultsBox.innerHTML = '';
       if (!query) { resultsBox.hidden = true; return; }
-      if (list.length === 0) {
+      var ts = terms(query);
+      if (results.length === 0) {
         var li = document.createElement('li');
-        li.innerHTML = '<div class="empty">검색 결과가 없습니다.</div>';
+        li.innerHTML = '<div class="empty">' + (bodyLoading ? '검색 중입니다…' : '검색 결과가 없습니다.') + '</div>';
         resultsBox.appendChild(li);
       } else {
-        list.forEach(function (item) {
-          var li2 = document.createElement('li');
-          var a = document.createElement('a');
+        var cnt = document.createElement('li');
+        cnt.innerHTML = '<div class="count">검색 결과 ' + results.length + '건</div>';
+        resultsBox.appendChild(cnt);
+        results.slice(0, MAX_SHOWN).forEach(function (r) {
+          var item = r.item, li2 = document.createElement('li'), a = document.createElement('a');
           a.href = item.url;
-          a.innerHTML = '<span class="tag">' + item.tag + '</span>' + item.title;
+          var inTitle = ts.every(function (q) { return normalize(item.title).indexOf(q) !== -1; });
+          var snip = '';
+          if (!inTitle) snip = snippet(r.body, ts) || (item.desc ? item.desc.slice(0, 90) : '');
+          a.innerHTML = '<span class="tag">' + escHtml(item.tag) + '</span>' + highlight(item.title, ts) +
+            (snip ? '<span class="snip">' + highlight(snip, ts) + '</span>' : '');
           li2.appendChild(a);
           resultsBox.appendChild(li2);
         });
+        if (results.length > MAX_SHOWN) {
+          var more = document.createElement('li');
+          more.innerHTML = '<div class="count">외 ' + (results.length - MAX_SHOWN) + '건 — 검색어를 더 구체적으로 입력해 보세요</div>';
+          resultsBox.appendChild(more);
+        }
       }
       resultsBox.hidden = false;
     }
 
-    function search(query) {
-      var q = normalize(query);
-      if (!q) return [];
-      return ARTICLE_INDEX.filter(function (item) {
-        return normalize(item.title).indexOf(q) !== -1 || normalize(item.tag).indexOf(q) !== -1;
-      });
+    function run() {
+      var q = input.value.trim();
+      render(search(q), q);
     }
 
-    input.addEventListener('input', function () {
-      render(search(input.value.trim()), input.value.trim());
-    });
+    input.addEventListener('focus', function () { loadBodies(run); });
+    input.addEventListener('input', function () { loadBodies(run); run(); });
 
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
         var q = input.value.trim();
         var matched = search(q);
         if (matched.length > 0) {
-          window.location.href = matched[0].url;
+          window.location.href = matched[0].item.url;
         } else if (q) {
           window.open('https://www.google.com/search?q=' + encodeURIComponent('site:yejangfocus.github.io/news ' + q), '_blank');
         }
+      } else if (e.key === 'Escape') {
+        resultsBox.hidden = true;
       }
     });
 

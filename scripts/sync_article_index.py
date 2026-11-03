@@ -71,6 +71,10 @@ from pathlib import Path
 # ── 설정 ────────────────────────────────────────────────────────────────
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ARTICLE_INDEX_PATH = REPO_ROOT / "data" / "articles.json"
+# 홈페이지 검색창이 "기사 본문 안에서" 찾을 때 쓰는 본문 텍스트 모음({기사 URL: 본문}).
+# articles.json에 넣으면 모든 페이지가 무거워지므로 별도 파일로 두고, 검색창을
+# 처음 쓸 때만 내려받는다.
+SEARCH_INDEX_PATH = REPO_ROOT / "data" / "search-index.json"
 IMAGES_DIR = REPO_ROOT / "assets" / "images"
 SITE_BASE = "https://yejangfocus.github.io/news"
 # 카카오톡·네이버·페이스북 등이 링크 미리보기(og:*)를 만들 때 쓰는 실제 도메인(CNAME)
@@ -446,6 +450,24 @@ def normalize_share_meta(full_path: Path, rel_path: Path, title: str | None, des
     return text, index_image
 
 
+def extract_body_text(html_text: str) -> str:
+    """검색용 기사 본문 텍스트. 제목(<h1>)부터 <footer> 앞까지의 글자만 남긴다.
+    스크립트·스타일·이미지(base64 포함)·메뉴(nav)·머리글(header)은 버린다."""
+    text = html_text
+    text = re.sub(r"<!--.*?-->", " ", text, flags=re.S)
+    text = re.sub(r"<(script|style|noscript|svg|head|nav|header|footer|form|button)\b.*?</\1\s*>", " ", text, flags=re.S | re.I)
+    m = re.search(r"<h1\b", text, re.I)
+    if m:
+        text = text[m.start():]
+    m = re.search(r"<footer\b", text, re.I)
+    if m:
+        text = text[:m.start()]
+    text = re.sub(r"<(br|/p|/div|/li|/h[1-6]|/tr|/blockquote|/figcaption)\b[^>]*>", " ", text, flags=re.I)
+    text = re.sub(r"<[^>]+>", "", text)
+    text = html.unescape(text).replace("\u00a0", " ")
+    return re.sub(r"\s+", " ", text).strip()
+
+
 def extract_published_time(html_text: str) -> int | None:
     """정렬에 쓸 명시적 발행 시각(article:published_time 또는 og:published_time
     메타태그, ISO 8601 + 타임존 형식)을 epoch 초로 돌려준다.
@@ -543,6 +565,7 @@ def main():
 
     new_index = []
     warnings = []
+    search_index = {}
 
     for rel_path in article_files:
         full_path = REPO_ROOT / rel_path
@@ -587,6 +610,8 @@ def main():
         uploaded = git_created_epoch(rel_path) or int(datetime.now(timezone.utc).timestamp())
         published = extract_published_time(html_text) or 0
 
+        search_index[url] = extract_body_text(html_text)
+
         new_index.append({
             "tag": tag,
             "title": title,
@@ -608,6 +633,12 @@ def main():
     ARTICLE_INDEX_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(ARTICLE_INDEX_PATH, "w", encoding="utf-8") as f:
         json.dump(new_index, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+    # 본문 검색 인덱스: 최신 기사 순서대로, 내용이 같으면 파일이 바뀌지 않도록 고정 정렬
+    ordered = {item["url"]: search_index.get(item["url"], "") for item in new_index}
+    with open(SEARCH_INDEX_PATH, "w", encoding="utf-8") as f:
+        json.dump(ordered, f, ensure_ascii=False, separators=(",", ":"))
         f.write("\n")
 
     for w in warnings:
