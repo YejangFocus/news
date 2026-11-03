@@ -615,12 +615,199 @@
   }
   addFooterLinks();
 
+  // ---------- 상단 메뉴 ----------
+  // 모든 페이지가 같은 메뉴 마크업을 복사해 쓰고 있으므로, 페이지를 하나씩 고치지 않고
+  // 여기서 한 번에 바꾼다.
+  //  1) 자주 쓰는 메뉴(전체·교단·목회·이슈·브리핑)만 앞에 두고 나머지는 '더보기'로 묶는다.
+  //  2) 메뉴는 <button>이 아니라 실제 링크: 카테고리는 주소(#/교단)를 가져 공유·뒤로가기·새 탭이 된다.
+  //  3) 검색창과 후원 버튼을 고정 메뉴줄로 올려, 스크롤해도 항상 쓸 수 있게 하고 세로 공간을 줄인다.
+  var NAV_PRIMARY = ['전체', '교단', '목회'];
+  var NAV_MORE = ['신학', '사설', '특집', '노회', '인물', '교계', '칼럼'];
+
+  var NAV_IS_HOME = root === '' && /(^|\/)(index\.html)?$/.test(location.pathname);
+  var NAV_IS_ISSUES = !!document.querySelector('[data-page="issues"]');
+  var NAV_IS_BRIEFING = !!document.querySelector('[data-page="briefing"]');
+
+  function navHref(cat) {
+    if (cat === '이슈') return root + '이슈.html';
+    if (cat === '브리핑') return root + '주간브리핑.html';
+    return (NAV_IS_HOME ? '' : root + 'index.html') + '#/' + encodeURIComponent(cat);
+  }
+
+  // 주소 해시(#/교단)에서 카테고리를 읽는다. 해당 없으면 ''.
+  function navCatFromHash() {
+    var h = location.hash || '';
+    if (h.indexOf('#/') !== 0) return '';
+    var c;
+    try { c = decodeURIComponent(h.slice(2)); } catch (e) { return ''; }
+    return (c === '전체' || NAV_PRIMARY.indexOf(c) !== -1 || NAV_MORE.indexOf(c) !== -1) ? c : '';
+  }
+
+  function navDefaultCat() {
+    return NAV_IS_ISSUES ? '이슈' : NAV_IS_BRIEFING ? '브리핑' : '전체';
+  }
+
+  var NAV_CSS =
+    'nav.catnav .cat-tools{display:flex;align-items:center;gap:8px;flex:none;margin-left:auto;padding-left:10px;}' +
+    'nav.catnav .cat-ico{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:rgba(128,128,128,.14);color:inherit;font-size:16px;line-height:1;cursor:pointer;}' +
+    'nav.catnav .cat-ico:hover,nav.catnav .cat-ico[aria-expanded="true"]{background:rgba(128,128,128,.3);}' +
+    'nav.catnav .cat-tools .support-btn{display:inline-flex;align-items:center;background:linear-gradient(90deg,#ff9f1c,#e8322a);color:#fff;border:0;height:34px;padding:0 14px;font-size:13.5px;border-radius:17px;box-shadow:none;animation:none;white-space:nowrap;gap:4px;}' +
+    'nav.catnav .cat-tools .support-btn:hover{transform:none;}' +
+    '.catlist .cat-more-btn .car{font-size:10px;margin-left:5px;opacity:.8;}' +
+    '.catlist .cat-brief .sh{display:none;}' +
+    '.cat-panel{position:fixed;z-index:35;background:var(--paper,#fff);color:var(--ink,#111);border:1px solid var(--hair-strong,#ccc);border-radius:10px;box-shadow:0 14px 30px -12px rgba(15,29,58,.4);padding:6px;min-width:150px;}' +
+    '.cat-panel[hidden]{display:none;}' +
+    '.cat-panel a{display:block;padding:10px 14px;border-radius:6px;font:700 14px/1.2 "Noto Sans KR",sans-serif;color:inherit;text-decoration:none;white-space:nowrap;}' +
+    '.cat-panel a:hover{background:var(--paper-alt,#f1f2f7);}' +
+    '.cat-panel a.active{color:var(--red,#e8322a);}' +
+    '.searchrow.cat-search{position:fixed;left:0;right:0;z-index:35;background:var(--paper,#fff);border-bottom:1px solid var(--hair-strong,#ccc);box-shadow:0 14px 24px -14px rgba(15,29,58,.4);}' +
+    '.searchrow.cat-search[hidden]{display:none;}' +
+    '.searchrow.cat-search .search-results{left:18px;right:18px;}' +
+    '@media (max-width:640px){' +
+      'nav.catnav .brandmark{display:none;}' +
+      'nav.catnav .wrap{padding-left:8px;padding-right:8px;}' +
+      'nav.catnav .catlist > a,nav.catnav .catlist > button{padding:0 7px;font-size:13px;}' +
+      '.catlist .cat-brief .lg{display:none;}.catlist .cat-brief .sh{display:inline;}' +
+      'nav.catnav .cat-tools{gap:2px;padding-left:4px;}' +
+      'nav.catnav .cat-ico{width:32px;height:32px;}' +
+      'nav.catnav .cat-tools .support-btn{width:32px;height:32px;padding:0;justify-content:center;border-radius:50%;}' +
+      'nav.catnav .cat-tools .support-btn .sb-tx{display:none;}' +
+      '.searchrow.cat-search .search-results{left:14px;right:14px;}' +
+    '}';
+
+  function upgradeNav() {
+    var nav = document.querySelector('nav.catnav');
+    var list = document.getElementById('catNav');
+    if (!nav || !list || nav.getAttribute('data-yf-nav')) return;
+    nav.setAttribute('data-yf-nav', '1');
+    var wrap = list.parentNode;
+
+    var st = document.createElement('style');
+    st.textContent = NAV_CSS;
+    document.head.appendChild(st);
+
+    // 1) 메뉴 항목 다시 만들기
+    list.innerHTML = '';
+    function link(cat, label, extra) {
+      var a = document.createElement('a');
+      a.setAttribute('data-cat', cat);
+      a.href = navHref(cat);
+      a.innerHTML = label || esc(cat);
+      if (extra) a.className = extra;
+      return a;
+    }
+    NAV_PRIMARY.forEach(function (c) { list.appendChild(link(c)); });
+    list.appendChild(link('이슈'));
+    list.appendChild(link('브리핑', '<span class="lg">주간브리핑</span><span class="sh">브리핑</span>', 'cat-brief'));
+
+    var moreBtn = document.createElement('button');
+    moreBtn.type = 'button';
+    moreBtn.className = 'cat-more-btn';
+    moreBtn.setAttribute('aria-haspopup', 'true');
+    moreBtn.setAttribute('aria-expanded', 'false');
+    list.appendChild(moreBtn);
+
+    var panel = document.createElement('div');
+    panel.className = 'cat-panel';
+    panel.hidden = true;
+    NAV_MORE.forEach(function (c) { panel.appendChild(link(c)); });
+    document.body.appendChild(panel);
+
+    // 2) 검색창·후원 버튼을 메뉴줄로 올린다
+    var tools = document.createElement('div');
+    tools.className = 'cat-tools';
+    var row = document.querySelector('.searchrow');
+    var searchBtn = null;
+    if (row) {
+      searchBtn = document.createElement('button');
+      searchBtn.type = 'button';
+      searchBtn.className = 'cat-ico';
+      searchBtn.setAttribute('aria-label', '기사 검색');
+      searchBtn.setAttribute('aria-expanded', 'false');
+      searchBtn.textContent = '🔍';
+      tools.appendChild(searchBtn);
+      var sup = row.querySelector('.support-btn');
+      if (sup) {
+        var txt = (sup.textContent || '').replace('✊', '').trim() || '후원';
+        sup.setAttribute('aria-label', txt);
+        sup.innerHTML = '<span class="sb-ic" aria-hidden="true">✊</span><span class="sb-tx">' + esc(txt) + '</span>';
+        tools.appendChild(sup);
+      }
+      row.classList.add('cat-search');
+      row.hidden = true;
+      nav.parentNode.insertBefore(row, nav.nextSibling);
+    }
+    wrap.appendChild(tools);
+
+    function below() { return Math.max(0, Math.round(nav.getBoundingClientRect().bottom)) + 'px'; }
+
+    var moreOpen = false, searchOpen = false;
+    function placeMore() {
+      var r = moreBtn.getBoundingClientRect();
+      panel.style.top = below();
+      var w = panel.offsetWidth || 160;
+      panel.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+    }
+    function setMore(open) {
+      moreOpen = open;
+      panel.hidden = !open;
+      moreBtn.setAttribute('aria-expanded', String(open));
+      if (open) { setSearch(false); placeMore(); }
+    }
+    function setSearch(open) {
+      if (!row) return;
+      searchOpen = open;
+      row.hidden = !open;
+      searchBtn.setAttribute('aria-expanded', String(open));
+      if (open) {
+        setMore(false);
+        row.style.top = below();
+        var inp = row.querySelector('input');
+        if (inp) inp.focus();
+      }
+    }
+    moreBtn.addEventListener('click', function () { setMore(!moreOpen); });
+    if (searchBtn) searchBtn.addEventListener('click', function () { setSearch(!searchOpen); });
+    panel.addEventListener('click', function (e) { if (e.target.closest('a')) setMore(false); });
+    document.addEventListener('click', function (e) {
+      if (moreOpen && !panel.contains(e.target) && !moreBtn.contains(e.target)) setMore(false);
+      if (searchOpen && !row.contains(e.target) && !searchBtn.contains(e.target)) setSearch(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (moreOpen) setMore(false);
+      if (searchOpen) setSearch(false);
+    });
+    function reflow() {
+      if (moreOpen) placeMore();
+      if (searchOpen) row.style.top = below();
+    }
+    window.addEventListener('resize', reflow);
+    window.addEventListener('scroll', reflow, { passive: true });
+
+    // 현재 위치 표시. '더보기' 안의 카테고리를 보고 있으면 그 이름을 버튼에 보여 준다.
+    function setActive(cat) {
+      var inMore = NAV_MORE.indexOf(cat) !== -1;
+      Array.prototype.forEach.call(nav.querySelectorAll('[data-cat]'), function (a) {
+        var on = a.getAttribute('data-cat') === cat;
+        a.classList.toggle('active', on);
+        if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      });
+      moreBtn.classList.toggle('active', inMore);
+      moreBtn.innerHTML = esc(inMore ? cat : '더보기') + '<span class="car" aria-hidden="true">▾</span>';
+    }
+    window.__yfNavSetActive = setActive;
+    setActive(navCatFromHash() || navDefaultCat());
+  }
+
+  upgradeNav(); // NAV_* 상수가 모두 정의된 뒤, 기사 목록을 기다리지 않고 바로 실행
+
   function initCategoryOverlay(ARTICLE_INDEX) {
-    var buttons = document.querySelectorAll('#catNav button');
     var overlay = document.getElementById('allArticlesOverlay');
     var list = document.getElementById('allArticlesList');
     var title = document.getElementById('aaTitle');
     var closeBtn = overlay ? overlay.querySelector('.aa-close') : null;
+    var viaNav = false; // 이 페이지 안에서 메뉴를 눌러 해시가 생겼는지(닫을 때 뒤로 가기로 되돌리기 위함)
 
     function renderCategory(cat) {
       if (!list) return;
@@ -646,41 +833,37 @@
       });
     }
 
-    function closeAllArticles() {
-      if (overlay) overlay.hidden = true;
+    // 주소(#/카테고리)가 곧 상태: 해시에 따라 목록을 열고 닫는다.
+    function route() {
+      var cat = navCatFromHash();
+      if (cat) {
+        renderCategory(cat);
+        if (overlay) overlay.hidden = false;
+      } else if (overlay) {
+        overlay.hidden = true;
+      }
+      if (window.__yfNavSetActive) window.__yfNavSetActive(cat || navDefaultCat());
     }
 
-    // '이슈' 메뉴는 기사 목록 대신 이슈 타임라인 페이지로 이동한다.
-    var onIssuePage = !!document.querySelector('[data-page="issues"]');
-    if (onIssuePage) {
-      buttons.forEach(function (x) { x.classList.toggle('active', x.dataset.cat === '이슈'); });
+    function closeAllArticles() {
+      if (navCatFromHash()) {
+        if (viaNav && history.length > 1) { history.back(); return; }
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+      route();
     }
-    buttons.forEach(function (b) {
-      b.addEventListener('click', function () {
-        if (b.dataset.cat === '이슈') {
-          if (!onIssuePage) location.href = root + '이슈.html';
-          return;
-        }
-        buttons.forEach(function (x) { x.classList.remove('active'); });
-        b.classList.add('active');
-        if (overlay) {
-          renderCategory(b.dataset.cat);
-          overlay.hidden = false;
-        }
-      });
+
+    window.addEventListener('hashchange', function () {
+      if (navCatFromHash()) viaNav = true;
+      route();
     });
 
     var totalNewsMore = document.getElementById('totalNewsMore');
     if (totalNewsMore) {
       totalNewsMore.addEventListener('click', function (e) {
         e.preventDefault();
-        buttons.forEach(function (x) { x.classList.remove('active'); });
-        var allBtn = document.querySelector('#catNav button[data-cat="전체"]');
-        if (allBtn) allBtn.classList.add('active');
-        if (overlay) {
-          renderCategory('전체');
-          overlay.hidden = false;
-        }
+        if (NAV_IS_HOME) location.hash = '#/전체';
+        else location.href = navHref('전체');
       });
     }
 
@@ -691,8 +874,10 @@
       });
     }
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeAllArticles();
+      if (e.key === 'Escape' && overlay && !overlay.hidden) closeAllArticles();
     });
+
+    route();
   }
 
   // 메인화면(index.html)의 헤드라인·목록·썸네일을 ARTICLE_INDEX(=articles.json)로부터
