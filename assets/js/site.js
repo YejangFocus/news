@@ -39,6 +39,7 @@
       initSiteSearch(articles);
       renderHomepage(articles);
       renderFocusHub(articles);
+      initArticleExtras(articles);
     })
     .catch(function (err) {
       console.error('기사 목록(articles.json)을 불러오지 못했습니다.', err);
@@ -230,6 +231,135 @@
 
     current = fromHash();
     render();
+  }
+
+  // 기사 페이지 공통 기능(페이지마다 손대지 않고 이 스크립트가 붙인다):
+  //  1) 상단 읽기 진행률 바  2) 글 끝의 "같은 이슈의 기사 / 이어서 읽기"  3) 공유·링크 복사
+  // articles.json에 있는 기사 페이지에서만 동작하므로 홈·이슈 페이지·공지에는 영향이 없다.
+  function initArticleExtras(ARTICLE_INDEX) {
+    var page = document.querySelector('.page');
+    if (!page || document.getElementById('focusHub') || document.getElementById('issueDetail')) return;
+    function tail(u) {
+      var seg = u.split('?')[0].split('#')[0].split('/').filter(Boolean).slice(-2).join('/');
+      try { return decodeURIComponent(seg); } catch (e) { return seg; }
+    }
+    var here = tail(location.pathname), cur = null;
+    for (var i = 0; i < ARTICLE_INDEX.length; i++) if (tail(ARTICLE_INDEX[i].url) === here) { cur = ARTICLE_INDEX[i]; break; }
+    if (!cur) return;
+
+    var css = document.createElement('style');
+    css.textContent =
+      '.yf-progress{position:fixed;left:0;top:0;height:4px;width:100%;z-index:1000;background:transparent;pointer-events:none}' +
+      '.yf-progress i{display:block;height:100%;width:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#ffb020,#e8322a)}' +
+      '.yf-end{margin:44px 0 0;font-family:"Noto Sans KR",sans-serif;color:var(--ink,#111)}' +
+      '.yf-end a{text-decoration:none;color:inherit}' +
+      '.yf-share{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 0;border-top:2px solid var(--ink,#111);border-bottom:1px solid var(--rule-soft,#ddd)}' +
+      '.yf-share b{font:400 15px "Do Hyeon","Noto Sans KR",sans-serif;margin-right:auto}' +
+      '.yf-share button{font:700 13px "Noto Sans KR",sans-serif;cursor:pointer;color:var(--ink,#111);background:var(--paper,#fff);border:2px solid #111;border-radius:14px 3px 14px 3px;padding:7px 14px;box-shadow:2px 2px 0 #111}' +
+      '.yf-share button:hover{background:#ffe38a;color:#1c1a16}' +
+      '.yf-box{margin-top:22px;padding:18px 20px;border:2px solid #111;border-radius:4px 16px 4px 16px;box-shadow:4px 4px 0 #111;background:var(--paper,#fff)}' +
+      '.yf-box h3{margin:0 0 4px;font:400 17px "Do Hyeon","Noto Sans KR",sans-serif;color:var(--ink,#111)}' +
+      '.yf-box .k{font-size:12px;font-weight:700;color:#e8322a}' +
+      '.yf-box .t{display:block;margin:4px 0 10px;font:700 16px/1.5 "Noto Serif KR",serif;word-break:keep-all}' +
+      '.yf-box .t:hover{text-decoration:underline}' +
+      '.yf-steps{display:flex;gap:5px;margin:10px 0 4px}' +
+      '.yf-steps a{flex:1;height:8px;border-radius:4px;background:var(--rule-soft,#ddd)}' +
+      '.yf-steps a:hover{background:#ffb020}' +
+      '.yf-steps a.on{background:#e8322a}' +
+      '.yf-pos{font-size:12px;color:var(--muted,#777)}' +
+      '.yf-nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}' +
+      '.yf-nav a{display:block;padding:10px 12px;border:1px solid var(--rule-soft,#ddd);border-radius:8px;font-size:13.5px;line-height:1.5}' +
+      '.yf-nav a:hover{border-color:#e8322a}' +
+      '.yf-nav small{display:block;font-size:11.5px;font-weight:700;color:var(--muted,#777);margin-bottom:2px}' +
+      '.yf-nav .nx{text-align:right;grid-column:2}' +
+      '.yf-more{display:inline-block;margin-top:12px;font-size:12.5px;font-weight:700;color:#e8322a !important}' +
+      '.yf-more:hover{text-decoration:underline}' +
+      '.yf-rel{list-style:none;margin:10px 0 0;padding:0}' +
+      '.yf-rel li{padding:9px 0;border-bottom:1px dashed var(--rule-soft,#ddd);font-size:14.5px;line-height:1.5}' +
+      '.yf-rel li:last-child{border-bottom:none}' +
+      '.yf-rel .g{font-weight:700;font-size:12px;margin-right:6px;color:#e8322a}' +
+      '.yf-rel a:hover{text-decoration:underline}' +
+      '@media (max-width:520px){.yf-nav{grid-template-columns:1fr}.yf-nav .nx{grid-column:1;text-align:left}}' +
+      '@media print{.yf-progress,.yf-end{display:none}}';
+    document.head.appendChild(css);
+    var fl = document.createElement('link');
+    fl.rel = 'stylesheet';
+    fl.href = 'https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap';
+    document.head.appendChild(fl);
+
+    // 1) 읽기 진행률 바
+    var bar = document.createElement('div');
+    bar.className = 'yf-progress';
+    bar.setAttribute('aria-hidden', 'true');
+    bar.innerHTML = '<i></i>';
+    document.body.appendChild(bar);
+    var fill = bar.firstChild, ticking = false;
+    function update() {
+      ticking = false;
+      var r = page.getBoundingClientRect();
+      var total = r.height - window.innerHeight;
+      var p = total > 0 ? Math.min(Math.max(-r.top / total, 0), 1) : 0;
+      fill.style.transform = 'scaleX(' + p + ')';
+    }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+
+    // 3) 공유·링크 복사 (모바일에서는 기기 공유창에 카카오톡 등이 뜬다)
+    var canon = document.querySelector('link[rel="canonical"]');
+    var shareUrl = (canon && canon.href) || location.href.split('#')[0];
+    var end = document.createElement('div');
+    end.className = 'yf-end';
+    end.innerHTML = '<div class="yf-share"><b>이 기사 공유하기</b>' +
+      '<button type="button" data-a="share">공유</button><button type="button" data-a="copy">링크 복사</button></div><div class="yf-slot"></div>';
+    page.appendChild(end);
+    end.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('button[data-a]') : null;
+      if (!b) return;
+      function copy() {
+        var done = function () { var o = b.textContent; b.textContent = '복사됨 ✓'; setTimeout(function () { b.textContent = o; }, 1800); };
+        if (navigator.clipboard) navigator.clipboard.writeText(shareUrl).then(done, function () { window.prompt('링크를 복사하세요', shareUrl); });
+        else window.prompt('링크를 복사하세요', shareUrl);
+      }
+      if (b.dataset.a === 'share' && navigator.share) navigator.share({ title: cur.title, url: shareUrl }).catch(function () {});
+      else copy();
+    });
+
+    // 2) 같은 이슈 / 이어서 읽기
+    var slot = end.querySelector('.yf-slot');
+    function renderRelated() {
+      var same = ARTICLE_INDEX.filter(function (a) { return a.tag === cur.tag && a.url !== cur.url; });
+      var rest = ARTICLE_INDEX.filter(function (a) { return a.url !== cur.url && same.indexOf(a) < 0; });
+      var picks = same.concat(rest).slice(0, 3);
+      if (!picks.length) return;
+      slot.innerHTML = '<div class="yf-box"><h3>이어서 읽기</h3><ul class="yf-rel">' + picks.map(function (a) {
+        return '<li><a href="' + esc(a.url) + '"><span class="g">' + esc(a.tag) + '</span>' + esc(a.title) + '</a></li>';
+      }).join('') + '</ul></div>';
+    }
+    fetch(root + 'data/issues.json')
+      .then(function (res) { return res.json(); })
+      .then(function (issues) {
+        var list = prepareIssues(issues, ARTICLE_INDEX), it = null, idx = -1;
+        for (var i = 0; i < list.length && idx < 0; i++) {
+          var k = list[i].arts.indexOf(cur);
+          if (k >= 0) { it = list[i]; idx = k; }
+        }
+        if (!it) { renderRelated(); return; }
+        var arts = it.arts, prev = arts[idx - 1], next = arts[idx + 1];
+        var link = root + '이슈.html#' + encodeURIComponent(it.def.id);
+        slot.innerHTML = '<div class="yf-box"><div class="k">이 기사가 속한 이슈</div>' +
+          '<a class="t" href="' + esc(link) + '">' + esc(it.def.title) + '</a>' +
+          '<div class="yf-steps">' + arts.map(function (a, j) {
+            return '<a href="' + esc(a.url) + '" class="' + (j === idx ? 'on' : '') + '" title="' + esc(a.title) + '" aria-label="' + (j + 1) + '번째 기사"></a>';
+          }).join('') + '</div>' +
+          '<div class="yf-pos">관련 기사 ' + arts.length + '건 중 ' + (idx + 1) + '번째</div>' +
+          ((prev || next) ? '<div class="yf-nav">' +
+            (prev ? '<a class="pv" href="' + esc(prev.url) + '"><small>← 앞선 보도</small>' + esc(prev.title) + '</a>' : '') +
+            (next ? '<a class="nx" href="' + esc(next.url) + '"><small>이어진 보도 →</small>' + esc(next.title) + '</a>' : '') + '</div>' : '') +
+          '<a class="yf-more" href="' + esc(link) + '">이슈 타임라인 전체 보기 〉</a></div>';
+      })
+      .catch(renderRelated);
   }
 
   function initCategoryOverlay(ARTICLE_INDEX) {
