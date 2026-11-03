@@ -517,15 +517,18 @@
   /* 메인 2단: 양쪽 컬럼을 같은 높이로 늘려 하단 공백 제거 */
   .home-grid { display: grid; grid-template-columns: minmax(0,1fr) 340px; gap: 20px; align-items: stretch; padding: 0; margin-bottom: 20px; }
   .col-main, .col-side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-  .col-side .latest { flex: 1; display: flex; flex-direction: column; }
+  .col-side .latest { display: flex; flex-direction: column; }
   .col-side .num-list { margin: 0; }
   .col-side .num-list li { padding: 12px 0; }
   .col-side #modHero { margin-bottom: 6px; }
   .col-side .mod-hero { margin: 0; }
   .col-side .mod-hero .thumb { height: auto; aspect-ratio: 16/10; }
-  .col-side .num-list { flex: 1; }
   .col-side .num-list li { padding: 11px 0; }
-  .col-side .num-list li.fit-hide { display: none; }
+  .col-side .fit-hide { display: none; }
+  .col-side .col-panel { padding: 16px 20px 6px; flex: 1; display: flex; flex-direction: column; }
+  .col-side .col-panel .side-list { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .col-side .side-list li { padding: 10px 0; }
+  .col-side .side-list .thumb { width: 64px; height: 64px; aspect-ratio: 1/1; }
   .col-main .plain-list { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
   .col-main .plain-list li { flex: 1; align-items: center; padding: 8px 0; }
 
@@ -567,21 +570,10 @@
   .num-list li { border-bottom-style: solid; }
   .ad-horiz { transform: none; border: 0; border-radius: var(--radius); box-shadow: var(--shadow); margin: 0; }
 
-  /* 하단 3열: 칼럼 / 소개 카드 / 광고 — 높이를 맞춰 깔끔하게 마감 */
-  .bottom-grid { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 20px; align-items: stretch; margin-bottom: 28px; }
-  .bottom-grid .social-card { margin: 0; border: 0; border-radius: var(--radius); box-shadow: var(--shadow); background: #fff; display: flex; flex-direction: column; }
-  .bottom-grid .social-card .sc-body { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 16px; }
-  .bottom-grid .ad-vert { justify-content: space-around; gap: 10px; }
-  .bottom-grid .ad-vert { aspect-ratio: auto; margin: 0; border-radius: var(--radius); box-shadow: var(--shadow); }
-  .bottom-grid .side-list { display: flex; flex-direction: column; justify-content: space-between; }
-  .bottom-grid .side-list .thumb { width: 72px; height: 72px; aspect-ratio: 1/1; }
-
   footer { margin-top: 0; }
 
   @media (max-width: 980px) {
     .home-grid { grid-template-columns: 1fr; }
-    .bottom-grid { grid-template-columns: 1fr 1fr; }
-    .bottom-grid > :first-child { grid-column: 1 / -1; }
   }
   @media (max-width: 640px) {
     .wrap { padding: 0 14px; }
@@ -589,7 +581,7 @@
     .hero-slot .feature-item h3 { font-size: 21px; }
     .hero-slot .feature-item p { display: none; }
     .hero-slot .feature-item .body { padding: 18px; }
-    .card-pair, .bottom-grid { grid-template-columns: 1fr; }
+    .card-pair { grid-template-columns: 1fr; }
     .card-pair .feature-item { flex-direction: column; }
   }
 </style>
@@ -682,33 +674,13 @@
         <div id="modHero"></div>
         <ul class="num-list" id="numList"></ul>
       </div>
+      <div class="panel col-panel">
+        <div class="mod-head"><h3>칼럼</h3><a class="more" id="columnMore" href="https://yejangfocus.github.io/news">더보기〉</a></div>
+        <ul class="side-list" id="sideList"></ul>
+      </div>
     </aside>
   </div>
 
-  <div class="bottom-grid">
-    <div class="panel">
-      <div class="mod-head"><h3>칼럼</h3><a class="more" id="columnMore" href="https://yejangfocus.github.io/news">더보기〉</a></div>
-      <ul class="side-list" id="sideList"></ul>
-    </div>
-    <div class="social-card">
-      <div class="sc-head">
-        <img class="sc-avatar" src="assets/images/38701da0735806f0.webp" alt="예장포커스">
-        <div class="sc-name">예장포커스<small>YEJANG FOCUS</small></div>
-        <a class="sc-follow" href="https://www.youtube.com/@%EC%98%88%EC%9E%A5%ED%8F%AC%EC%BB%A4%EC%8A%A4" target="_blank" rel="noopener">구독하기</a>
-      </div>
-      <div class="sc-body">
-        <div class="sc-source">YEJANGFOCUS.GITHUB.IO</div>
-        <a class="sc-title" href="https://yejangfocus.github.io/news/공지.html">하나님의 은혜 가운데 「예장 포커스」를 창간합니다</a>
-        <p class="sc-desc">대한예수교장로회 합동 교단의 목회자·장로·성도 여러분께 인사드립니다. 교회를 바라보는 새로운 시선, 「예장 포커스(Yejang Focus)」가 첫걸음을 뗍니다.</p>
-      </div>
-      <div class="sc-actions"><span>🔗 공유</span><span>💬 의견</span><span>📌 스크랩</span></div>
-    </div>
-    <a class="ad-vert" href="mailto:owenpej@naver.com?subject=%5B광고%20문의%5D">
-      <div class="ad-logo">AD · 예장포커스</div>
-      <div class="ad-copy">당신의 소식,<br>예장포커스가<br>전합니다</div>
-      <div><span class="ad-cta">광고·제보 문의</span><div class="ad-contact">010-9751-4888</div></div>
-    </a>
-  </div>
 </main>
 
 <footer>
@@ -781,21 +753,23 @@
     var side = document.querySelector('.col-side'), main = document.querySelector('.col-main');
     var list = document.getElementById('numList');
     if (!side || !main || !list || window.innerWidth <= 980) {
-      if (list) [].forEach.call(list.children, function (li) { li.classList.remove('fit-hide'); });
+      [].forEach.call(document.querySelectorAll('.col-side .fit-hide'), function (li) { li.classList.remove('fit-hide'); });
       return;
     }
+    var cols = [].slice.call((document.getElementById('sideList') || {children: []}).children);
     var items = [].slice.call(list.children);
-    items.forEach(function (li) { li.classList.remove('fit-hide'); });
+    items.concat(cols).forEach(function (li) { li.classList.remove('fit-hide'); });
     side.style.alignSelf = 'start'; main.style.alignSelf = 'start';
-    var target = main.offsetHeight;
-    for (var i = items.length - 1; i > 1 && side.offsetHeight > target; i--) items[i].classList.add('fit-hide');
+    var target = main.offsetHeight, i;
+    for (i = items.length - 1; i > 2 && side.offsetHeight > target; i--) items[i].classList.add('fit-hide');
+    for (i = cols.length - 1; i > 0 && side.offsetHeight > target; i--) cols[i].classList.add('fit-hide');
+    for (i = 2; i > 0 && side.offsetHeight > target; i--) items[i].classList.add('fit-hide');
     side.style.alignSelf = ''; main.style.alignSelf = '';
   }
   var t; function later() { clearTimeout(t); t = setTimeout(fit, 60); }
   window.addEventListener('resize', later);
   window.addEventListener('load', function () { later(); setTimeout(fit, 800); setTimeout(fit, 2000); });
-  var list = document.getElementById('numList');
-  if (list && window.MutationObserver) new MutationObserver(later).observe(list, { childList: true });
+  ['numList', 'sideList'].forEach(function (id) { var el = document.getElementById(id); if (el && window.MutationObserver) new MutationObserver(later).observe(el, { childList: true }); });
   document.querySelectorAll('img').forEach(function (im) { im.addEventListener('load', later); });
 })();
 </script>
