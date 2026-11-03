@@ -467,6 +467,128 @@
     .masthead .lockup { font-size: 32px; }
   }
 </style>
+<style id="redesign">
+  /* ===== 리디자인: 여백 최소화 · 카드형 레이아웃 ===== */
+  :root { --radius: 14px; --shadow: 0 1px 2px rgba(15,29,58,.06), 0 8px 24px -12px rgba(15,29,58,.22); }
+  body { background: #f4f5f9; }
+  :root[data-theme="dark"] body { background: #0c0c0b; }
+  .wrap { max-width: 1180px; padding: 0 20px; }
+  .topbar { background: var(--navy-ink); border: 0; }
+  .topbar .wrap { height: 30px; color: #aab3d1; }
+  .topbar button:hover { color: #fff; }
+
+  /* 상단 검색줄 + 로고를 하나로 합쳐 세로 공백 제거 */
+  .searchrow { background: var(--paper); border-bottom: 0; }
+  .searchrow .wrap { height: 52px; }
+  .searchrow form { border-radius: 22px; background: #f1f2f7; border-color: transparent; height: 36px; }
+  .support-btn { border-radius: 20px; box-shadow: none; border: 0; background: linear-gradient(90deg,#ff9f1c,#e8322a); animation: none; height: 36px; }
+  .support-btn:hover { transform: translateY(-1px); background: linear-gradient(90deg,#ff9f1c,#e8322a); filter: brightness(1.05); }
+
+  .masthead { padding: 0 0 14px; background: var(--paper); }
+  .masthead .masthead-row { grid-template-columns: 1fr minmax(0, 460px) 1fr; gap: 12px; padding-top: 0; }
+  .masthead .ci-logo { margin: 0 auto; }
+  .masthead .tv-logo, .masthead .gapck-logo { max-width: 110px; }
+  .masthead .tv-logo { box-shadow: none; }
+
+  nav.catnav { background: var(--navy-ink); border: 0; box-shadow: 0 4px 18px -8px rgba(0,0,0,.5); }
+  nav.catnav button, nav.catnav a { color: #dfe4f5; }
+  nav.catnav button:hover, nav.catnav a:hover { color: #fff; }
+  nav.catnav button.active, nav.catnav a.active, .catlist > button.active, .catlist > a.active {
+    color: #fff; background: none; border-bottom: 3px solid #ffb02e; border-radius: 0;
+  }
+  .brandmark { border-right-color: rgba(255,255,255,.18); }
+  .brandmark img { background:#fff; border-radius: 6px; padding: 2px 4px; height: 28px; }
+  .catlist > button, .catlist > a { height: 48px; font-size: 14.5px; }
+
+  .notice { margin: 16px 0; transform: none; border: 0; border-left: 4px solid var(--amber); border-radius: var(--radius); background: #fff; box-shadow: var(--shadow); }
+  .notice .badge { border-radius: 6px; font-family: 'Noto Sans KR'; }
+  .fh-card { border: 0; border-radius: 18px; box-shadow: 0 18px 40px -22px rgba(15,29,58,.7); }
+  .focus-hub { margin: 0 0 20px; }
+
+  /* 카드 공통 */
+  .panel { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 20px; }
+  :root[data-theme="dark"] .panel, :root[data-theme="dark"] .notice, :root[data-theme="dark"] .social-card { background: #1a1a16; }
+  .mod-head { border-bottom: 0; margin: 0 0 12px; padding: 0; }
+  .mod-head h3 { font-size: 19px; color: var(--ink); position: relative; padding-left: 12px; }
+  .mod-head h3::before { content:''; position:absolute; left:0; top:3px; bottom:3px; width:4px; border-radius:2px; background: var(--red); }
+  .thumb { border: 0; box-shadow: none; border-radius: 10px; }
+  a:hover > .thumb, a:hover .thumb { transform: scale(1.02); }
+
+  /* 메인 2단: 양쪽 컬럼을 같은 높이로 늘려 하단 공백 제거 */
+  .home-grid { display: grid; grid-template-columns: minmax(0,1fr) 360px; gap: 20px; align-items: stretch; padding: 0; margin-bottom: 20px; }
+  .col-main, .col-side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+  .col-side .latest { flex: 1; display: flex; flex-direction: column; }
+  .col-side .num-list { margin: 0; }
+  .col-side .num-list li { padding: 12px 0; }
+  .col-side #modHero { margin-bottom: 6px; }
+  .col-side .mod-hero { margin: 0; }
+  .col-side .mod-hero .thumb { height: auto; aspect-ratio: 16/10; }
+  .col-side .num-list { flex: 1; display: flex; flex-direction: column; }
+  .col-side .num-list li { flex: 1; align-items: center; }
+  .col-main .plain-list { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .col-main .plain-list li { flex: 1; align-items: center; padding: 8px 0; }
+
+  .ticker-bar { margin: 0; background: #fff; border-radius: 30px; padding: 6px 8px 6px 6px; box-shadow: var(--shadow); }
+  .ticker-badge { transform: none; box-shadow: none; border-radius: 20px; background: var(--red); padding: 6px 14px; }
+  .ticker-box { border: 0; background: none; height: 28px; padding: 0 6px; }
+
+  /* 대표 기사: 사진 위에 제목을 얹는 와이드 카드 */
+  .hero-slot .feature-item {
+    position: relative; display: block; padding: 0; border: 0; border-radius: 16px; overflow: hidden;
+    aspect-ratio: 16 / 8.6; background: var(--navy-ink); box-shadow: var(--shadow);
+  }
+  .hero-slot .feature-item .thumb { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; }
+  .hero-slot .feature-item::after { content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(8,14,32,0) 25%, rgba(8,14,32,.92) 100%); }
+  .hero-slot .feature-item .body { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 26px 28px; }
+  .hero-slot .feature-item .tag { display: inline-block; background: var(--red); color: #fff !important; padding: 3px 10px; border-radius: 4px; }
+  .hero-slot .feature-item h3 { color: #fff; font-size: 28px; line-height: 1.35; -webkit-line-clamp: 2; }
+  .hero-slot .feature-item p { color: #d6dcf0; -webkit-line-clamp: 2; }
+  .hero-slot .feature-item:hover h3 { color: #ffe38a; }
+
+  /* 교단 / 신학: 위 사진 · 아래 글 카드 2열 */
+  .card-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .card-pair > div { display: flex; }
+  .card-pair .feature-item {
+    flex-direction: column; gap: 0; padding: 0; border: 0; width: 100%;
+    background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+  }
+  .card-pair .feature-item .thumb { width: 100%; height: auto; aspect-ratio: 16/9; border-radius: 0; }
+  .card-pair .feature-item .body { padding: 14px 18px 18px; }
+  .card-pair .feature-item h3 { font-size: 18px; }
+  :root[data-theme="dark"] .card-pair .feature-item { background: #1a1a16; }
+
+  .plain-list { padding: 8px 20px; }
+  .plain-list .tag { min-width: 34px; }
+
+  .mod-hero .thumb { aspect-ratio: 16/9; border-radius: 10px; }
+  .num-list li { border-bottom-style: solid; }
+  .ad-horiz { transform: none; border: 0; border-radius: var(--radius); box-shadow: var(--shadow); margin: 0; }
+
+  /* 하단 3열: 칼럼 / 소개 카드 / 광고 — 높이를 맞춰 깔끔하게 마감 */
+  .bottom-grid { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 20px; align-items: stretch; margin-bottom: 28px; }
+  .bottom-grid .social-card { margin: 0; border: 0; border-radius: var(--radius); box-shadow: var(--shadow); background: #fff; display: flex; flex-direction: column; }
+  .bottom-grid .social-card .sc-body { flex: 1; }
+  .bottom-grid .ad-vert { aspect-ratio: auto; margin: 0; border-radius: var(--radius); box-shadow: var(--shadow); }
+  .bottom-grid .side-list { display: flex; flex-direction: column; justify-content: space-between; }
+  .bottom-grid .side-list .thumb { width: 72px; height: 72px; aspect-ratio: 1/1; }
+
+  footer { margin-top: 0; }
+
+  @media (max-width: 980px) {
+    .home-grid { grid-template-columns: 1fr; }
+    .bottom-grid { grid-template-columns: 1fr 1fr; }
+    .bottom-grid > :first-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 14px; }
+    .hero-slot .feature-item { aspect-ratio: 4 / 3.6; }
+    .hero-slot .feature-item h3 { font-size: 21px; }
+    .hero-slot .feature-item p { display: none; }
+    .hero-slot .feature-item .body { padding: 18px; }
+    .card-pair, .bottom-grid { grid-template-columns: 1fr; }
+    .card-pair .feature-item { flex-direction: column; }
+  }
+</style>
 </head>
 <body>
 
@@ -533,73 +655,55 @@
   <section class="focus-hub" id="focusHub" aria-label="오늘의 포커스"></section>
 
   <div class="home-grid">
-
-    <!-- 좌측 컬럼: 메인 뉴스 영역 -->
-    <div class="col-left">
-
+    <div class="col-main">
       <div class="ticker-bar">
         <span class="ticker-badge">최신뉴스</span>
         <div class="ticker-box" id="tickerBox"></div>
       </div>
-
-      <div id="heroFeature"></div>
-
-      <div id="secondFeature"></div>
-
-      <ul class="plain-list" id="plainList"></ul>
-
-      <div id="thirdFeature"></div>
-
+      <div id="heroFeature" class="hero-slot"></div>
+      <div class="card-pair">
+        <div id="secondFeature"></div>
+        <div id="thirdFeature"></div>
+      </div>
+      <ul class="plain-list panel" id="plainList"></ul>
     </div>
 
-    <!-- 중앙 컬럼: 최신 소식 -->
-    <div class="col-mid">
-
-      <a class="ad-vert" href="mailto:owenpej@naver.com?subject=%5B광고%20문의%5D">
-        <div class="ad-logo">AD · 예장포커스</div>
-        <div class="ad-copy">당신의 소식,<br>예장포커스가<br>전합니다</div>
-        <div>
-          <span class="ad-cta">광고·제보 문의</span>
-          <div class="ad-contact">010-9751-4888</div>
-        </div>
-      </a>
-
-      <div class="mod-head"><h3>최신 소식</h3><a class="more" id="totalNewsMore" href="https://yejangfocus.github.io/news">더보기〉</a></div>
-
-      <div id="modHero"></div>
-
-      <ul class="num-list" id="numList"></ul>
-
-    </div>
-
-    <!-- 우측 컬럼: 교계 소식 + 위젯 -->
-    <div class="col-right">
-
+    <aside class="col-side">
       <a class="ad-horiz" href="https://www.youtube.com/@%EC%98%88%EC%9E%A5%ED%8F%AC%EC%BB%A4%EC%8A%A4" target="_blank" rel="noopener">
         <img src="assets/images/18b19830e6e40f7d.webp" alt="예포TV">
         <span>예포TV 유튜브 채널 구독하기<br>총회 소식을 영상으로 만나보세요</span>
       </a>
-
-      <div class="social-card">
-        <div class="sc-head">
-          <img class="sc-avatar" src="assets/images/38701da0735806f0.webp" alt="예장포커스">
-          <div class="sc-name">예장포커스<small>YEJANG FOCUS</small></div>
-          <a class="sc-follow" href="https://www.youtube.com/@%EC%98%88%EC%9E%A5%ED%8F%AC%EC%BB%A4%EC%8A%A4" target="_blank" rel="noopener">구독하기</a>
-        </div>
-        <div class="sc-body">
-          <div class="sc-source">YEJANGFOCUS.GITHUB.IO</div>
-          <a class="sc-title" href="https://yejangfocus.github.io/news/공지.html">하나님의 은혜 가운데 「예장 포커스」를 창간합니다</a>
-          <p class="sc-desc">대한예수교장로회 합동 교단의 목회자·장로·성도 여러분께 인사드립니다. 교회를 바라보는 새로운 시선, 「예장 포커스(Yejang Focus)」가 첫걸음을 뗍니다.</p>
-        </div>
-        <div class="sc-actions"><span>🔗 공유</span><span>💬 의견</span><span>📌 스크랩</span></div>
+      <div class="panel latest">
+        <div class="mod-head"><h3>최신 소식</h3><a class="more" id="totalNewsMore" href="https://yejangfocus.github.io/news">더보기〉</a></div>
+        <div id="modHero"></div>
+        <ul class="num-list" id="numList"></ul>
       </div>
+    </aside>
+  </div>
 
+  <div class="bottom-grid">
+    <div class="panel">
       <div class="mod-head"><h3>칼럼</h3><a class="more" id="columnMore" href="https://yejangfocus.github.io/news">더보기〉</a></div>
-
       <ul class="side-list" id="sideList"></ul>
-
     </div>
-
+    <div class="social-card">
+      <div class="sc-head">
+        <img class="sc-avatar" src="assets/images/38701da0735806f0.webp" alt="예장포커스">
+        <div class="sc-name">예장포커스<small>YEJANG FOCUS</small></div>
+        <a class="sc-follow" href="https://www.youtube.com/@%EC%98%88%EC%9E%A5%ED%8F%AC%EC%BB%A4%EC%8A%A4" target="_blank" rel="noopener">구독하기</a>
+      </div>
+      <div class="sc-body">
+        <div class="sc-source">YEJANGFOCUS.GITHUB.IO</div>
+        <a class="sc-title" href="https://yejangfocus.github.io/news/공지.html">하나님의 은혜 가운데 「예장 포커스」를 창간합니다</a>
+        <p class="sc-desc">대한예수교장로회 합동 교단의 목회자·장로·성도 여러분께 인사드립니다. 교회를 바라보는 새로운 시선, 「예장 포커스(Yejang Focus)」가 첫걸음을 뗍니다.</p>
+      </div>
+      <div class="sc-actions"><span>🔗 공유</span><span>💬 의견</span><span>📌 스크랩</span></div>
+    </div>
+    <a class="ad-vert" href="mailto:owenpej@naver.com?subject=%5B광고%20문의%5D">
+      <div class="ad-logo">AD · 예장포커스</div>
+      <div class="ad-copy">당신의 소식,<br>예장포커스가<br>전합니다</div>
+      <div><span class="ad-cta">광고·제보 문의</span><div class="ad-contact">010-9751-4888</div></div>
+    </a>
   </div>
 </main>
 
