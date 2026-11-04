@@ -1228,7 +1228,7 @@
         if (matched.length > 0) {
           window.location.href = matched[0].item.url;
         } else if (q) {
-          window.open('https://www.google.com/search?q=' + encodeURIComponent('site:yejangfocus.github.io/news ' + q), '_blank');
+          window.open('https://www.google.com/search?q=' + encodeURIComponent('site:yejangfocus.com ' + q), '_blank');
         }
       } else if (e.key === 'Escape') {
         resultsBox.hidden = true;
