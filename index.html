@@ -589,6 +589,162 @@
     .card-pair .feature-item { flex-direction: column; }
   }
 </style>
+<style id="urban">
+  /* ===== 차가운 도시 톤: 쿨 그레이·블루 팔레트 / 낙서 요소 제거 / 반듯한 세리프 ===== */
+  :root {
+    --navy: #1f4a8a; --navy-ink: #0a1424;
+    --red: #b3343c; --pine: #3f7a68;
+    --paper: #f4f6f9; --paper-alt: #e6ebf2;
+    --ink: #0e1520; --ink-soft: #566274; --ink-faint: #8794a6;
+    --hair: #d5dbe4; --hair-strong: #bcc5d2;
+    --amber: #c9a45c; --doodle: #0e1520; --gold: #c9a45c; --gold-soft: #e3cf9f;
+    --shadow: 0 1px 2px rgba(10,20,36,.06), 0 10px 28px -14px rgba(10,20,36,.28);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --navy: #8aa4c8; --navy-ink: #eaf0f8; --red: #d4707a; --pine: #7fb5a3;
+      --paper: #0b0f16; --paper-alt: #141b26; --ink: #e8edf4; --ink-soft: #a3afc0;
+      --ink-faint: #738096; --hair: #243040; --hair-strong: #33425a; --amber: #cdb06f;
+      --doodle: #8aa4c8; --gold: #cdb06f; --gold-soft: #cdb06f;
+    }
+    :root:not([data-theme="light"]) body { background: #070a10; }
+    :root:not([data-theme="light"]) .panel, :root:not([data-theme="light"]) .notice,
+    :root:not([data-theme="light"]) .social-card, :root:not([data-theme="light"]) .card-pair .feature-item,
+    :root:not([data-theme="light"]) .ticker-bar { background: #121925; }
+    :root:not([data-theme="light"]) .searchrow form { background: #141b26; }
+  }
+  :root[data-theme="dark"] {
+    --navy: #8aa4c8; --navy-ink: #eaf0f8; --red: #d4707a; --pine: #7fb5a3;
+    --paper: #0b0f16; --paper-alt: #141b26; --ink: #e8edf4; --ink-soft: #a3afc0;
+    --ink-faint: #738096; --hair: #243040; --hair-strong: #33425a; --amber: #cdb06f;
+    --doodle: #8aa4c8; --gold: #cdb06f; --gold-soft: #cdb06f;
+  }
+  :root[data-theme="dark"] body { background: #070a10; }
+  :root[data-theme="dark"] .panel, :root[data-theme="dark"] .notice, :root[data-theme="dark"] .social-card,
+  :root[data-theme="dark"] .card-pair .feature-item, :root[data-theme="dark"] .ticker-bar { background: #121925; }
+  :root[data-theme="dark"] .searchrow form { background: #141b26; }
+
+  body { background: #e9edf3; }
+  .scribble, .masthead .tagline { font-family: 'Noto Sans KR', sans-serif; }
+  .masthead .tagline { letter-spacing: .08em; font-size: 13px; }
+  .masthead .lockup { transform: none; font-family: 'Noto Serif KR', serif; font-weight: 900; }
+  .masthead .lockup span { text-shadow: none !important; }
+
+  /* 상단바·메뉴: 심야 도시 네이비 + 은은한 골드 */
+  .topbar { background: #070d18; }
+  .topbar .wrap { color: #8fa0ba; }
+  nav.catnav { background: #0a1424; box-shadow: 0 6px 20px -10px rgba(0,0,0,.6); }
+  nav.catnav button, nav.catnav a { color: #c3cddd; }
+  nav.catnav button.active, nav.catnav a.active, .catlist > button.active, .catlist > a.active { border-bottom: 2px solid var(--gold); }
+  .brandmark img { border-radius: 2px; }
+
+  /* 검색 · 후원 */
+  .searchrow form { background: #e3e8ef; border-radius: 3px; }
+  .support-btn {
+    border-radius: 3px; background: var(--gold); color: #0a1424; letter-spacing: .02em;
+    animation: none; box-shadow: none; border: 0; transition: background .15s ease, transform .15s ease;
+  }
+  .support-btn:hover { background: var(--gold-soft); transform: translateY(-1px); filter: none; }
+  /* site.js 가 메뉴줄에 주입하는 후원 버튼(더 구체적인 선택자 필요) */
+  nav.catnav .cat-tools button.support-btn { background: var(--gold); color: #0a1424; border-radius: 3px; font-weight: 700; }
+  nav.catnav .cat-tools button.support-btn:hover { background: var(--gold-soft); transform: none; }
+  .search-results mark { background: var(--gold-soft); }
+
+  /* 공지·티커 */
+  .notice { border-left: 3px solid var(--gold); border-radius: 3px; box-shadow: var(--shadow); }
+  .notice .badge { border-radius: 2px; letter-spacing: .04em; }
+  .ticker-bar { border-radius: 3px; }
+  .ticker-badge { border-radius: 2px; background: #0a1424; color: var(--gold-soft); letter-spacing: .06em; }
+
+  /* 제목: 세리프 + 가는 선 */
+  .sec-title { border-bottom: 1px solid var(--ink); }
+  .sec-title h2, .corner-head h3, .mod-head h3 { font-family: 'Noto Serif KR', serif; font-weight: 700; letter-spacing: -.01em; }
+  .mod-head h3::before { width: 3px; border-radius: 0; background: var(--gold); }
+  .corner-head h3 { border-radius: 2px; transform: none; box-shadow: none; background: #0a1424; color: var(--gold-soft); }
+
+  /* 카드: 직선적 모서리, 헤어라인, 차분한 그림자 */
+  :root { --radius: 4px; }
+  .panel, .card-pair .feature-item, .social-card { border-radius: 4px; }
+  .panel, .card-pair .feature-item { border: 1px solid var(--hair); }
+  .hero-slot .feature-item { border-radius: 4px; }
+  .hero-slot .feature-item::after { background: linear-gradient(180deg, rgba(10,20,36,0) 20%, rgba(10,20,36,.94) 100%); }
+  .hero-slot .feature-item .tag { background: var(--gold); color: #0a1424 !important; border-radius: 2px; font-weight: 700; }
+  .hero-slot .feature-item:hover h3 { color: var(--gold-soft); }
+  .hero-slot .feature-item p { color: #c3cddd; }
+  .ad-horiz { border-radius: 4px; transform: none; background: linear-gradient(100deg, #12294d, #0a1424); }
+  .fh-card { border-radius: 4px; background: radial-gradient(120% 140% at 0% 0%, #1b3560 0%, #0a1424 65%); box-shadow: var(--shadow); }
+
+  /* 썸네일: 톤을 쿨하게 통일 */
+  .thumb, .thumb img { border-radius: 2px; }
+  img.thumb, .thumb img { filter: saturate(.8) contrast(1.04); }
+  a:hover > .thumb, a:hover .thumb { transform: scale(1.015); }
+  .tone-a { background: linear-gradient(150deg, #3f7a68, #1c3a33); }
+  .tone-c { background: linear-gradient(150deg, #5b6677, #2c3340); }
+  .tone-d { background: linear-gradient(150deg, #8a2f3a, #3a1218); }
+  .tone-e { background: linear-gradient(150deg, #4b5a7a, #1f2940); }
+
+  /* 오늘의 포커스 허브: 노란 하이라이트 → 은은한 골드 */
+  .fh-badge { border-radius: 2px; transform: none; box-shadow: none; background: var(--gold); color: #0a1424; letter-spacing: .04em; }
+  .fh-tab[aria-selected="true"] { background: var(--gold); border-color: var(--gold); color: #0a1424; }
+  .fh-stat b, .fh-glance li::before, .fh-more, .fh-link:hover, .focus-hub .fh-rest a { color: var(--gold-soft); }
+  .fh-share { background: var(--gold); color: #0a1424; border-radius: 2px; }
+  .focus-hub { --red: #b3343c; --amber: #c9a45c; --doodle: #0e1520; }
+
+  /* ===== 3단계: 도시 새벽 + 교회 히어로 띠 / 오늘의 말씀 ===== */
+  .verse-band {
+    position: relative; overflow: hidden; color: #fff; text-align: center;
+    background: linear-gradient(180deg, #0a1424 0%, #17335d 55%, #46688f 100%);
+    padding: 26px 20px 74px; min-height: 150px;
+  }
+  .verse-band::before {
+    content: ''; position: absolute; inset: 0;
+    background: url(assets/images/urban/skyline.svg) center bottom / auto 100% no-repeat;
+    background-size: max(100%, 1100px) auto; background-position: 58% 100%;
+  }
+  .verse-band::after { /* 지평선 새벽빛 */
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 60%;
+    background: radial-gradient(60% 100% at 50% 100%, rgba(227,207,159,.28), transparent 70%); pointer-events: none;
+  }
+  .verse-band .wrap { position: relative; z-index: 2; }
+  .verse-band .vb-label { font-size: 11px; letter-spacing: .32em; color: var(--gold-soft); font-weight: 600; }
+  .verse-band .vb-text {
+    margin: 8px 0 0; font: 700 clamp(18px, 2.6vw, 26px)/1.5 'Noto Serif KR', serif; letter-spacing: -.01em;
+    text-shadow: 0 2px 14px rgba(5,11,22,.7);
+  }
+  .verse-band .vb-ref { margin-top: 4px; font-size: 12.5px; color: var(--gold-soft); letter-spacing: .08em; }
+  @media (max-width: 640px) {
+    .verse-band { padding: 20px 16px 58px; min-height: 130px; }
+    .verse-band::before { background-size: 900px auto; background-position: 62% 100%; }
+  }
+
+  /* 십자가 구분선 */
+  .cross-rule, .focus-hub.ready::after, footer::before {
+    content: ''; display: block; height: 32px; margin: 4px 0 0;
+    background:
+      url(assets/images/urban/cross.svg) center / auto 22px no-repeat,
+      linear-gradient(90deg, transparent, var(--hair-strong) 20%, var(--hair-strong) 80%, transparent) center / 100% 1px no-repeat;
+  }
+  .focus-hub.ready::after { margin: 14px 0 0; }
+  footer::before { margin: 0 0 14px; filter: none; opacity: .8; }
+
+  /* ===== 4단계: 분류 화면·대체 썸네일의 성경/교회 이미지 ===== */
+  .thumb:not(img) { background-repeat: no-repeat; background-position: center; background-size: 38% auto, cover; }
+  .tone-a, .tone-c { background-image: url(assets/images/urban/bible-line.svg), linear-gradient(150deg, #1f4a8a, #0a1424); }
+  .tone-b, .tone-e { background-image: url(assets/images/urban/church-line.svg), linear-gradient(150deg, #2a4a78, #0a1424); }
+  .tone-d, .tone-f { background-image: url(assets/images/urban/bible-line.svg), linear-gradient(150deg, #27344f, #0a1424); }
+
+  .aa-head {
+    position: relative; overflow: hidden; border-bottom: 1px solid var(--ink); padding: 22px 18px; margin-bottom: 14px;
+    color: #fff; background: linear-gradient(120deg, #0a1424, #1f4a8a);
+  }
+  .aa-head::before {
+    content: ''; position: absolute; right: 48px; top: 50%; width: 92px; height: 70px; transform: translateY(-50%);
+    background: url(assets/images/urban/bible-line.svg) center / contain no-repeat; opacity: .55;
+  }
+  .aa-overlay .aa-head h2 { position: relative; color: #fff; font-family: 'Noto Serif KR', serif; font-size: 22px; }
+  .aa-overlay .aa-head .aa-close { position: relative; color: #c3cddd; }
+  .aa-overlay .aa-head .aa-close:hover { color: #fff; }
+</style>
 </head>
 <body>
 
@@ -644,6 +800,15 @@
     </div>
   </div>
 </nav>
+
+<aside class="verse-band" aria-label="오늘의 말씀">
+  <div class="wrap">
+    <div class="vb-label">TODAY'S WORD · 오늘의 말씀</div>
+    <p class="vb-text" id="vbText">너희는 세상의 빛이라</p>
+    <div class="vb-ref" id="vbRef">마태복음 5:14</div>
+  </div>
+</aside>
+<script src="assets/js/verse.js"></script>
 
 <main class="wrap">
 
