@@ -767,6 +767,18 @@
 
   /* 화이트 모드 고정 */
   :root { color-scheme: light; }
+
+  /* ===== 상단 메뉴줄(카테고리 메뉴)만 어두운 남색 ===== */
+  nav.catnav { background: #0a1424; border-bottom: 0; box-shadow: 0 6px 20px -10px rgba(0,0,0,.6); }
+  nav.catnav button, nav.catnav a { color: #c3cddd; }
+  nav.catnav button:hover, nav.catnav a:hover { color: #fff; }
+  nav.catnav button.active, nav.catnav a.active,
+  nav.catnav .catlist > button.active, nav.catnav .catlist > a.active,
+  .catlist > button.active, .catlist > a.active { color: #fff; font-weight: 700; background: none; border-bottom: 2px solid var(--gold); }
+  nav.catnav .brandmark { border-right-color: rgba(255,255,255,.18); }
+  nav.catnav .brandmark img, .brandmark img { background: #fff; border: 0; border-radius: 2px; }
+  nav.catnav .cat-ico { background: rgba(255,255,255,.1); color: #dfe4f5; }
+  nav.catnav .cat-ico:hover, nav.catnav .cat-ico[aria-expanded="true"] { background: rgba(255,255,255,.2); }
 </style>
 </head>
 <body>
