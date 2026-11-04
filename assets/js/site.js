@@ -1240,52 +1240,14 @@
     });
   }
 
+  // 사이트는 화이트 모드 한 가지로 고정한다. (다크 모드/전환 버튼 없음)
+  // <html data-theme="light">가 모든 페이지에 이미 들어 있어 첫 화면부터 밝게 나오며,
+  // 여기서는 혹시 남아 있는 예전 다크 설정(localStorage)과 전환 버튼을 정리한다.
   function initThemeToggle() {
-    var STORAGE_KEY = 'yejangfocus-theme';
-    var root = document.documentElement;
-
-    function apply(theme) {
-      if (theme === 'dark' || theme === 'light') {
-        root.setAttribute('data-theme', theme);
-      } else {
-        root.removeAttribute('data-theme');
-      }
-      var btn = document.getElementById('themeToggleBtn');
-      if (btn) {
-        var isDark = theme === 'dark' ||
-          (theme !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-        btn.textContent = isDark ? '☀️' : '🌙';
-        btn.setAttribute('aria-label', isDark ? '라이트 모드로 전환' : '다크 모드로 전환');
-      }
-    }
-
-    var saved = null;
-    try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) { /* 접근 제한 브라우저는 시스템 설정을 따름 */ }
-    apply(saved);
-
-    var style = document.createElement('style');
-    style.textContent =
-      '#themeToggleBtn{position:fixed;right:18px;bottom:18px;z-index:500;' +
-      'width:42px;height:42px;border-radius:50%;border:1px solid var(--hair-strong,rgba(128,128,128,.35));' +
-      'background:var(--paper);color:var(--ink);font-size:18px;line-height:1;cursor:pointer;' +
-      'box-shadow:0 4px 14px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;}' +
-      '#themeToggleBtn:hover{opacity:.85;}';
-    document.head.appendChild(style);
-
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.id = 'themeToggleBtn';
-    document.body.appendChild(btn);
-    apply(saved);
-
-    btn.addEventListener('click', function () {
-      var current = root.getAttribute('data-theme');
-      var isDarkNow = current === 'dark' ||
-        (!current && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      var next = isDarkNow ? 'light' : 'dark';
-      apply(next);
-      try { localStorage.setItem(STORAGE_KEY, next); } catch (e) { /* 무시 */ }
-    });
+    document.documentElement.setAttribute('data-theme', 'light');
+    try { localStorage.removeItem('yejangfocus-theme'); } catch (e) { /* 무시 */ }
+    var old = document.getElementById('themeToggleBtn');
+    if (old && old.parentNode) old.parentNode.removeChild(old);
   }
 
   function initPlaceholderButtons() {
