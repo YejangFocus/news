@@ -745,17 +745,16 @@
       NAV_PRIMARY.forEach(function (c) {
         if (navCounts && c !== '전체' && !navCounts[c]) more.push(c); else primary.push(c);
       });
-      moreList = more;
+      // '더보기'는 접지 않고 모든 메뉴를 메뉴줄에 펼쳐 둔다(좁은 화면에서는 가로 스크롤).
+      moreList = [];
       list.innerHTML = '';
       primary.forEach(function (c) { list.appendChild(link(c, counted(c))); });
+      more.forEach(function (c) {
+        list.appendChild(link(c, counted(c), navCounts && !navCounts[c] ? 'zero' : ''));
+      });
       list.appendChild(link('이슈'));
       list.appendChild(link('브리핑', '<span class="lg">주간브리핑</span><span class="sh">브리핑</span>', 'cat-brief'));
-      list.appendChild(moreBtn);
       panel.innerHTML = '';
-      more.forEach(function (c) {
-        var a = link(c, counted(c), navCounts && !navCounts[c] ? 'zero' : '');
-        panel.appendChild(a);
-      });
       // 모바일 '카테고리' 시트: 모든 분류를 한눈에
       sheet.innerHTML = '<div class="box"><h3>카테고리</h3><div class="grid"></div></div>';
       var grid = sheet.querySelector('.grid');
