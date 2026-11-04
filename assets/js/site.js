@@ -645,7 +645,7 @@
     if (h.indexOf('#/') !== 0) return '';
     var c;
     try { c = decodeURIComponent(h.slice(2)); } catch (e) { return ''; }
-    return (c === '전체' || NAV_PRIMARY.indexOf(c) !== -1 || NAV_MORE.indexOf(c) !== -1) ? c : '';
+    return (c === '전체' || NAV_PRIMARY.indexOf(c) !== -1 || NAV_MORE.indexOf(c) !== -1 || (window.ARTICLE_INDEX || []).some(function (a) { return a.tag === c; })) ? c : '';
   }
 
   function navDefaultCat() {
@@ -745,6 +745,14 @@
       NAV_PRIMARY.forEach(function (c) {
         if (navCounts && c !== '전체' && !navCounts[c]) more.push(c); else primary.push(c);
       });
+      // 새 폴더(=새 카테고리)에 기사를 올리면 기사 목록(counts)에 그 이름이 나타난다.
+      // 위 목록에 없는 카테고리는 자동으로 메뉴 끝에 붙인다(코드 수정 불필요).
+      if (navCounts) {
+        Object.keys(navCounts).forEach(function (c) {
+          if (navCounts[c] && c !== '전체' && c !== '이슈' && c !== '브리핑' &&
+              primary.indexOf(c) === -1 && more.indexOf(c) === -1) more.push(c);
+        });
+      }
       // '더보기'는 접지 않고 모든 메뉴를 메뉴줄에 펼쳐 둔다(좁은 화면에서는 가로 스크롤).
       moreList = [];
       list.innerHTML = '';

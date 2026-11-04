@@ -57,5 +57,13 @@ jobs:
             echo "변경 없음 — 커밋 생략"
           else
             git commit -m "chore: ARTICLE_INDEX 자동 동기화 [skip ci]"
-            git push
+            # GitHub 서버 일시 오류(Internal Server Error)나 동시 push로 실패해도
+            # 최대 5번까지 최신 main 위로 다시 얹어 재시도한다.
+            for i in 1 2 3 4 5; do
+              if git push; then exit 0; fi
+              echo "push 실패 ($i/5) — ${i}0초 후 재시도"
+              sleep $((i * 10))
+              git pull --rebase -X theirs origin main || git rebase --abort
+            done
+            echo "push 5회 실패"; exit 1
           fi
