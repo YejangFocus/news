@@ -159,9 +159,6 @@ def build_list_pages(index, categories):
 
     for base, label, items in groups:
         pages = max(1, -(-len(items) // PER_PAGE))
-        chips = "".join(
-            f'<a href="{abs_path(b + "/")}"' + (' class="on" aria-current="page"' if b == base else "") + f">{esc(b if b != ALL_DIR else '전체')}</a>"
-            for b, _, _ in groups)
         for page in range(1, pages + 1):
             chunk = items[(page - 1) * PER_PAGE: page * PER_PAGE]
             rel = _page_url(base, page)
@@ -172,7 +169,6 @@ def build_list_pages(index, categories):
                     f'  <span class="tag">{esc(base if base != ALL_DIR else "전체")}</span>\n'
                     f'  <h1>{esc(label)}</h1>\n'
                     f'  <p class="subhead">총 {len(items)}건 · 최신순</p>\n'
-                    f'  <nav class="yf-cats" aria-label="카테고리">{chips}</nav>\n'
                     + ('  <ul class="yf-list">\n' + "\n".join("    " + _list_item(a) for a in chunk) + "\n  </ul>\n"
                        if chunk else '  <p class="yf-empty">아직 등록된 기사가 없습니다.</p>\n')
                     + "  " + _pager(base, page, pages) + "\n  </main>\n")
