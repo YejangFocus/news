@@ -689,6 +689,61 @@
   .fh-stat b, .fh-glance li::before, .fh-more, .fh-link:hover, .focus-hub .fh-rest a { color: var(--gold-soft); }
   .fh-share { background: var(--gold); color: #0a1424; border-radius: 2px; }
   .focus-hub { --red: #b3343c; --amber: #c9a45c; --doodle: #0e1520; }
+
+  /* ===== 3단계: 도시 새벽 + 교회 히어로 띠 / 오늘의 말씀 ===== */
+  .verse-band {
+    position: relative; overflow: hidden; color: #fff; text-align: center;
+    background: linear-gradient(180deg, #0a1424 0%, #17335d 55%, #46688f 100%);
+    padding: 26px 20px 74px; min-height: 150px;
+  }
+  .verse-band::before {
+    content: ''; position: absolute; inset: 0;
+    background: url(assets/images/urban/skyline.svg) center bottom / auto 100% no-repeat;
+    background-size: max(100%, 1100px) auto; background-position: 58% 100%;
+  }
+  .verse-band::after { /* 지평선 새벽빛 */
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 60%;
+    background: radial-gradient(60% 100% at 50% 100%, rgba(227,207,159,.28), transparent 70%); pointer-events: none;
+  }
+  .verse-band .wrap { position: relative; z-index: 2; }
+  .verse-band .vb-label { font-size: 11px; letter-spacing: .32em; color: var(--gold-soft); font-weight: 600; }
+  .verse-band .vb-text {
+    margin: 8px 0 0; font: 700 clamp(18px, 2.6vw, 26px)/1.5 'Noto Serif KR', serif; letter-spacing: -.01em;
+    text-shadow: 0 2px 14px rgba(5,11,22,.7);
+  }
+  .verse-band .vb-ref { margin-top: 4px; font-size: 12.5px; color: var(--gold-soft); letter-spacing: .08em; }
+  @media (max-width: 640px) {
+    .verse-band { padding: 20px 16px 58px; min-height: 130px; }
+    .verse-band::before { background-size: 900px auto; background-position: 62% 100%; }
+  }
+
+  /* 십자가 구분선 */
+  .cross-rule, .focus-hub.ready::after, footer::before {
+    content: ''; display: block; height: 32px; margin: 4px 0 0;
+    background:
+      url(assets/images/urban/cross.svg) center / auto 22px no-repeat,
+      linear-gradient(90deg, transparent, var(--hair-strong) 20%, var(--hair-strong) 80%, transparent) center / 100% 1px no-repeat;
+  }
+  .focus-hub.ready::after { margin: 14px 0 0; }
+  footer::before { margin: 0 0 14px; filter: none; opacity: .8; }
+
+  /* ===== 4단계: 분류 화면·대체 썸네일의 성경/교회 이미지 ===== */
+  .thumb:not(img) { background-repeat: no-repeat; background-position: center; background-size: 38% auto, cover; }
+  .tone-a, .tone-c { background-image: url(assets/images/urban/bible-line.svg), linear-gradient(150deg, #1f4a8a, #0a1424); }
+  .tone-b, .tone-e { background-image: url(assets/images/urban/church-line.svg), linear-gradient(150deg, #2a4a78, #0a1424); }
+  .tone-d, .tone-f { background-image: url(assets/images/urban/bible-line.svg), linear-gradient(150deg, #27344f, #0a1424); }
+
+  .aa-head {
+    position: relative; overflow: hidden; border-bottom: 1px solid var(--ink); padding: 22px 18px; margin-bottom: 14px;
+    color: #fff; background: linear-gradient(120deg, #0a1424, #1f4a8a);
+  }
+  .aa-head::before {
+    content: ''; position: absolute; right: 48px; top: 50%; width: 92px; height: 70px; transform: translateY(-50%);
+    background: url(assets/images/urban/bible-line.svg) center / contain no-repeat; opacity: .55;
+  }
+  .aa-overlay .aa-head h2 { position: relative; color: #fff; font-family: 'Noto Serif KR', serif; font-size: 22px; }
+  .aa-overlay .aa-head .aa-close { position: relative; color: #c3cddd; }
+  .aa-overlay .aa-head .aa-close:hover { color: #fff; }
 </style>
 </head>
 <body>
@@ -745,6 +800,31 @@
     </div>
   </div>
 </nav>
+
+<aside class="verse-band" aria-label="오늘의 말씀">
+  <div class="wrap">
+    <div class="vb-label">TODAY'S WORD · 오늘의 말씀</div>
+    <p class="vb-text" id="vbText">너희는 세상의 빛이라</p>
+    <div class="vb-ref" id="vbRef">마태복음 5:14</div>
+  </div>
+</aside>
+<script>
+  (function () {
+    var V = [
+      ['너희는 세상의 빛이라', '마태복음 5:14'],
+      ['진리를 알지니 진리가 너희를 자유롭게 하리라', '요한복음 8:32'],
+      ['오직 정의를 물같이, 공의를 마르지 않는 강같이 흐르게 할지로다', '아모스 5:24'],
+      ['오직 사랑 안에서 참된 것을 하여', '에베소서 4:15'],
+      ['주의 말씀은 내 발에 등이요 내 길에 빛이니이다', '시편 119:105'],
+      ['화평하게 하는 자는 복이 있나니', '마태복음 5:9'],
+      ['하나님의 말씀은 살아 있고 활력이 있어', '히브리서 4:12']
+    ];
+    var d = new Date(), day = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5);
+    var v = V[day % V.length];
+    var t = document.getElementById('vbText'), r = document.getElementById('vbRef');
+    if (t && r) { t.textContent = v[0]; r.textContent = v[1]; }
+  })();
+</script>
 
 <main class="wrap">
 
