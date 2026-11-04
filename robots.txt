@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /ETC/
 
 Sitemap: https://yejangfocus.com/sitemap.xml
+Sitemap: https://yejangfocus.com/news-sitemap.xml

@@ -76,7 +76,7 @@ ARTICLE_INDEX_PATH = REPO_ROOT / "data" / "articles.json"
 # 처음 쓸 때만 내려받는다.
 SEARCH_INDEX_PATH = REPO_ROOT / "data" / "search-index.json"
 IMAGES_DIR = REPO_ROOT / "assets" / "images"
-SITE_BASE = "https://yejangfocus.github.io/news"
+SITE_BASE = "https://yejangfocus.com/"
 # 카카오톡·네이버·페이스북 등이 링크 미리보기(og:*)를 만들 때 쓰는 실제 도메인(CNAME)
 SITE_URL = "https://yejangfocus.com"
 
@@ -404,6 +404,39 @@ def _insert_in_head(text: str, tag: str) -> str:
     return text
 
 
+JSONLD_RE = re.compile(r'<script type="application/ld\+json" id="yf-newsarticle">.*?</script>\n?', re.S)
+
+
+def _set_newsarticle_jsonld(text, rel_path, page_url, title, desc, image_url):
+    """기사 <head>에 NewsArticle 구조화 데이터(JSON-LD)를 넣는다. 이미 있으면 갱신."""
+    epoch = extract_published_time(text) or git_created_epoch(rel_path)
+    published = (datetime.fromtimestamp(epoch, tz=timezone.utc).astimezone(KST).isoformat()
+                 if epoch else None)
+    data = {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": (title or rel_path.stem)[:110],
+        "description": desc or "",
+        "image": [image_url],
+        "mainEntityOfPage": {"@type": "WebPage", "@id": page_url},
+        "inLanguage": "ko-KR",
+        "author": {"@type": "Organization", "name": "예장포커스"},
+        "publisher": {
+            "@type": "Organization",
+            "name": "예장포커스",
+            "logo": {"@type": "ImageObject", "url": f"{SITE_URL}/assets/images/38701da0735806f0.webp"},
+        },
+    }
+    if published:
+        data["datePublished"] = published
+        data["dateModified"] = published
+    payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    tag = f'<script type="application/ld+json" id="yf-newsarticle">{payload}</script>'
+    if JSONLD_RE.search(text):
+        return JSONLD_RE.sub(lambda m: tag + "\n", text, count=1)
+    return _insert_in_head(text, tag)
+
+
 def normalize_share_meta(full_path: Path, rel_path: Path, title: str | None, desc: str | None):
     """기사 <head>의 링크 미리보기(og:*, twitter:*, canonical) 태그를 정리한다.
 
@@ -443,6 +476,8 @@ def normalize_share_meta(full_path: Path, rel_path: Path, title: str | None, des
         text = _set_meta(text, "property", "og:description", desc, overwrite=False)
     if not re.search(r'<link[^>]+rel=["\']canonical["\']', text, re.I):
         text = _insert_in_head(text, f'<link rel="canonical" href="{html.escape(page_url, quote=True)}">')
+
+    text = _set_newsarticle_jsonld(text, rel_path, page_url, title, desc, og_url)
 
     if text != original:
         with open(full_path, "w", encoding="utf-8", newline="") as f:
@@ -558,6 +593,68 @@ def load_existing_index() -> list[dict]:
     return []
 
 
+# 기사 외에 sitemap에 넣을 고정 페이지(실제 파일이 있는 것만 들어간다).
+STATIC_PAGES = ["", "이슈.html", "주간브리핑.html", "공지.html",
+                "메인화면/예장포커스_매체소개.html", "메인화면/예장포커스_개인정보취급방침.html",
+                "메인화면/저작권보호정책.html", "메인화면/청소년보호정책.html",
+                "메인화면/정정반론추후보도_안내.html", "메인화면/이용약관.html"]
+
+
+def write_sitemap_and_feed(index: list[dict]):
+    """sitemap.xml(+구글 뉴스용 news-sitemap.xml)과 RSS(feed.xml)를 기사 목록에서 만든다."""
+    from email.utils import format_datetime
+    from xml.sax.saxutils import escape
+
+    def loc(rel: str) -> str:
+        return f"{SITE_URL}/{quote(rel, safe='/')}"
+
+    latest = index[0]["date"] if index else None
+    urls = []
+    for rel in STATIC_PAGES:
+        if rel and not (REPO_ROOT / rel).exists():
+            continue
+        urls.append(f"  <url><loc>{escape(loc(rel))}</loc>" + (f"<lastmod>{latest}</lastmod>" if rel == "" and latest else "") + "</url>")
+    for item in index:
+        rel = unquote(item["url"].removeprefix(SITE_BASE + "/"))
+        urls.append(f"  <url><loc>{escape(loc(rel))}</loc><lastmod>{item['date']}</lastmod></url>")
+    sitemap = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n")
+    (REPO_ROOT / "sitemap.xml").write_text(sitemap, encoding="utf-8")
+
+    # 구글 뉴스 sitemap: 최근 2일 이내 기사만 허용된다.
+    cutoff = datetime.now(KST) - timedelta(days=2)
+    news = []
+    for item in index:
+        when = datetime.fromisoformat(item["uploaded"])
+        if when < cutoff:
+            continue
+        rel = unquote(item["url"].removeprefix(SITE_BASE + "/"))
+        news.append(
+            f"  <url><loc>{escape(loc(rel))}</loc><news:news><news:publication>"
+            f"<news:name>예장포커스</news:name><news:language>ko</news:language></news:publication>"
+            f"<news:publication_date>{item['uploaded']}</news:publication_date>"
+            f"<news:title>{escape(item['title'])}</news:title></news:news></url>")
+    news_xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+                'xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">\n' + "\n".join(news) + "\n</urlset>\n")
+    (REPO_ROOT / "news-sitemap.xml").write_text(news_xml, encoding="utf-8")
+
+    items = []
+    for item in index[:30]:
+        rel = unquote(item["url"].removeprefix(SITE_BASE + "/"))
+        link = escape(loc(rel))
+        items.append(
+            f"    <item><title>{escape(item['title'])}</title><link>{link}</link>"
+            f"<guid isPermaLink=\"true\">{link}</guid><category>{escape(item['tag'])}</category>"
+            f"<pubDate>{format_datetime(datetime.fromisoformat(item['uploaded']))}</pubDate>"
+            f"<description>{escape(item['desc'])}</description></item>")
+    feed = ('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel>\n'
+            f"    <title>예장포커스</title><link>{SITE_URL}/</link>\n"
+            "    <description>대한예수교장로회(예장합동) 총회와 교계 소식을 전하는 교회 전문 매체</description>\n"
+            "    <language>ko</language>\n" + "\n".join(items) + "\n</channel></rss>\n")
+    (REPO_ROOT / "feed.xml").write_text(feed, encoding="utf-8")
+
+
 def main():
     article_files = find_article_files()
     existing = load_existing_index()
@@ -640,6 +737,8 @@ def main():
     with open(SEARCH_INDEX_PATH, "w", encoding="utf-8") as f:
         json.dump(ordered, f, ensure_ascii=False, separators=(",", ":"))
         f.write("\n")
+
+    write_sitemap_and_feed(new_index)
 
     for w in warnings:
         print(w, file=sys.stderr)
