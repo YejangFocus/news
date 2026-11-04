@@ -35,6 +35,9 @@
     .then(function (articles) {
       articles = sortByLatestDate(articles);
       window.ARTICLE_INDEX = articles;
+      var counts = { '전체': articles.length };
+      articles.forEach(function (a) { counts[a.tag] = (counts[a.tag] || 0) + 1; });
+      if (window.__yfNavSetCounts) window.__yfNavSetCounts(counts);
       initCategoryOverlay(articles);
       initSiteSearch(articles);
       renderHomepage(articles);
@@ -663,7 +666,24 @@
     '.searchrow.cat-search{position:fixed;left:0;right:0;z-index:35;background:var(--paper,#fff);border-bottom:1px solid var(--hair-strong,#ccc);box-shadow:0 14px 24px -14px rgba(15,29,58,.4);}' +
     '.searchrow.cat-search[hidden]{display:none;}' +
     '.searchrow.cat-search .search-results{left:18px;right:18px;}' +
+    'nav.catnav .cnt,.cat-panel .cnt,.cat-sheet .cnt{margin-left:5px;font-size:10.5px;font-weight:700;opacity:.7;}' +
+    '.cat-panel a.zero,.cat-sheet a.zero{opacity:.45;}' +
+    '.yf-tabbar,.cat-sheet{display:none;}' +
+    '.cat-sheet{position:fixed;inset:0;z-index:550;background:rgba(15,29,58,.5);align-items:flex-end;}' +
+    '.cat-sheet .box{width:100%;box-sizing:border-box;background:var(--paper,#fff);color:var(--ink,#111);border-radius:16px 16px 0 0;padding:16px 14px calc(16px + env(safe-area-inset-bottom,0px));max-height:80vh;overflow:auto;}' +
+    '.cat-sheet h3{margin:0 0 12px;font:700 15px "Noto Sans KR",sans-serif;color:inherit;}' +
+    '.cat-sheet .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}' +
+    '.cat-sheet a{display:flex;align-items:center;justify-content:center;padding:12px 6px;border:1px solid var(--hair-strong,#ccc);border-radius:10px;font:700 14px "Noto Sans KR",sans-serif;color:inherit;text-decoration:none;}' +
+    '.cat-sheet a.active{color:var(--red,#e8322a);border-color:var(--red,#e8322a);}' +
     '@media (max-width:640px){' +
+      '.yf-tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--paper,#fff);border-top:1px solid var(--hair-strong,#ccc);padding-bottom:env(safe-area-inset-bottom,0px);}' +
+      '.cat-sheet:not([hidden]){display:flex;}' +
+      '.yf-tabbar > *{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:54px;padding:0;border:0;background:none;color:var(--ink-soft,#666);font:600 11px "Noto Sans KR",sans-serif;text-decoration:none;cursor:pointer;}' +
+      '.yf-tabbar i{font-style:normal;font-size:19px;line-height:1;}' +
+      '.yf-tabbar .on{color:var(--red,#e8322a);}' +
+      'body{padding-bottom:calc(54px + env(safe-area-inset-bottom,0px));}' +
+      '#themeToggleBtn{bottom:calc(68px + env(safe-area-inset-bottom,0px)) !important;}' +
+      'nav.catnav .cat-tools,nav.catnav .cnt{display:none;}' +
       'nav.catnav .brandmark{display:none;}' +
       'nav.catnav .wrap{padding-left:8px;padding-right:8px;}' +
       'nav.catnav .catlist > a,nav.catnav .catlist > button{padding:0 7px;font-size:13px;}' +
@@ -686,8 +706,9 @@
     st.textContent = NAV_CSS;
     document.head.appendChild(st);
 
-    // 1) 메뉴 항목 다시 만들기
-    list.innerHTML = '';
+    // 1) 메뉴 항목 만들기. 기사 수(counts)를 알게 되면 배지를 달고, 기사가 0건인 분류는 '더보기'로 내린다.
+    var moreList = NAV_MORE.slice();
+    var navCounts = null;
     function link(cat, label, extra) {
       var a = document.createElement('a');
       a.setAttribute('data-cat', cat);
@@ -696,22 +717,53 @@
       if (extra) a.className = extra;
       return a;
     }
-    NAV_PRIMARY.forEach(function (c) { list.appendChild(link(c)); });
-    list.appendChild(link('이슈'));
-    list.appendChild(link('브리핑', '<span class="lg">주간브리핑</span><span class="sh">브리핑</span>', 'cat-brief'));
+    function counted(cat) {
+      var n = navCounts && navCounts[cat];
+      return esc(cat) + (n ? '<span class="cnt">' + n + '</span>' : '');
+    }
 
     var moreBtn = document.createElement('button');
     moreBtn.type = 'button';
     moreBtn.className = 'cat-more-btn';
     moreBtn.setAttribute('aria-haspopup', 'true');
     moreBtn.setAttribute('aria-expanded', 'false');
-    list.appendChild(moreBtn);
 
     var panel = document.createElement('div');
     panel.className = 'cat-panel';
     panel.hidden = true;
-    NAV_MORE.forEach(function (c) { panel.appendChild(link(c)); });
     document.body.appendChild(panel);
+
+    var sheet = document.createElement('div');
+    sheet.className = 'cat-sheet';
+    sheet.hidden = true;
+    document.body.appendChild(sheet);
+
+    function layout() {
+      var primary = [], more = NAV_MORE.slice();
+      NAV_PRIMARY.forEach(function (c) {
+        if (navCounts && c !== '전체' && !navCounts[c]) more.push(c); else primary.push(c);
+      });
+      moreList = more;
+      list.innerHTML = '';
+      primary.forEach(function (c) { list.appendChild(link(c, counted(c))); });
+      list.appendChild(link('이슈'));
+      list.appendChild(link('브리핑', '<span class="lg">주간브리핑</span><span class="sh">브리핑</span>', 'cat-brief'));
+      list.appendChild(moreBtn);
+      panel.innerHTML = '';
+      more.forEach(function (c) {
+        var a = link(c, counted(c), navCounts && !navCounts[c] ? 'zero' : '');
+        panel.appendChild(a);
+      });
+      // 모바일 '카테고리' 시트: 모든 분류를 한눈에
+      sheet.innerHTML = '<div class="box"><h3>카테고리</h3><div class="grid"></div></div>';
+      var grid = sheet.querySelector('.grid');
+      primary.concat(more).forEach(function (c) {
+        grid.appendChild(link(c, counted(c), navCounts && c !== '전체' && !navCounts[c] ? 'zero' : ''));
+      });
+      grid.appendChild(link('이슈'));
+      grid.appendChild(link('브리핑', '주간브리핑'));
+    }
+    layout();
 
     // 2) 검색창·후원 버튼을 메뉴줄로 올린다
     var tools = document.createElement('div');
@@ -771,12 +823,13 @@
     panel.addEventListener('click', function (e) { if (e.target.closest('a')) setMore(false); });
     document.addEventListener('click', function (e) {
       if (moreOpen && !panel.contains(e.target) && !moreBtn.contains(e.target)) setMore(false);
-      if (searchOpen && !row.contains(e.target) && !searchBtn.contains(e.target)) setSearch(false);
+      if (searchOpen && !row.contains(e.target) && !searchBtn.contains(e.target) && !e.target.closest('[data-tab="search"]')) setSearch(false);
     });
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
       if (moreOpen) setMore(false);
       if (searchOpen) setSearch(false);
+      setSheet(false);
     });
     function reflow() {
       if (moreOpen) placeMore();
@@ -785,18 +838,60 @@
     window.addEventListener('resize', reflow);
     window.addEventListener('scroll', reflow, { passive: true });
 
+    // 3) 모바일 하단 탭바: 홈 · 카테고리 · 검색 · 이슈 · 후원
+    function setSheet(open) {
+      sheet.hidden = !open;
+      if (open) { setMore(false); setSearch(false); }
+    }
+    sheet.addEventListener('click', function (e) {
+      if (e.target === sheet || e.target.closest('a')) setSheet(false);
+    });
+
+    var tabbar = document.createElement('div');
+    tabbar.className = 'yf-tabbar';
+    tabbar.setAttribute('role', 'navigation');
+    tabbar.setAttribute('aria-label', '하단 메뉴');
+    var homeHref = NAV_IS_HOME ? '#' : root + 'index.html';
+    tabbar.innerHTML =
+      '<a data-tab="home" href="' + homeHref + '"><i>🏠</i><span>홈</span></a>' +
+      '<button type="button" data-tab="cats"><i>☰</i><span>카테고리</span></button>' +
+      (row ? '<button type="button" data-tab="search"><i>🔍</i><span>검색</span></button>' : '') +
+      '<a data-tab="issues" href="' + navHref('이슈') + '"><i>📌</i><span>이슈</span></a>' +
+      (sup ? '<button type="button" data-tab="support"><i>✊</i><span>후원</span></button>' : '');
+    document.body.appendChild(tabbar);
+    tabbar.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-tab]');
+      if (!t) return;
+      var k = t.getAttribute('data-tab');
+      if (k === 'home' && NAV_IS_HOME) { e.preventDefault(); window.scrollTo(0, 0); }
+      if (k === 'cats') setSheet(sheet.hidden);
+      if (k === 'search') { setSheet(false); setSearch(!searchOpen); }
+      if (k === 'support') { setSheet(false); sup.click(); }
+    });
+
     // 현재 위치 표시. '더보기' 안의 카테고리를 보고 있으면 그 이름을 버튼에 보여 준다.
+    var currentCat = '';
     function setActive(cat) {
-      var inMore = NAV_MORE.indexOf(cat) !== -1;
-      Array.prototype.forEach.call(nav.querySelectorAll('[data-cat]'), function (a) {
+      currentCat = cat;
+      var inMore = moreList.indexOf(cat) !== -1;
+      Array.prototype.forEach.call(document.querySelectorAll('nav.catnav [data-cat], .cat-panel [data-cat], .cat-sheet [data-cat]'), function (a) {
         var on = a.getAttribute('data-cat') === cat;
         a.classList.toggle('active', on);
         if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
       });
       moreBtn.classList.toggle('active', inMore);
       moreBtn.innerHTML = esc(inMore ? cat : '더보기') + '<span class="car" aria-hidden="true">▾</span>';
+      var home = tabbar.querySelector('[data-tab="home"]'), iss = tabbar.querySelector('[data-tab="issues"]');
+      home.classList.toggle('on', NAV_IS_HOME && !navCatFromHash());
+      iss.classList.toggle('on', NAV_IS_ISSUES);
     }
     window.__yfNavSetActive = setActive;
+    // 기사 목록을 불러온 뒤 호출: 분류별 기사 수 배지 + 0건 분류 정리
+    window.__yfNavSetCounts = function (counts) {
+      navCounts = counts;
+      layout();
+      setActive(currentCat);
+    };
     setActive(navCatFromHash() || navDefaultCat());
   }
 
