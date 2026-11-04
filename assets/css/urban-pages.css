@@ -122,3 +122,23 @@ footer.yf-footer .legal-grid { border-top-color: #1a2740; }
 .br-nav button:hover:not(:disabled), .br-copy:hover { background: var(--gold-soft); color: #0a1424; }
 .br-week small, .br-count b { color: var(--red); font-family: 'Noto Serif KR', serif; }
 .br-dh { background: #0a1424; color: var(--gold-soft); border-radius: 2px; }
+
+/* ===== 상단바·메뉴줄: 흰 바탕 + 짙은 글자 (다크 모드는 어두운 바탕 유지) ===== */
+:root { --ch-bg: #ffffff; --ch-ink: #1c2a44; --ch-soft: #566274; --ch-line: #d5dbe4; --ch-hover: #1f4a8a; --ch-chip: rgba(10,20,36,.07); --ch-chip-on: rgba(10,20,36,.14); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --ch-bg: #0b0f16; --ch-ink: #d5dce8; --ch-soft: #8fa0ba; --ch-line: #243040; --ch-hover: #ffffff; --ch-chip: rgba(255,255,255,.08); --ch-chip-on: rgba(255,255,255,.18); }
+}
+:root[data-theme="dark"] { --ch-bg: #0b0f16; --ch-ink: #d5dce8; --ch-soft: #8fa0ba; --ch-line: #243040; --ch-hover: #ffffff; --ch-chip: rgba(255,255,255,.08); --ch-chip-on: rgba(255,255,255,.18); }
+.topbar, .yf-top .topbar { background: var(--ch-bg); border-bottom: 1px solid var(--ch-line); }
+.topbar .wrap, .yf-top .topbar .wrap { color: var(--ch-soft); }
+.topbar button:hover, .yf-top .topbar button:hover { color: var(--ch-hover); }
+nav.catnav { background: var(--ch-bg); border-top: 0; border-bottom: 1px solid var(--ch-line); box-shadow: 0 6px 18px -14px rgba(10,20,36,.35); }
+nav.catnav button, nav.catnav a { color: var(--ch-ink); }
+nav.catnav button:hover, nav.catnav a:hover { color: var(--ch-hover); }
+nav.catnav button.active, nav.catnav a.active,
+nav.catnav .catlist > button.active, nav.catnav .catlist > a.active,
+.catlist > button.active, .catlist > a.active { color: var(--ch-ink); font-weight: 800; background: none; border-bottom: 2px solid var(--gold); }
+nav.catnav .brandmark { border-right-color: var(--ch-line); }
+nav.catnav .brandmark img, .brandmark img { background: #fff; border: 1px solid var(--ch-line); }
+nav.catnav .cat-ico { background: var(--ch-chip); color: var(--ch-ink); }
+nav.catnav .cat-ico:hover, nav.catnav .cat-ico[aria-expanded="true"] { background: var(--ch-chip-on); }
