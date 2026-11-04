@@ -105,10 +105,10 @@ DATA_URI_IMAGE_RE = re.compile(r"^data:image/([a-zA-Z0-9.+-]+);base64,(.+)$", re
 DATA_URI_EXT = {"jpeg": "jpg", "jpg": "jpg", "png": "png", "webp": "webp", "gif": "gif"}
 
 # 기사로 취급하지 않는 최상위 폴더 (사이트 정보성 페이지, 비공개 자료 등)
-EXCLUDE_DIRS = {".git", ".github", "data", "assets", "images", "img", "css", "js", "메인화면", "ETC", "scripts", "대시보드"}
+EXCLUDE_DIRS = {".git", ".github", "data", "assets", "images", "img", "css", "js", "메인화면", "ETC", "scripts", "대시보드", "전체"}
 
 # 기사로 취급하지 않는 루트 파일
-EXCLUDE_ROOT_FILES = {"index.html", "404.html", "공지.html", "이슈.html", "주간브리핑.html"}
+EXCLUDE_ROOT_FILES = {"index.html", "404.html", "공지.html", "이슈.html", "주간브리핑.html", "검색.html"}
 
 # 검색엔진 소유 확인용 파일(naver-site-verification 등)은 내용으로 판별해 제외한다.
 SITE_VERIFICATION_RE = re.compile(r"^(?:naver|google)-site-verification:", re.I)
@@ -129,6 +129,10 @@ def find_article_files():
         ]
         for name in filenames:
             if not name.endswith(".html"):
+                continue
+            # 카테고리 목록 페이지(<카테고리>/index.html, page/N/index.html)는 build_pages.py 가 만드는
+            # 생성물이므로 기사로 세지 않는다.
+            if name == "index.html":
                 continue
             rel_path = (rel_dir / name) if str(rel_dir) != "." else Path(name)
             # 루트에 있는 제외 파일
@@ -600,7 +604,7 @@ STATIC_PAGES = ["", "이슈.html", "주간브리핑.html", "공지.html",
                 "메인화면/정정반론추후보도_안내.html", "메인화면/이용약관.html"]
 
 
-def write_sitemap_and_feed(index: list[dict]):
+def write_sitemap_and_feed(index: list[dict], extra_pages: list[str] | None = None):
     """sitemap.xml(+구글 뉴스용 news-sitemap.xml)과 RSS(feed.xml)를 기사 목록에서 만든다."""
     from email.utils import format_datetime
     from xml.sax.saxutils import escape
@@ -614,6 +618,8 @@ def write_sitemap_and_feed(index: list[dict]):
         if rel and not (REPO_ROOT / rel).exists():
             continue
         urls.append(f"  <url><loc>{escape(loc(rel))}</loc>" + (f"<lastmod>{latest}</lastmod>" if rel == "" and latest else "") + "</url>")
+    for rel in (extra_pages or []):
+        urls.append(f"  <url><loc>{escape(loc(rel))}</loc>" + (f"<lastmod>{latest}</lastmod>" if rel.endswith("/") and "/page/" not in rel and latest else "") + "</url>")
     for item in index:
         rel = unquote(item["url"].removeprefix(SITE_BASE + "/"))
         urls.append(f"  <url><loc>{escape(loc(rel))}</loc><lastmod>{item['date']}</lastmod></url>")
@@ -738,7 +744,11 @@ def main():
         json.dump(ordered, f, ensure_ascii=False, separators=(",", ":"))
         f.write("\n")
 
-    write_sitemap_and_feed(new_index)
+    import build_pages
+    cats = ["교단", "목회", "신학", "사설", "특집", "노회", "인물", "교계", "칼럼"]
+    cats += sorted({a["tag"] for a in new_index} - set(cats))
+    list_pages = build_pages.build_all(new_index, cats)
+    write_sitemap_and_feed(new_index, list_pages)
 
     for w in warnings:
         print(w, file=sys.stderr)
