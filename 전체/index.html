@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>전체 기사 | 예장포커스</title>
+<meta name="description" content="예장포커스가 전한 모든 기사 31건을 최신순으로 모았습니다.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="예장포커스">
+<meta property="og:title" content="전체 기사">
+<meta property="og:description" content="예장포커스가 전한 모든 기사 31건을 최신순으로 모았습니다.">
+<meta property="og:image" content="https://yejangfocus.com/assets/images/38701da0735806f0.webp">
+<meta property="og:url" content="https://yejangfocus.com/%EC%A0%84%EC%B2%B4/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://yejangfocus.com/%EC%A0%84%EC%B2%B4/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700;900&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="next" href="https://yejangfocus.com/%EC%A0%84%EC%B2%B4/page/2/">
+</head>
+<body>
+<style>
+  :root{
+    --bg: #ffffff;
+    --paper: #ffffff;
+    --ink: #000000;
+    --ink-soft: #1c2333;
+    --muted: #4a4f5c;
+    --rule: #000000;
+    --rule-soft: #cfd3da;
+    --accent: #1b2a52;
+    --accent-soft: #eaeef5;
+    --tag-bg: #0d1526;
+    --tag-ink: #ffffff;
+    --caption-bg: #f3f4f7;
+    --shadow: rgba(0,0,0,0.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #161512;
+      --paper: #1e1d19;
+      --ink: #ece8dd;
+      --ink-soft: #cfcabd;
+      --muted: #9a9384;
+      --rule: #ece8dd;
+      --rule-soft: #3a382f;
+      --accent: #e0806f;
+      --accent-soft: #2b211d;
+      --tag-bg: #ece8dd;
+      --tag-ink: #161512;
+      --caption-bg: #24221c;
+      --shadow: rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #161512;
+    --paper: #1e1d19;
+    --ink: #ece8dd;
+    --ink-soft: #cfcabd;
+    --muted: #9a9384;
+    --rule: #ece8dd;
+    --rule-soft: #3a382f;
+    --accent: #e0806f;
+    --accent-soft: #2b211d;
+    --tag-bg: #ece8dd;
+    --tag-ink: #161512;
+    --caption-bg: #24221c;
+    --shadow: rgba(0,0,0,0.4);
+  }
+
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page{
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+  .meta-bar{
+    display:flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-size: 12.5px;
+    color: var(--muted);
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    margin-bottom: 26px;
+  }
+  .tag{
+    display:inline-block;
+    background: var(--tag-bg);
+    color: var(--tag-ink);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+  h1{
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 900;
+    font-size: clamp(26px, 5vw, 38px);
+    line-height: 1.35;
+    margin: 0 0 14px;
+    letter-spacing: -0.5px;
+  }
+  .subhead{
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 0 0 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .byline{
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .byline b{ color: var(--ink); }
+
+  figure{ margin: 30px 0; }
+  figure img{
+    width:100%;
+    display:block;
+    border-radius: 3px;
+    box-shadow: 0 8px 24px var(--shadow);
+  }
+  figcaption{
+    background: var(--caption-bg);
+    font-size: 13px;
+    color: var(--muted);
+    padding: 10px 14px;
+    border-left: 3px solid var(--accent);
+    margin-top: 0;
+    line-height: 1.6;
+  }
+
+  .lede{
+    font-size: 17.5px;
+    color: var(--ink-soft);
+  }
+  .lede::first-letter{
+    font-family:'Noto Serif KR', serif;
+    font-weight: 900;
+    font-size: 3.1em;
+    float:left;
+    line-height: 0.85;
+    padding-right: 8px;
+    padding-top: 4px;
+    color: var(--accent);
+  }
+
+  h2{
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin: 42px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--rule);
+  }
+  h3{
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 600;
+    font-size: 17px;
+    margin: 26px 0 10px;
+    color: var(--accent);
+  }
+  p{ margin: 0 0 16px; font-size: 16px; }
+
+  .stat-strip{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule-soft);
+    border: 1px solid var(--rule-soft);
+    margin: 24px 0 28px;
+  }
+  .stat-strip div{
+    background: var(--paper);
+    text-align:center;
+    padding: 16px 8px;
+  }
+  .stat-strip .num{
+    font-family:'Noto Serif KR', serif;
+    font-weight: 900;
+    font-size: 24px;
+    color: var(--accent);
+    display:block;
+  }
+  .stat-strip .lbl{
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    display:block;
+  }
+
+  blockquote{
+    font-family:'Noto Serif KR', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-soft);
+    border-left: 4px solid var(--accent);
+    margin: 24px 0;
+    padding: 4px 0 4px 20px;
+  }
+  blockquote cite{
+    display:block;
+    font-family:'Noto Sans KR', sans-serif;
+    font-style: normal;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .callout{
+    background: var(--accent-soft);
+    border-radius: 4px;
+    padding: 18px 20px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    margin: 26px 0;
+  }
+  .callout .callout-title{
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display:block;
+  }
+
+  ol.factors, ul.factors{
+    padding-left: 20px;
+    margin: 0 0 16px;
+  }
+  ol.factors li, ul.factors li{
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  ol.factors li b, ul.factors li b{ color: var(--accent); }
+
+  table.vote{
+    width:100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 14px;
+  }
+  table.vote th, table.vote td{
+    border: 1px solid var(--rule-soft);
+    padding: 10px 10px;
+    text-align: center;
+  }
+  table.vote th{
+    background: var(--caption-bg);
+    font-weight: 700;
+  }
+  table.vote td.win{
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .divider{
+    text-align:center;
+    margin: 40px 0;
+    color: var(--muted);
+    letter-spacing: 8px;
+    font-size: 12px;
+  }
+
+  .endnote{
+    margin-top: 46px;
+    padding-top: 18px;
+    border-top: 3px double var(--rule);
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  @media (max-width: 480px){
+    .stat-strip{ grid-template-columns: 1fr 1fr; }
+    .stat-strip div:last-child{ grid-column: span 2; }
+  }
+
+  /* ---------- 상단 헤더 (index.html과 동일: 로그인바 · 검색줄 · 마스트헤드) ---------- */
+  .yf-top{
+    --navy: #16294f; --navy-ink: #0f1d3a; --red: #b91c2b; --pine: #3f6b4a;
+    --paper: #ffffff; --paper-alt: #f5f4ef; --ink: #1c1a16; --ink-soft: #67635a;
+    --ink-faint: #96917f; --hair: #e4e1d6; --hair-strong: #cfccbd;
+    line-height: normal;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .yf-top{
+      --navy: #86a2dc; --navy-ink: #eef1fa; --red: #e2707d; --pine: #82bd8f;
+      --paper: #121210; --paper-alt: #1a1a16; --ink: #ece9df; --ink-soft: #aba795;
+      --ink-faint: #7d7a6a; --hair: #33322a; --hair-strong: #47453a;
+    }
+  }
+  :root[data-theme="dark"] .yf-top{
+    --navy: #86a2dc; --navy-ink: #eef1fa; --red: #e2707d; --pine: #82bd8f;
+    --paper: #121210; --paper-alt: #1a1a16; --ink: #ece9df; --ink-soft: #aba795;
+    --ink-faint: #7d7a6a; --hair: #33322a; --hair-strong: #47453a;
+  }
+  .yf-top a{ color: inherit; text-decoration: none; }
+  .yf-top ul{ list-style: none; margin: 0; padding: 0; }
+  .yf-top img{ display: block; }
+  .yf-top .wrap{ max-width: 1040px; margin: 0 auto; padding: 0; }
+
+  .yf-top .topbar{ border-bottom: 1px solid var(--hair); }
+  .yf-top .topbar .wrap{
+    display: flex; justify-content: flex-end; gap: 16px;
+    height: 34px; align-items: center; font-size: 12px; color: var(--ink-soft);
+  }
+  .yf-top .topbar button{ font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  .yf-top .topbar button:hover{ color: var(--navy); }
+
+  .yf-top .searchrow{ border-bottom: 1px solid var(--hair); }
+  .yf-top .searchrow .wrap{ display: flex; align-items: center; gap: 12px; height: 56px; }
+  .yf-top .searchrow form{
+    flex: 1; display: flex; align-items: center; gap: 8px; margin: 0;
+    border: 1px solid var(--hair-strong); border-radius: 3px; padding: 0 12px; height: 34px;
+  }
+  .yf-top .searchrow input{
+    flex: 1; min-width: 0; border: none; outline: none; background: none; font: 13px 'Noto Sans KR', sans-serif; color: var(--ink);
+  }
+  .yf-top .searchrow input::placeholder{ color: var(--ink-faint); }
+  .yf-top .searchrow .search-ic{ font-size: 13px; color: var(--ink-faint); }
+  .yf-top .support-btn{
+    flex: none; background: var(--navy); color: #fff; font: 600 13px 'Noto Sans KR', sans-serif;
+    padding: 0 18px; height: 34px; border-radius: 3px; display: inline-flex; align-items: center; cursor: pointer; border: none;
+  }
+  .yf-top .support-btn:hover{ background: var(--navy-ink); }
+
+  .yf-top .search-results{
+    position: absolute; left: 0; right: 78px; top: 100%; z-index: 40;
+    background: var(--paper); border: 1px solid var(--hair-strong); border-top: none;
+    box-shadow: 0 10px 22px -10px rgba(15,29,58,.25); max-height: 320px; overflow-y: auto;
+  }
+  .yf-top .search-results li{ border-bottom: 1px solid var(--hair); }
+  .yf-top .search-results li:last-child{ border-bottom: none; }
+  .yf-top .search-results a{ display: block; padding: 10px 14px; font-size: 13.5px; line-height: 1.5; color: var(--ink); }
+  .yf-top .search-results a:hover{ background: var(--paper-alt); color: var(--navy); }
+  .yf-top .search-results .tag{ display: inline; background: none; padding: 0; font-size: 11px; font-weight: 700; color: var(--navy); margin-right: 6px; letter-spacing: 0; }
+  .yf-top .search-results .empty{ padding: 14px; font-size: 13px; color: var(--ink-faint); text-align: center; }
+
+  .yf-top .masthead{ padding: 30px 0 18px; text-align: center; }
+  .yf-top .masthead-row{
+    display: grid; grid-template-columns: 1fr minmax(0, 532px) 1fr;
+    align-items: center; gap: 16px;
+  }
+  .yf-top .masthead .ci-link{ grid-column: 2; display: block; }
+  .yf-top .masthead .ci-logo{ display: block; margin: 4px auto 0; width: 100%; height: auto; border-radius: 6px; }
+  .yf-top .masthead .tv-link{
+    grid-column: 1; grid-row: 1; justify-self: start; display: block;
+    border-radius: 6px; transition: transform .15s ease, opacity .15s ease;
+  }
+  .yf-top .masthead .tv-link:hover{ transform: translateY(-2px); opacity: .9; }
+  .yf-top .masthead .tv-logo{ display: block; width: 100%; max-width: 140px; height: auto; border-radius: 6px; }
+  .yf-top .masthead .gapck-link{
+    grid-column: 3; grid-row: 1; justify-self: end; display: block;
+    border-radius: 8px; transition: transform .15s ease, opacity .15s ease;
+  }
+  .yf-top .masthead .gapck-link:hover{ transform: translateY(-2px); opacity: .9; }
+  .yf-top .masthead .gapck-logo{
+    display: block; width: 100%; max-width: 140px; height: auto; border-radius: 8px;
+    box-shadow: 0 6px 16px -10px rgba(15,29,58,.45);
+  }
+  @media (max-width: 720px){
+    .yf-top .masthead-row{ grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+    .yf-top .masthead .ci-link{ grid-column: 1 / -1; grid-row: 1; justify-self: center; width: 64%; }
+    .yf-top .masthead .tv-link{ grid-column: 1; grid-row: 2; justify-self: end; }
+    .yf-top .masthead .gapck-link{ grid-column: 2; grid-row: 2; justify-self: start; }
+    .yf-top .masthead .tv-logo, .yf-top .masthead .gapck-logo{ max-width: 91px; }
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .yf-top .masthead .ci-logo, :root:not([data-theme="light"]) .yf-top .masthead .tv-logo{ background: #fff; padding: 6px 10px; box-sizing: border-box; }
+  }
+  :root[data-theme="dark"] .yf-top .masthead .ci-logo, :root[data-theme="dark"] .yf-top .masthead .tv-logo{ background: #fff; padding: 6px 10px; box-sizing: border-box; }
+
+  /* ---------- category nav (index.html과 동일) ---------- */
+  nav.catnav{
+    --navy: #16294f; --red: #b91c2b; --hair-strong: #cfccbd;
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
+    background: var(--paper); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--hair-strong);
+    margin: 0 0 18px;
+  margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); width: 100vw;
+  }
+  @media (prefers-color-scheme: dark){
+    nav.catnav{ --navy: #86a2dc; --red: #e2707d; --hair-strong: #47453a; }
+  }
+  nav.catnav .wrap { display: flex; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; gap: 0; padding: 0 18px; max-width: 1040px; margin: 0 auto; }
+  nav.catnav .wrap::-webkit-scrollbar { display: none; }
+  .brandmark {
+    flex: none; display: flex; align-items: center; padding: 8px 16px 8px 0; margin-right: 6px;
+    border-right: 1px solid rgba(255,255,255,.22);
+  }
+  .brandmark img { height: 30px; width: auto; display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
+  .catlist { display: flex; overflow-x: auto; scrollbar-width: none; flex: 1; }
+  .catlist::-webkit-scrollbar { display: none; }
+  nav.catnav button, nav.catnav a {
+    flex: none; font: 700 14px 'Noto Sans KR', sans-serif; color: var(--ink);
+    background: none; border: none; padding: 12px 15px; cursor: pointer;
+    border-bottom: 2px solid transparent; white-space: nowrap; text-decoration: none;
+  }
+  nav.catnav a.brandmark { padding: 8px 16px 8px 0; border-bottom: none; }
+  nav.catnav button:hover, nav.catnav a:hover { color: var(--navy); }
+  nav.catnav button.active, nav.catnav a.active { color: var(--red); border-bottom-color: var(--red); }
+
+  /* ---------- 하단 푸터 (index.html과 동일) ---------- */
+  footer.yf-footer{
+    margin-top: 20px; background: #0f1d3a; color: #c9cfe2;
+    line-height: normal; font-family: 'Noto Sans KR', sans-serif;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  footer.yf-footer a{ color: inherit; text-decoration: none; }
+  footer.yf-footer .wrap{ max-width: 1040px; margin: 0 auto; padding: 32px 18px 30px; }
+  footer.yf-footer .flockup{
+    font-family: 'Noto Serif KR', serif; font-weight: 900; font-size: 20px; color: #fff; margin-bottom: 4px;
+  }
+  footer.yf-footer .fsub{ font-size: 11px; letter-spacing: .28em; color: #8b93ab; }
+  footer.yf-footer .flinks{ display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 16px 0 18px; font-size: 12.5px; }
+  footer.yf-footer .flinks a:hover{ color: #fff; }
+  footer.yf-footer .legal-grid{
+    display: flex; flex-wrap: wrap; column-gap: 14px; row-gap: 4px;
+    font-size: 12px; line-height: 1.5; color: #98a0bd; border-top: 1px solid #263258; padding-top: 16px;
+  }
+  footer.yf-footer .legal-grid .litem{ white-space: nowrap; }
+  footer.yf-footer .legal-grid .ll{ color: #6b7396; margin-right: 3px; }
+  footer.yf-footer .legal-grid .lv{ color: #98a0bd; }
+  footer.yf-footer p.copyright{ margin: 18px 0 4px; font-size: 11.5px; line-height: 1.6; color: #7b83a3; }
+  footer.yf-footer p.copyright + p.copyright{ margin-top: 0; }
+  footer.yf-footer p.copyright a:hover{ color: #fff; }
+  @media (max-width: 760px){
+    footer.yf-footer .legal-grid{ flex-direction: column; }
+    footer.yf-footer .legal-grid .litem{ white-space: normal; }
+  }
+</style>
+<link rel="stylesheet" href="/assets/css/urban-pages.css">
+<div class="page">
+
+  <div class="yf-top">
+<div class="searchrow">
+  <div class="wrap" style="position:relative;">
+    <form id="siteSearchForm" onsubmit="return false;">
+      <span class="search-ic">🔍</span>
+      <input type="text" id="siteSearchInput" placeholder="기사 검색 (제목으로 검색)" autocomplete="off">
+    </form>
+    <ul id="searchResults" class="search-results" hidden></ul>
+    <button type="button" class="support-btn">후원하기</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap masthead-row">
+    <a class="tv-link" href="https://www.youtube.com/@%EC%98%88%EC%9E%A5%ED%8F%AC%EC%BB%A4%EC%8A%A4" target="_blank" rel="noopener" aria-label="예포TV 유튜브 채널로 이동">
+      <img class="tv-logo" src="/assets/images/18b19830e6e40f7d.webp" alt="예포TV YEJANG FOCUS 유튜브 채널">
+    </a>
+    <a class="ci-link" href="https://yejangfocus.com/" aria-label="예장포커스 뉴스로 이동">
+      <img class="ci-logo" src="/assets/images/38701da0735806f0.webp" alt="예장포커스 YEJANG FOCUS 교회를 바라보는 새로운 시선">
+    </a>
+    <a class="gapck-link" href="https://www.gapck.org/" target="_blank" rel="noopener" aria-label="대한예수교장로회총회(예장합동) 홈페이지로 이동">
+      <img class="gapck-logo" src="/assets/images/1665deb754d7f97f.webp" alt="예장합동 홈페이지 바로가기">
+    </a>
+  </div>
+</header>
+  </div>
+  <nav class="catnav" aria-label="기사 카테고리">
+  <div class="wrap">
+    <a class="brandmark" href="https://yejangfocus.com/" aria-label="예장포커스 메인으로">
+      <img src="/assets/images/318cf1b08aeca9ac.png" alt="예포">
+    </a>
+    <div class="catlist" id="catNav">
+      <button data-cat="전체" class="active">전체</button>
+      <button data-cat="교단">교단</button>
+      <button data-cat="목회">목회</button>
+      <button data-cat="신학">신학</button>
+      <button data-cat="사설">사설</button>
+      <button data-cat="특집">특집</button>
+      <button data-cat="노회">노회</button>
+      <button data-cat="이슈">이슈</button>
+      <button data-cat="인물">인물</button>
+      <button data-cat="교계">교계</button>
+      <button data-cat="칼럼">칼럼</button>
+    </div>
+  </div>
+</nav>
+
+<aside class="verse-band" aria-label="오늘의 말씀">
+  <div class="wrap">
+    <div class="vb-label">TODAY'S WORD · 오늘의 말씀</div>
+    <p class="vb-text" id="vbText">너희는 세상의 빛이라</p>
+    <div class="vb-ref" id="vbRef">마태복음 5:14</div>
+  </div>
+</aside>
+<script src="/assets/js/verse.js"></script>
+  <style>
+  .yf-list{list-style:none;margin:18px 0 0;padding:0;}
+  .yf-list li{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--rule-soft);}
+  .yf-list .thumb{flex:none;width:168px;aspect-ratio:4/3;object-fit:cover;border-radius:3px;background:var(--caption-bg);}
+  .yf-list .thumb.is-fallback{object-fit:contain;padding:8px;}
+  .yf-list .tg{font-size:12px;font-weight:700;letter-spacing:.04em;}
+  .yf-list h2{font-family:'Noto Serif KR',serif;font-size:18px;line-height:1.45;margin:3px 0 6px;font-weight:700;}
+  .yf-list a{color:inherit;text-decoration:none;}
+  .yf-list h2{border:0;padding:0;}
+  .yf-list a:hover h2{text-decoration:underline;}
+  .yf-list p{margin:0;font-size:13.5px;line-height:1.65;color:var(--muted);}
+  .yf-list time{display:block;margin-top:6px;font-size:12px;color:var(--muted);}
+  .yf-pager{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:28px 0 8px;}
+  .yf-pager a,.yf-pager span{min-width:36px;padding:7px 12px;text-align:center;border:1px solid var(--rule-soft);border-radius:3px;font-size:13.5px;}
+  .yf-pager .cur{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;}
+  .yf-pager a:hover{background:var(--accent-soft);}
+  .yf-empty{padding:40px 0;text-align:center;color:var(--muted);}
+  .yf-cats{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px;font-size:13px;}
+  .yf-cats a{padding:5px 12px;border:1px solid var(--rule-soft);border-radius:16px;}
+  .yf-cats a.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  @media (max-width:560px){.yf-list li{flex-direction:column;}.yf-list .thumb{width:100%;}}
+</style>
+  <main id="main">
+  <span class="tag">전체</span>
+  <h1>전체 기사</h1>
+  <p class="subhead">총 31건 · 최신순</p>
+  <nav class="yf-cats" aria-label="카테고리"><a href="/%EC%A0%84%EC%B2%B4/" class="on" aria-current="page">전체</a><a href="/%EA%B5%90%EB%8B%A8/">교단</a><a href="/%EB%AA%A9%ED%9A%8C/">목회</a><a href="/%EC%8B%A0%ED%95%99/">신학</a><a href="/%EC%82%AC%EC%84%A4/">사설</a><a href="/%ED%8A%B9%EC%A7%91/">특집</a><a href="/%EB%85%B8%ED%9A%8C/">노회</a><a href="/%EC%9D%B8%EB%AC%BC/">인물</a><a href="/%EA%B5%90%EA%B3%84/">교계</a><a href="/%EC%B9%BC%EB%9F%BC/">칼럼</a></nav>
+  <ul class="yf-list">
+    <li><a href="https://yejangfocus.com/사설/261029_기자회견.html" aria-hidden="true" tabindex="-1"><img class="thumb is-fallback" src="https://yejangfocus.com/assets/images/yejang-focus-ci.webp" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--red);">사설</span><a href="https://yejangfocus.com/사설/261029_기자회견.html"><h2>‘법대로’ 외치며 결과 승복은 유보… 당선무효 기자회견, 스스로 무너뜨린 논리</h2></a><p>전승덕 목사·지동빈 장로의 10월 29일 기자회견을 녹취와 총회선거규정 제30조에 비춰 검증했다. 규정에 없는 처리 기한을 근거로 ‘직무유기’를 단정했고, 증거는 추정과 전언에 머물렀으며, 법원행이 빠른 해결이라는 전제도 성립하기 어렵다.</p><time datetime="2026-10-30">2026.10.30</time></div></li>
+    <li><a href="https://yejangfocus.com/특집/2026_8개노회_체육대회_결산_기사.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/a24c46b8fc33c3f7.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--pine);">특집</span><a href="https://yejangfocus.com/특집/2026_8개노회_체육대회_결산_기사.html"><h2>&quot;때가 이르매 거두리라&quot; 대구 8개 노회 목회자 한마당… 대경노회 우승기 품었다</h2></a><p>제29회 대구지역 8개 노회 목회자 친선체육대회가 10월 29일 대구복합스포츠타운 시민체육관에서 열렸다. 반년 넘게 손발을 맞춘 준비위원회의 촘촘한 팀워크 속에 예배부터 시상식까지 하루 일정이 순조롭게 이어졌다.</p><time datetime="2026-10-30">2026.10.30</time></div></li>
+    <li><a href="https://yejangfocus.com/칼럼/2026_송월야칼럼_받고싶은대로선대하라.html" aria-hidden="true" tabindex="-1"><img class="thumb is-fallback" src="https://yejangfocus.com/assets/images/yejang-focus-ci.webp" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--pine);">칼럼</span><a href="https://yejangfocus.com/칼럼/2026_송월야칼럼_받고싶은대로선대하라.html"><h2>받고 싶은 대로, 계산 없이 — 선대(善待)의 신앙</h2></a><p>황금률은 상대가 아니라 나에게서 시작된다. 받을 것을 계산하지 않고 원수에게까지 베푸는 선대는, 은혜를 모르는 자에게도 인자하신 아버지를 닮는 일이다.</p><time datetime="2026-10-18">2026.10.18</time></div></li>
+    <li><a href="https://yejangfocus.com/칼럼/칼럼_건강10계명_할매선지자.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/728d2bbf2120052f.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--pine);">칼럼</span><a href="https://yejangfocus.com/칼럼/칼럼_건강10계명_할매선지자.html"><h2>몸은 성령의 전, 할매의 잔소리를 말씀으로 다시 듣다</h2></a><p>웃음으로 전해진 &#x27;할매 선지자&#x27;의 건강 10계명은 결국 &quot;너희 몸은 너희 자신의 것이 아니라&quot;는 말씀으로 이어진다. 물·아침·잠·절제·분노·서두름을 성경의 빛 아래 다시 읽는다.</p><time datetime="2026-10-17">2026.10.17</time></div></li>
+    <li><a href="https://yejangfocus.com/노회/2026_8개노회_체육대회_준비_기사.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/e01b11addfb8f9dc.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--navy);">노회</span><a href="https://yejangfocus.com/노회/2026_8개노회_체육대회_준비_기사.html"><h2>대구 8개 노회 목회자 체육대회 D-14, 준비 막바지 — 축구 승부차기 신설, 사모·어르신 번외경기도</h2></a><p>10월 29일 대구 시민운동장 실내체육관에서 제29회 대회 개최. 대진표 확정, 59개 교회가 대회 책자 광고 협찬으로 힘을 보탰다.</p><time datetime="2026-10-15">2026.10.15</time></div></li>
+    <li><a href="https://yejangfocus.com/노회/동대구노회_연합수련회.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/648e075ef2eae071.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--navy);">노회</span><a href="https://yejangfocus.com/노회/동대구노회_연합수련회.html"><h2>&#x27;지혜 한 스푼&#x27; 나눈 동대구노회 목사회·교육부 연합수련회, 울산서 개막</h2></a><p>증경총회장 이승희 목사 강사로 나서 설교와 &#x27;진실토크: 지혜 한 스푼&#x27;을 진행… 시찰별 탁구대회로 이어지는 1박 2일 일정.</p><time datetime="2026-10-12">2026.10.12</time></div></li>
+    <li><a href="https://yejangfocus.com/인물/orchestra_book.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/f6cf5c07aaaa6b0f.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--navy);">인물</span><a href="https://yejangfocus.com/인물/orchestra_book.html"><h2>독주를 멈추고 합주를 배우는 교회</h2></a><p>김현중 목사의 《교회는 하나님 나라의 오케스트라다》는 교회를 오케스트라에 빗대어 공동체의 조율을 이야기하는 책이다. 한두 시간이면 읽을 수 있는 분량이다.</p><time datetime="2026-10-10">2026.10.10</time></div></li>
+    <li><a href="https://yejangfocus.com/노회/대구수성노회_시찰별체육대회.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/suseong_sports_01.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--navy);">노회</span><a href="https://yejangfocus.com/노회/대구수성노회_시찰별체육대회.html"><h2>땀과 웃음으로 하나 된 대구수성노회, 시찰별 체육대회 열렸다</h2></a><p>장로와 목사가 한데 어우러져 경기와 식사, 담소로 하루를 함께 보내며 대구수성노회의 하나됨을 확인했다.</p><time datetime="2026-10-07">2026.10.07</time></div></li>
+    <li><a href="https://yejangfocus.com/노회/news_susung59.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/b8e03b97a22891d1.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--navy);">노회</span><a href="https://yejangfocus.com/노회/news_susung59.html"><h2>대구수성노회 제59회 정기회 개최… 박민열 목사 안수·강도사 5명 인허</h2></a><p>대구수성노회가 6일 대구북성교회당에서 제59회 정기회를 열고 개회예배와 성찬식, 목사안수·강도사인허식을 진행했다. 최봉우 목사는 아멘교회 원로목사로 추대됐다.</p><time datetime="2026-10-07">2026.10.07</time></div></li>
+    <li><a href="https://yejangfocus.com/노회/대구중노회_40주년_기념행사_기사.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/c4f7df0ffb942b38.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--navy);">노회</span><a href="https://yejangfocus.com/노회/대구중노회_40주년_기념행사_기사.html"><h2>대구중노회, 설립 40주년 맞아 몽골 선교센터부터 오사카 수련회까지 기념사업 이어간다</h2></a><p>6월 체육대회와 9월 몽골 허스오양가 선교센터 설립예배에 이어, 10월 6일 감사예배 및 음악회와 12~14일 오사카 노회원 수련회가 예정돼 있다.</p><time datetime="2026-10-07">2026.10.07</time></div></li>
+    <li><a href="https://yejangfocus.com/특집/daegujung_40th_anniversary.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/7505a0e04343513e.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--pine);">특집</span><a href="https://yejangfocus.com/특집/daegujung_40th_anniversary.html"><h2>대구중노회, 설립 40주년 감사예배·음악회 열고 ‘다가올 40년’ 비전 다짐</h2></a><p>대구중노회가 10월 6일 대구동부교회당에서 설립 40주년 기념 감사예배 및 음악회를 열고, 지난 40년의 은혜에 감사하며 앞으로 40년의 비전을 함께 그렸다.</p><time datetime="2026-10-06">2026.10.06</time></div></li>
+    <li><a href="https://yejangfocus.com/목회/나눔과섬김의교회_40일천국잔치.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/40days_d6_01_sermon.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--navy);">목회</span><a href="https://yejangfocus.com/목회/나눔과섬김의교회_40일천국잔치.html"><h2>40일 천국잔치 6일째, 다음세대가 강단을 채운 새벽</h2></a><p>나눔과섬김의교회, 10일 새벽 영아부·유치부 가족 특송에 이어 ‘주의 길을 준비하라’ 말씀… 목회자가 어린이들을 축복하며 11월 15일까지 여정 이어가</p><time datetime="2026-10-05">2026.10.05</time></div></li>
+    <li><a href="https://yejangfocus.com/사설/news_song_giseop_editorial.html" aria-hidden="true" tabindex="-1"><img class="thumb is-fallback" src="https://yejangfocus.com/assets/images/yejang-focus-ci.webp" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--red);">사설</span><a href="https://yejangfocus.com/사설/news_song_giseop_editorial.html"><h2>구태 계파정치를 넘어, 제111회 총회 당선자들에게 남긴 숙제</h2></a><p>사조직의 지원 없이 일어난 새 바람, 모든 당선자가 건강한 총회로 응답해야</p><time datetime="2026-10-04">2026.10.04</time></div></li>
+    <li><a href="https://yejangfocus.com/사설/news_111_이의서.html" aria-hidden="true" tabindex="-1"><img class="thumb is-fallback" src="https://yejangfocus.com/assets/images/yejang-focus-ci.webp" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--red);">사설</span><a href="https://yejangfocus.com/사설/news_111_이의서.html"><h2>예장합동 제111회 총회 파회 후 부총회장 낙선 후보 2인, ‘당선 무효 이의서’ 제출</h2></a><p>전승덕 목사·지동빈 장로가 선거규정 위반을 이유로 당선 무효를 요구했다. 무효화에는 임원회 2/3 이상 결의가 필요하고, 파회 후 무효가 확정된 전례는 찾기 어렵다.</p><time datetime="2026-10-03">2026.10.03</time></div></li>
+    <li><a href="https://yejangfocus.com/인물/ju-gicheol-ilsagakgo.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/ab9e6408a800ea51.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--navy);">인물</span><a href="https://yejangfocus.com/인물/ju-gicheol-ilsagakgo.html"><h2>죽음과 맞바꾼 신앙, 일사각오 주기철 목사</h2></a><p>13세 소년의 성탄절 교회 첫걸음에서 평양 경찰서 지하실까지, 신사참배를 끝내 거부한 순교자의 생애를 막내아들 주광조의 시선으로 따라가다</p><time datetime="2026-10-02">2026.10.02</time></div></li>
+    <li><a href="https://yejangfocus.com/신학/열개의이름_창세기5장_칼럼.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/0081fed23717bb55.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--pine);">신학</span><a href="https://yejangfocus.com/신학/열개의이름_창세기5장_칼럼.html"><h2>열 개의 이름 속에 흐르는 복음</h2></a><p>아담에서 노아까지 열 사람의 이름을 히브리어 뜻대로 이으면 하나의 복음 문장이 된다 — 창세기 5장 족보를 원어로 읽다</p><time datetime="2026-10-02">2026.10.02</time></div></li>
+    <li><a href="https://yejangfocus.com/칼럼/복된_해석.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/bokdoen-haeseok-banner.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--pine);">칼럼</span><a href="https://yejangfocus.com/칼럼/복된_해석.html"><h2>복된 해석</h2></a><p>같은 자리에서도 해석은 180° 갈립니다. 해석은 말씀을 들은 우리의 몫이며, 중요한 것은 무리 속에 남아 있는 것입니다.</p><time datetime="2026-10-02">2026.10.02</time></div></li>
+    <li><a href="https://yejangfocus.com/칼럼/도반시_칼럼_가족을찾다가사랑을찾았다.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/7b6a627263bf5db2.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--pine);">칼럼</span><a href="https://yejangfocus.com/칼럼/도반시_칼럼_가족을찾다가사랑을찾았다.html"><h2>가족을 찾다가 사랑을 찾았다</h2></a><p>70여 년 전 흑백 사진 한 장이 들춘 전쟁 속 러브스토리. 가족을 찾아 나선 길에서 시작된 사랑은 이름까지 빌려 바다를 건넜다.</p><time datetime="2026-09-28">2026.09.28</time></div></li>
+    <li><a href="https://yejangfocus.com/칼럼/칼럼_설교가끝난뒤.html" aria-hidden="true" tabindex="-1"><img class="thumb is-fallback" src="https://yejangfocus.com/assets/images/yejang-focus-ci.webp" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--pine);">칼럼</span><a href="https://yejangfocus.com/칼럼/칼럼_설교가끝난뒤.html"><h2>설교가 끝난 뒤, 나는 그 말씀대로 살고 있는가</h2></a><p>“용서하십시오, 사랑하십시오, 믿으십시오.” 수없이 전한 목회자가 강단에서 내려와 가장 먼저 마주한 것은 자기 자신을 향한 질문이었습니다.</p><time datetime="2026-09-28">2026.09.28</time></div></li>
+    <li><a href="https://yejangfocus.com/목회/news_road_praise.html" aria-hidden="true" tabindex="-1"><img class="thumb" src="https://yejangfocus.com/assets/images/dacc268e0742a1ab.jpg" alt="" loading="lazy" decoding="async"></a><div><span class="tg" style="color:var(--navy);">목회</span><a href="https://yejangfocus.com/목회/news_road_praise.html"><h2>길 위의 예배자들, 로드(ROAD) 찬양단이 열어 가는 지역교회 연합의 새 길</h2></a><p>자전거 라이딩 중 지촌교회당에서 시작된 찬양이 장터로 이어졌다. 청도 동부시찰 다섯 목회자가 꾸려 가는 로드(ROAD) 찬양 선교회의 사역과 총회에 던지는 울림을 짚었다.</p><time datetime="2026-09-28">2026.09.28</time></div></li>
+  </ul>
+  <nav class="yf-pager" aria-label="페이지 이동"><span class="cur" aria-current="page">1</span><a href="/%EC%A0%84%EC%B2%B4/page/2/">2</a><a href="/%EC%A0%84%EC%B2%B4/page/2/" rel="next">다음</a></nav>
+  </main>
+
+  <div class="divider">— ◆ —</div>
+
+</div>
+
+<footer class="yf-footer">
+  <div class="wrap">
+    <div class="flockup">예장포커스</div>
+    <div class="fsub">YEJANG FOCUS</div>
+
+    <div class="flinks">
+      <a href="https://yejangfocus.com/메인화면/예장포커스_매체소개.html">매체소개</a>
+      <a href="mailto:owenpej@naver.com">기사 제보</a>
+      <a href="mailto:owenpej@naver.com?subject=%5B광고%20문의%5D">광고 문의</a>
+      <a href="mailto:owenpej@naver.com?subject=%5B구독%20신청%5D">구독 신청</a>
+      <a href="https://yejangfocus.com/메인화면/이용약관.html">이용약관</a>
+      <a href="https://yejangfocus.com/메인화면/예장포커스_개인정보취급방침.html">개인정보처리방침</a>
+      <a href="https://yejangfocus.com/메인화면/청소년보호정책.html">청소년보호정책</a>
+      <a href="https://yejangfocus.com/메인화면/저작권보호정책.html">저작권보호정책</a>
+      <a href="https://yejangfocus.com/메인화면/정정반론추후보도_안내.html">정정·반론·추후 보도</a>
+    </div>
+
+    <div class="legal-grid">
+      <span class="litem"><span class="ll">제호</span><span class="lv">예장포커스(Yejang Focus)</span></span>
+      <span class="litem"><span class="ll">주소</span><span class="lv">대전광역시 동구 대전로 542번길 27 (천동) 반석빌딩 1층</span></span>
+      <span class="litem"><span class="ll">대표전화</span><span class="lv">010-9751-4888</span></span>
+      <span class="litem"><span class="ll">팩스</span><span class="lv">0504-492-3386</span></span>
+      <span class="litem"><span class="ll">사업자등록번호</span><span class="lv">등록 절차 진행 중</span></span>
+      <span class="litem"><span class="ll">청소년보호책임자</span><span class="lv">윤기로</span></span>
+      <span class="litem"><span class="ll">등록일</span><span class="lv">2026-09-30</span></span>
+      <span class="litem"><span class="ll">발행일</span><span class="lv">창간 준비 중</span></span>
+      <span class="litem"><span class="ll">발행·편집인</span><span class="lv">박민하</span></span>
+    </div>
+
+    <p class="copyright">예장포커스(Yejang Focus)의 모든 콘텐츠(영상, 기사, 사진)는 저작권법의 보호를 받는 바, 무단 전재와 복사, 배포 등을 금합니다.</p>
+    <p class="copyright">Copyright © 2026 예장포커스(Yejang Focus). All rights reserved. mail to <a href="mailto:owenpej@naver.com">owenpej@naver.com</a></p>
+  </div>
+</footer>
+
+<div id="allArticlesOverlay" class="aa-overlay" hidden>
+  <div class="aa-panel">
+    <div class="aa-head">
+      <h2 id="aaTitle">전체 기사</h2>
+      <button type="button" class="aa-close" aria-label="닫기">✕</button>
+    </div>
+    <ul class="aa-list" id="allArticlesList"></ul>
+  </div>
+</div>
+
+<style>
+  .aa-overlay{position:fixed;inset:0;z-index:999;background:var(--paper);overflow-y:auto;padding:24px 18px 60px;}
+  .aa-overlay[hidden]{display:none;}
+  .aa-panel{max-width:1040px;margin:0 auto;}
+  .aa-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:9px;margin-bottom:14px;border-bottom:2px solid var(--ink);}
+  .aa-head h2{margin:0;font-size:18px;font-weight:700;color:var(--ink);}
+  .aa-close{background:none;border:none;font-size:20px;line-height:1;cursor:pointer;color:var(--ink-soft);padding:4px 8px;}
+  .aa-close:hover{color:var(--ink);}
+  .aa-list{list-style:none;margin:0;padding:0;}
+  .aa-list li{padding:12px 0;border-bottom:1px solid rgba(128,128,128,.25);font-size:15px;line-height:1.5;}
+  .aa-list li:last-child{border-bottom:none;}
+  .aa-list a{color:var(--ink);text-decoration:none;}
+  .aa-list a:hover{color:var(--ink-soft);text-decoration:underline;}
+</style>
+
+<script>window.SITE_ROOT = '/';</script>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>

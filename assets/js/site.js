@@ -49,6 +49,7 @@
       console.error('기사 목록(articles.json)을 불러오지 못했습니다.', err);
     });
 
+  initSkipLink();
   initThemeToggle();
   initPlaceholderButtons();
   initSupportModal();
@@ -634,7 +635,8 @@
   function navHref(cat) {
     if (cat === '이슈') return root + '이슈.html';
     if (cat === '브리핑') return root + '주간브리핑.html';
-    return (NAV_IS_HOME ? '' : root + 'index.html') + '#/' + encodeURIComponent(cat);
+    // 카테고리마다 실제 목록 페이지(<카테고리>/, 전체/)가 있다. 검색엔진과 공유 링크에도 그대로 통한다.
+    return root + encodeURIComponent(cat) + '/';
   }
 
   // 주소 해시(#/교단)에서 카테고리를 읽는다. 해당 없으면 ''.
@@ -647,7 +649,7 @@
   }
 
   function navDefaultCat() {
-    return NAV_IS_ISSUES ? '이슈' : NAV_IS_BRIEFING ? '브리핑' : '전체';
+    return NAV_IS_ISSUES ? '이슈' : NAV_IS_BRIEFING ? '브리핑' : (window.SITE_CAT || '전체');
   }
 
   var NAV_CSS =
@@ -953,15 +955,6 @@
       route();
     });
 
-    var totalNewsMore = document.getElementById('totalNewsMore');
-    if (totalNewsMore) {
-      totalNewsMore.addEventListener('click', function (e) {
-        e.preventDefault();
-        if (NAV_IS_HOME) location.hash = '#/전체';
-        else location.href = navHref('전체');
-      });
-    }
-
     if (closeBtn) closeBtn.addEventListener('click', closeAllArticles);
     if (overlay) {
       overlay.addEventListener('click', function (e) {
@@ -1093,8 +1086,6 @@
           '</li>';
       }).join('');
     }
-    var columnMore = document.getElementById('columnMore');
-    if (columnMore && columns[0]) columnMore.href = columns[0].url;
   }
 
   function initSiteSearch(ARTICLE_INDEX) {
@@ -1204,11 +1195,10 @@
           li2.appendChild(a);
           resultsBox.appendChild(li2);
         });
-        if (results.length > MAX_SHOWN) {
-          var more = document.createElement('li');
-          more.innerHTML = '<div class="count">외 ' + (results.length - MAX_SHOWN) + '건 — 검색어를 더 구체적으로 입력해 보세요</div>';
-          resultsBox.appendChild(more);
-        }
+        var all = document.createElement('li');
+        all.innerHTML = '<a href="' + root + '검색.html?q=' + encodeURIComponent(query) + '" style="font-weight:700;color:var(--navy);">' +
+          '전체 검색 결과 보기' + (results.length > MAX_SHOWN ? ' (' + results.length + '건)' : '') + ' ›</a>';
+        resultsBox.appendChild(all);
       }
       resultsBox.hidden = false;
     }
@@ -1218,18 +1208,24 @@
       render(search(q), q);
     }
 
+    // 엔터/검색 버튼 → 전체 검색 결과 페이지(검색.html)
+    function goSearchPage() {
+      var q = input.value.trim();
+      if (q) window.location.href = root + '검색.html?q=' + encodeURIComponent(q);
+    }
+    var sform = input.form;
+    if (sform) sform.addEventListener('submit', function (e) { e.preventDefault(); goSearchPage(); });
+    input.setAttribute('aria-label', '기사 검색');
+    input.setAttribute('type', 'search');
+    input.setAttribute('enterkeyhint', 'search');
+
     input.addEventListener('focus', function () { loadBodies(run); });
     input.addEventListener('input', function () { loadBodies(run); run(); });
 
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
-        var q = input.value.trim();
-        var matched = search(q);
-        if (matched.length > 0) {
-          window.location.href = matched[0].item.url;
-        } else if (q) {
-          window.open('https://www.google.com/search?q=' + encodeURIComponent('site:yejangfocus.com ' + q), '_blank');
-        }
+        e.preventDefault();
+        goSearchPage();
       } else if (e.key === 'Escape') {
         resultsBox.hidden = true;
       }
@@ -1238,6 +1234,26 @@
     document.addEventListener('click', function (e) {
       if (wrap && !wrap.contains(e.target)) resultsBox.hidden = true;
     });
+  }
+
+  // 접근성: 키보드·스크린리더 사용자가 머리말·메뉴를 건너뛰고 본문으로 바로 갈 수 있는 링크.
+  // 본문 영역(#main → main → article → .page)을 찾아 id를 달고, 포커스를 받을 때만 화면에 보인다.
+  function initSkipLink() {
+    var target = document.getElementById('main') || document.querySelector('main') ||
+      document.querySelector('article') || document.querySelector('.page');
+    if (!target || document.querySelector('.yf-skip')) return;
+    if (!target.id) target.id = 'main';
+    var st = document.createElement('style');
+    st.textContent = '.yf-skip{position:absolute;left:8px;top:-60px;z-index:1000;background:#0f1d3a;color:#fff;' +
+      'padding:10px 16px;border-radius:0 0 6px 6px;font:700 14px "Noto Sans KR",sans-serif;text-decoration:none;}' +
+      '.yf-skip:focus{top:0;outline:3px solid #ffbf47;}' +
+      ':focus-visible{outline:3px solid #ffbf47;outline-offset:2px;}';
+    document.head.appendChild(st);
+    var a = document.createElement('a');
+    a.className = 'yf-skip';
+    a.href = '#' + target.id;
+    a.textContent = '본문 바로가기';
+    document.body.insertBefore(a, document.body.firstChild);
   }
 
   // 사이트는 화이트 모드 한 가지로 고정한다. (다크 모드/전환 버튼 없음)

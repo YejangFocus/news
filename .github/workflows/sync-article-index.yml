@@ -14,6 +14,9 @@ on:
       - '!주간브리핑.html'
       - '!메인화면/**'
       - '!ETC/**'
+      - '!검색.html'
+      - '!전체/**'
+      - '!**/index.html'
   workflow_dispatch: {}   # 필요하면 Actions 탭에서 수동 실행도 가능
 
 permissions:
@@ -49,7 +52,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           # data/articles.json 외에, 스크립트가 고친 기사 HTML(og:image 등 링크
           # 미리보기 태그)과 새로 뽑아낸 이미지(assets/images, assets/og)도 함께 커밋한다.
-          git add -A -- data/articles.json data/search-index.json sitemap.xml news-sitemap.xml feed.xml assets/images assets/og '*.html'
+          git add -A -- index.html 검색.html data/articles.json data/search-index.json sitemap.xml news-sitemap.xml feed.xml assets/images assets/og '*.html'
           if git diff --cached --quiet; then
             echo "변경 없음 — 커밋 생략"
           else
