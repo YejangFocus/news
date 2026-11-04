@@ -142,3 +142,6 @@ nav.catnav .brandmark { border-right-color: var(--ch-line); }
 nav.catnav .brandmark img, .brandmark img { background: #fff; border: 1px solid var(--ch-line); }
 nav.catnav .cat-ico { background: var(--ch-chip); color: var(--ch-ink); }
 nav.catnav .cat-ico:hover, nav.catnav .cat-ico[aria-expanded="true"] { background: var(--ch-chip-on); }
+
+/* 화이트 모드 고정 */
+:root { color-scheme: light; }
