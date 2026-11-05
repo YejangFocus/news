@@ -113,10 +113,8 @@ LIST_CSS = """<style>
 
 
 def _thumb(item, cls="thumb"):
-    image = item.get("image") or DEFAULT_IMAGE
-    fallback = (not item.get("image")) or "yejang-focus-ci" in image
-    return (f'<img class="{cls}{" is-fallback" if fallback else ""}" src="{esc(image)}" '
-            f'alt="" loading="lazy" decoding="async">')
+    tag = _home_thumb(item, cls, False, "(max-width: 560px) 100vw, 200px")
+    return tag.replace(f'alt="{esc(item["title"])}"', 'alt=""')
 
 
 def _list_item(item):
@@ -212,18 +210,31 @@ def build_search_page():
 
 
 # ── 홈페이지 정적 헤드라인 (site.js renderHomepage 와 같은 마크업) ─────────────────
-def _home_thumb(item, cls):
+IMG_RE = re.compile(r"^(.*/assets/images/[^/]+?)(-640)?\.(?:jpe?g|png|webp)$", re.I)
+
+
+def _home_thumb(item, cls, eager=False, sizes="(max-width: 700px) 45vw, 260px"):
+    """site.js 의 thumbImgHtml() 과 같은 마크업(WebP srcset + 지연 로딩)."""
     image = item.get("image") or DEFAULT_IMAGE
     fallback = (not item.get("image")) or "yejang-focus-ci" in image
-    return f'<img class="{cls}{" is-fallback" if fallback else ""}" src="{esc(image)}" alt="{esc(item["title"])}">'
+    attrs = ""
+    m = None if fallback else IMG_RE.match(image)
+    if m:
+        base = m.group(1)
+        attrs = (f' srcset="{esc(base)}-640.webp 640w, {esc(base)}.webp 1600w" sizes="{sizes}"'
+                 f' onerror="this.onerror=null;this.removeAttribute(\'srcset\');this.src=\'{esc(image)}\'"')
+        image = base + ".webp"
+    load = ' fetchpriority="high"' if eager else ' loading="lazy"'
+    return (f'<img class="{cls}{" is-fallback" if fallback else ""}" src="{esc(image)}"{attrs} '
+            f'alt="{esc(item["title"])}"{load} decoding="async">')
 
 
-def _feature(item, extra_style, empty_label):
+def _feature(item, extra_style, empty_label, eager=False):
     st = f' style="{extra_style}"' if extra_style else ""
     if not item:
         return (f'<div class="feature-item"{st}><div class="body"><span class="tag" style="color:{tag_color(empty_label)};">'
                 f'{esc(empty_label)}</span></div></div>') if empty_label else ""
-    return (f'<a class="feature-item" href="{item["url"]}"{st}>{_home_thumb(item, "thumb")}<div class="body">'
+    return (f'<a class="feature-item" href="{item["url"]}"{st}>{_home_thumb(item, "thumb", eager)}<div class="body">'
             f'<span class="tag" style="color:{tag_color(item["tag"])};">{esc(item["tag"])}</span>'
             f'<h3>{esc(item["title"])}</h3>' + (f'<p>{esc(item["desc"])}</p>' if item.get("desc") else "") + "</div></a>")
 
@@ -238,7 +249,7 @@ def render_home_blocks(index):
     blocks = {}
     blocks["tickerBox"] = '<span class="sep">•</span>'.join(
         f'<a href="{a["url"]}">{esc(a["title"])}</a>' for a in index[:3])
-    blocks["heroFeature"] = _feature(latest(["특집"]), "", "특집")
+    blocks["heroFeature"] = _feature(latest(["특집"]), "", "특집", True)
     blocks["secondFeature"] = _feature(latest(["교단", "교단소식"]), "", "교단")
     blocks["thirdFeature"] = _feature(latest(["신학"]), "border-bottom:none;", "신학")
     rows = []
@@ -255,7 +266,7 @@ def render_home_blocks(index):
         f'<li><span class="num">{numerals[i]}</span><a href="{a["url"]}">{esc(a["title"])}</a></li>'
         for i, a in enumerate(index[:6]))
     blocks["modHero"] = ("" if not index else
-                         f'<a class="mod-hero" href="{index[0]["url"]}">{_home_thumb(index[0], "thumb")}'
+                         f'<a class="mod-hero" href="{index[0]["url"]}">{_home_thumb(index[0], "thumb", True, "(max-width: 700px) 100vw, 420px")}'
                          + (f'<p class="cap">{esc(index[0]["desc"])}</p>' if index[0].get("desc") else "") + "</a>")
     blocks["sideList"] = "".join(
         f'<li><a href="{a["url"]}">{_home_thumb(a, "thumb")}</a><div class="body"><a href="{a["url"]}"><h4>{esc(a["title"])}</h4></a>'
