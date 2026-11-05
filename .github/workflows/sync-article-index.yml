@@ -17,6 +17,9 @@ on:
       - '!검색.html'
       - '!전체/**'
       - '!**/index.html'
+  # 구글 뉴스 sitemap 은 최근 2일 기사만 담아야 하므로, 새 글이 없어도 매일 한 번 다시 만든다.
+  schedule:
+    - cron: '17 15 * * *'   # 매일 00:17 KST
   workflow_dispatch: {}   # 필요하면 Actions 탭에서 수동 실행도 가능
 
 permissions:
@@ -39,6 +42,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: 한글 글꼴 설치 (사진 없는 기사의 미리보기 카드용)
+        run: sudo apt-get install -y -qq fonts-nanum
 
       - name: 이미지 처리 라이브러리(Pillow) 설치
         run: pip install pillow

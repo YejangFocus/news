@@ -441,6 +441,25 @@ def _set_newsarticle_jsonld(text, rel_path, page_url, title, desc, image_url):
     return _insert_in_head(text, tag)
 
 
+BREADCRUMB_RE = re.compile(r'<script type="application/ld\+json" id="yf-breadcrumb">.*?</script>\n?', re.S)
+
+
+def _set_breadcrumb_jsonld(text, rel_path, page_url, title):
+    """홈 › 분류 › 기사 경로(BreadcrumbList)를 넣어 검색결과에 경로가 표시되게 한다."""
+    crumbs = [("예장포커스", f"{SITE_URL}/")]
+    if len(rel_path.parts) > 1:
+        crumbs.append((rel_path.parts[0], f"{SITE_URL}/{quote(rel_path.parts[0], safe='')}/"))
+    crumbs.append(((title or rel_path.stem)[:110], page_url))
+    data = {"@context": "https://schema.org", "@type": "BreadcrumbList",
+            "itemListElement": [{"@type": "ListItem", "position": i, "name": n, "item": u}
+                                for i, (n, u) in enumerate(crumbs, 1)]}
+    payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    tag = f'<script type="application/ld+json" id="yf-breadcrumb">{payload}</script>'
+    if BREADCRUMB_RE.search(text):
+        return BREADCRUMB_RE.sub(lambda m: tag + "\n", text, count=1)
+    return _insert_in_head(text, tag)
+
+
 def normalize_share_meta(full_path: Path, rel_path: Path, title: str | None, desc: str | None):
     """기사 <head>의 링크 미리보기(og:*, twitter:*, canonical) 태그를 정리한다.
 
@@ -465,6 +484,15 @@ def normalize_share_meta(full_path: Path, rel_path: Path, title: str | None, des
     else:
         og_url = f"{SITE_URL}/{OG_DEFAULT_REL}"
         index_image = DEFAULT_IMAGE_URL
+        # 사진이 없는 기사는 '분류+제목' 카드를 만들어 링크 미리보기가 기사마다 다르게 보이게 한다.
+        try:
+            import og_card
+            tag_label = rel_path.parts[0] if len(rel_path.parts) > 1 else "예장포커스"
+            card = og_card.make_card(title or rel_path.stem, tag_label, OG_DIR)
+            if card:
+                og_url = _public_url(card)
+        except Exception as e:
+            print(f"[경고] {rel_path} 미리보기 카드 생성 실패: {e}", file=sys.stderr)
 
     page_url = f"{SITE_URL}/{quote(rel_path.as_posix(), safe='/')}"
     text = original
@@ -481,7 +509,17 @@ def normalize_share_meta(full_path: Path, rel_path: Path, title: str | None, des
     if not re.search(r'<link[^>]+rel=["\']canonical["\']', text, re.I):
         text = _insert_in_head(text, f'<link rel="canonical" href="{html.escape(page_url, quote=True)}">')
 
+    pub_epoch = extract_published_time(text) or git_created_epoch(rel_path)
+    if pub_epoch:
+        text = _set_meta(text, "property", "article:published_time",
+                         datetime.fromtimestamp(pub_epoch, tz=timezone.utc).astimezone(KST).isoformat(), overwrite=False)
+    text = _set_meta(text, "property", "og:locale", "ko_KR", overwrite=False)
+    text = _set_meta(text, "property", "og:image:alt", title or rel_path.stem, overwrite=False)
+    section = rel_path.parts[0] if len(rel_path.parts) > 1 else None
+    if section:
+        text = _set_meta(text, "property", "article:section", section, overwrite=False)
     text = _set_newsarticle_jsonld(text, rel_path, page_url, title, desc, og_url)
+    text = _set_breadcrumb_jsonld(text, rel_path, page_url, title)
 
     if text != original:
         with open(full_path, "w", encoding="utf-8", newline="") as f:
@@ -604,6 +642,29 @@ STATIC_PAGES = ["", "이슈.html", "주간브리핑.html", "공지.html",
                 "메인화면/정정반론추후보도_안내.html", "메인화면/이용약관.html"]
 
 
+HOME_LD_RE = re.compile(r'<script type="application/ld\+json" id="yf-site">.*?</script>\n?', re.S)
+
+
+def write_home_jsonld():
+    """홈(index.html)에 매체(NewsMediaOrganization)와 사이트 검색창(WebSite+SearchAction) 구조화 데이터를 넣는다."""
+    path = REPO_ROOT / "index.html"
+    if not path.exists():
+        return
+    data = {"@context": "https://schema.org", "@graph": [
+        {"@type": "NewsMediaOrganization", "@id": f"{SITE_URL}/#org", "name": "예장포커스", "alternateName": "Yejang Focus",
+         "url": f"{SITE_URL}/", "logo": {"@type": "ImageObject", "url": f"{SITE_URL}/assets/images/38701da0735806f0.webp"},
+         "email": "owenpej@naver.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"},
+        {"@type": "WebSite", "@id": f"{SITE_URL}/#site", "url": f"{SITE_URL}/", "name": "예장포커스", "inLanguage": "ko-KR",
+         "publisher": {"@id": f"{SITE_URL}/#org"},
+         "potentialAction": {"@type": "SearchAction", "target": f"{SITE_URL}/%EA%B2%80%EC%83%89.html?q={{search_term_string}}",
+                             "query-input": "required name=search_term_string"}}]}
+    tag = '<script type="application/ld+json" id="yf-site">' + json.dumps(data, ensure_ascii=False).replace("</", "<\\/") + '</script>'
+    text = path.read_text(encoding="utf-8")
+    new = HOME_LD_RE.sub(lambda m: tag + "\n", text, count=1) if HOME_LD_RE.search(text) else _insert_in_head(text, tag)
+    if new != text:
+        path.write_text(new, encoding="utf-8")
+
+
 def write_sitemap_and_feed(index: list[dict], extra_pages: list[str] | None = None):
     """sitemap.xml(+구글 뉴스용 news-sitemap.xml)과 RSS(feed.xml)를 기사 목록에서 만든다."""
     from email.utils import format_datetime
@@ -653,11 +714,18 @@ def write_sitemap_and_feed(index: list[dict], extra_pages: list[str] | None = No
             f"    <item><title>{escape(item['title'])}</title><link>{link}</link>"
             f"<guid isPermaLink=\"true\">{link}</guid><category>{escape(item['tag'])}</category>"
             f"<pubDate>{format_datetime(datetime.fromisoformat(item['uploaded']))}</pubDate>"
-            f"<description>{escape(item['desc'])}</description></item>")
-    feed = ('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel>\n'
+            f"<description>{escape(item['desc'])}</description>"
+            + (f'<media:content url="{escape(item["image"])}" medium="image"/>' if item.get("image") else "")
+            + "</item>")
+    last_build = format_datetime(datetime.fromisoformat(index[0]["uploaded"])) if index else ""
+    head = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/"><channel>\n'
             f"    <title>예장포커스</title><link>{SITE_URL}/</link>\n"
+            f'    <atom:link href="{SITE_URL}/feed.xml" rel="self" type="application/rss+xml"/>\n'
             "    <description>대한예수교장로회(예장합동) 총회와 교계 소식을 전하는 교회 전문 매체</description>\n"
-            "    <language>ko</language>\n" + "\n".join(items) + "\n</channel></rss>\n")
+            "    <language>ko</language>\n"
+            + (f"    <lastBuildDate>{last_build}</lastBuildDate>\n" if last_build else ""))
+    feed = head + "\n".join(items) + "\n</channel></rss>\n"
     (REPO_ROOT / "feed.xml").write_text(feed, encoding="utf-8")
 
 
@@ -749,6 +817,7 @@ def main():
     cats += sorted({a["tag"] for a in new_index} - set(cats))
     list_pages = build_pages.build_all(new_index, cats)
     write_sitemap_and_feed(new_index, list_pages)
+    write_home_jsonld()
 
     for w in warnings:
         print(w, file=sys.stderr)
