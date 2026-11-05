@@ -76,7 +76,7 @@ ARTICLE_INDEX_PATH = REPO_ROOT / "data" / "articles.json"
 # 처음 쓸 때만 내려받는다.
 SEARCH_INDEX_PATH = REPO_ROOT / "data" / "search-index.json"
 IMAGES_DIR = REPO_ROOT / "assets" / "images"
-SITE_BASE = "https://yejangfocus.com/"
+SITE_BASE = "https://yejangfocus.com"   # 끝에 / 없음: f"{SITE_BASE}/경로" 가 주소에 //를 만들지 않게 한다
 # 카카오톡·네이버·페이스북 등이 링크 미리보기(og:*)를 만들 때 쓰는 실제 도메인(CNAME)
 SITE_URL = "https://yejangfocus.com"
 

@@ -32,7 +32,9 @@
   function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
   // ── localStorage (막혀 있어도 검색은 동작) ──────────────────────────────
-  function load(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch (e) { return []; } }
+  function load(key) {
+    try { return (JSON.parse(localStorage.getItem(key)) || []).map(function (v) { return typeof v === 'string' ? v.replace(/([^:])\/\/+/g, '$1/') : v; }); } catch (e) { return []; }
+  }
   function save(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) { /* 무시 */ } }
 
   // ── 초성 검색: 'ㅊ' 같은 초성 자모는 그 초성으로 시작하는 모든 글자에 맞는다 ──
