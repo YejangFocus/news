@@ -71,7 +71,7 @@
 
 
   /* 허브가 쓰는 색(홈·이슈 페이지의 변수 이름이 달라 여기서 보장) */
-  .focus-hub { --red: #e8322a; --amber: #ff9f1c; --doodle: #111; }
+  .focus-hub { --red: #cc2b24; --amber: #ff9f1c; --doodle: #111; }
   .fh-share {
     font: 600 12px 'Noto Sans KR', sans-serif; color: #0f1d3a; background: #ffe38a; border: none;
     border-radius: 14px; padding: 5px 12px; cursor: pointer;
@@ -96,11 +96,11 @@
   }
   .is-card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #111; }
   .is-card[aria-current="true"] { background: #ffe38a; color: #1c1a16; }
-  .is-card .k { font-size: 12px; font-weight: 700; color: #e8322a; }
+  .is-card .k { font-size: 12px; font-weight: 700; color: #cc2b24; }
   .is-card[aria-current="true"] .k { color: #7c1220; }
   .is-card h3 { margin: 6px 0 12px; font-size: 17px; line-height: 1.45; font-weight: 700; word-break: keep-all; }
   .is-card .m { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; opacity: .75; }
-  .is-card .live { color: #fff; background: #e8322a; border-radius: 8px 2px 8px 2px; padding: 0 7px; font: 400 11px/18px 'Do Hyeon', sans-serif; opacity: 1; }
+  .is-card .live { color: #fff; background: #cc2b24; border-radius: 8px 2px 8px 2px; padding: 0 7px; font: 400 11px/18px 'Do Hyeon', sans-serif; opacity: 1; }
 
 /* 기사 페이지 계열 스타일(h1·h2·h3·p·a·.tag·ul/ol)이 이슈 페이지에서 새어 들어오지 않게 허브 안쪽을 초기화 */
 .focus-hub ul, .focus-hub ol { list-style: none; margin: 0; padding: 0; }
@@ -132,10 +132,10 @@
 .br-nav button:hover:not(:disabled), .br-copy:hover { background: #ffe38a; color: #1c1a16; }
 .br-nav button:disabled { opacity: .35; cursor: default; box-shadow: none; }
 .br-week { text-align: center; }
-.br-week small { display: block; font: 400 12px 'Do Hyeon', sans-serif; color: #e8322a; }
+.br-week small { display: block; font: 400 12px 'Do Hyeon', sans-serif; color: #cc2b24; }
 .br-week b { font: 400 24px 'Do Hyeon', sans-serif; }
 .br-sum { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 16px 0 4px; }
-.br-count b { font: 400 40px/1 'Do Hyeon', sans-serif; color: #e8322a; margin-right: 4px; }
+.br-count b { font: 400 40px/1 'Do Hyeon', sans-serif; color: #cc2b24; margin-right: 4px; }
 .br-count span { font-size: 14px; font-weight: 700; }
 .br-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
 .br-chip { font-size: 12px; font-weight: 700; border: 1.5px solid; border-radius: 12px; padding: 2px 10px; }

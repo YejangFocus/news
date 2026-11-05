@@ -50,7 +50,10 @@ def abs_path(rel: str) -> str:
 def _template_parts():
     src = TEMPLATE_PAGE.read_text(encoding="utf-8")
     head = src[: src.index('<div class="meta-bar">')]
-    tail = src[src.index('  <div class="divider">'):]
+    tail = src[re.search(r'  <div class="divider"', src).start():]
+    # 템플릿 페이지의 <main> 여닫는 태그는 떼어 낸다(각 페이지 본문이 자기 <main>을 직접 넣는다).
+    head = head.replace('<main id="main">', '')
+    tail = tail.replace('</main>\n', '', 1)
     head = head.replace('"../assets/', '"/assets/')
     tail = tail.replace('"../assets/', '"/assets/').replace("window.SITE_ROOT = '../';", "window.SITE_ROOT = '/';")
     tail = tail.replace('<script src="../assets/', '<script src="/assets/')
@@ -218,7 +221,7 @@ def build_search_page():
     .yf-gl{border-left:3px solid var(--accent);padding-left:12px;margin:0 0 10px;}
     .yf-gl b{font-size:15px;}.yf-gl small{color:var(--muted);margin-left:6px;}
     .yf-gl p{margin:4px 0;font-size:13.5px;}.yf-gl .src a{font-size:12.5px;text-decoration:underline;margin-right:8px;}
-    .yf-new{display:inline-block;margin-right:5px;padding:0 5px;border-radius:3px;background:#e8322a;color:#fff;font:700 10.5px/17px 'Noto Sans KR',sans-serif;vertical-align:2px;letter-spacing:0;}
+    .yf-new{display:inline-block;margin-right:5px;padding:0 5px;border-radius:3px;background:#cc2b24;color:#fff;font:700 10.5px/17px 'Noto Sans KR',sans-serif;vertical-align:2px;letter-spacing:0;}
     .yf-new.hot{background:#111;}
   </style>
 """)

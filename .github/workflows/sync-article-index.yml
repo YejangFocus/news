@@ -6,6 +6,8 @@ on:
   push:
     branches: [main]
     paths:
+      - '원고/**'
+      - 'assets/images/**'
       - '**/*.html'
       - '!index.html'
       - '!404.html'
@@ -48,6 +50,9 @@ jobs:
 
       - name: 이미지 처리 라이브러리(Pillow) 설치
         run: pip install pillow
+
+      - name: 원고(Markdown) → 기사 HTML 생성
+        run: python3 scripts/build_articles.py
 
       - name: 이미지 최적화 (WebP 변환 + srcset·지연 로딩 반영)
         run: python3 scripts/optimize_images.py --rewrite
