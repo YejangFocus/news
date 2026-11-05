@@ -188,9 +188,11 @@ def build_search_page():
   <h1>기사 검색</h1>
   <form class="yf-sform" action="/검색.html" method="get" role="search">
     <label for="yfq" class="yf-sr">검색어</label>
-    <input id="yfq" name="q" type="search" placeholder="제목·내용 검색 (공백으로 여러 단어)" autocomplete="off">
+    <input id="yfq" name="q" type="search" placeholder="제목·내용 검색 (초성 검색 가능: ㅊㅇ)" autocomplete="off">
     <button type="submit">검색</button>
   </form>
+  <div id="yffilters" class="yf-filters" hidden></div>
+  <div id="yfextra"></div>
   <p class="subhead" id="yfsum" aria-live="polite"></p>
   <ul class="yf-list" id="yfres"></ul>
   <div id="yfpager"></div>
@@ -202,6 +204,22 @@ def build_search_page():
     .yf-sform input{flex:1;min-width:0;height:42px;padding:0 12px;border:1px solid var(--rule-soft);border-radius:3px;font:15px 'Noto Sans KR',sans-serif;background:var(--paper);color:var(--ink);}
     .yf-sform button{height:42px;padding:0 20px;border:0;border-radius:3px;background:var(--accent);color:#fff;font:700 14px 'Noto Sans KR',sans-serif;cursor:pointer;}
     .yf-list mark{background:#ffe38a;color:#1c1a16;border-radius:2px;padding:0 1px;}
+    .yf-filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:12px 0 4px;font:13px 'Noto Sans KR',sans-serif;}
+    .yf-filters[hidden]{display:none;}
+    .yf-chips{display:flex;flex-wrap:wrap;gap:6px;}
+    .yf-chip{padding:4px 11px;border:1px solid var(--rule-soft);border-radius:16px;background:var(--paper);color:var(--ink);font:inherit;cursor:pointer;}
+    .yf-chip.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+    .yf-filters select{height:30px;padding:0 8px;border:1px solid var(--rule-soft);border-radius:3px;background:var(--paper);color:var(--ink);font:inherit;}
+    .yf-box2{margin:14px 0;padding:12px 14px;border:1px solid var(--rule-soft);border-radius:6px;font:14px/1.6 'Noto Sans KR',sans-serif;}
+    .yf-box2 h2{margin:0 0 8px;font-size:13px;font-weight:700;color:var(--muted);}
+    .yf-box2 .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+    .yf-box2 .row a{padding:3px 10px;border:1px solid var(--rule-soft);border-radius:14px;color:var(--ink);}
+    .yf-box2 button.clr{margin-left:auto;border:0;background:none;color:var(--muted);font:inherit;font-size:12px;cursor:pointer;text-decoration:underline;}
+    .yf-gl{border-left:3px solid var(--accent);padding-left:12px;margin:0 0 10px;}
+    .yf-gl b{font-size:15px;}.yf-gl small{color:var(--muted);margin-left:6px;}
+    .yf-gl p{margin:4px 0;font-size:13.5px;}.yf-gl .src a{font-size:12.5px;text-decoration:underline;margin-right:8px;}
+    .yf-new{display:inline-block;margin-right:5px;padding:0 5px;border-radius:3px;background:#e8322a;color:#fff;font:700 10.5px/17px 'Noto Sans KR',sans-serif;vertical-align:2px;letter-spacing:0;}
+    .yf-new.hot{background:#111;}
   </style>
 """)
     doc = page_shell("기사 검색", "예장포커스 기사를 제목과 본문에서 검색합니다.", "검색.html", body, noindex=True,

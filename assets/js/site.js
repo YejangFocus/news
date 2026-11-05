@@ -44,6 +44,7 @@
       renderFocusHub(articles);
       initArticleExtras(articles);
       renderBriefing(articles);
+      initBadges(articles);
     })
     .catch(function (err) {
       console.error('기사 목록(articles.json)을 불러오지 못했습니다.', err);
@@ -257,6 +258,49 @@
     for (var i = 0; i < ARTICLE_INDEX.length; i++) if (tail(ARTICLE_INDEX[i].url) === here) { cur = ARTICLE_INDEX[i]; break; }
     if (!cur) return;
 
+    // 읽은 기사 기록(목록에서 흐리게 표시)
+    var rd = lsGet('yf-read');
+    if (rd.indexOf(cur.url) === -1) { rd.unshift(cur.url); lsSet('yf-read', rd.slice(0, 200)); }
+
+    // 예상 읽기 시간 + 글자 크기 조절을 상단 메타 바에 붙인다.
+    var meta = document.querySelector('.meta-bar');
+    var chars = (page.innerText || '').replace(/\s+/g, '').length;
+    var STEPS = [0.9, 1, 1.12, 1.25, 1.4], fsIdx = 1;
+    try { var sv = parseInt(localStorage.getItem('yf-fs'), 10); if (sv >= 0 && sv < STEPS.length) fsIdx = sv; } catch (e) { /* 무시 */ }
+    var TEXT_SEL = 'p,li,h2,h3,blockquote,figcaption,.lede,.subhead,td,th';
+    function applyFs() {
+      var els = page.querySelectorAll(TEXT_SEL);
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        if (el.closest('.yf-end,.yf-top,nav,footer,.meta-bar')) continue;
+        el.style.fontSize = '';
+        if (STEPS[fsIdx] !== 1) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * STEPS[fsIdx]) + 'px';
+      }
+      var lab = document.getElementById('yfFsLab');
+      if (lab) lab.textContent = fsIdx === 1 ? '보통' : Math.round(STEPS[fsIdx] * 100) + '%';
+    }
+    if (meta) {
+      var tools = document.createElement('span');
+      tools.className = 'yf-tools';
+      tools.innerHTML = '약 ' + Math.max(1, Math.round(chars / 500)) + '분 읽기 · 글자 ' +
+        '<button type="button" data-fs="-1" aria-label="글자 작게">가-</button>' +
+        '<span id="yfFsLab" aria-live="polite">보통</span>' +
+        '<button type="button" data-fs="1" aria-label="글자 크게">가+</button>';
+      meta.appendChild(tools);
+      var fcss = document.createElement('style');
+      fcss.textContent = '.yf-tools button{font:700 12px "Noto Sans KR",sans-serif;margin:0 4px;padding:1px 8px;border:1px solid var(--rule-soft,#ccc);' +
+        'border-radius:10px;background:var(--paper,#fff);color:var(--ink,#111);cursor:pointer}.yf-tools button:hover{border-color:#e8322a}';
+      document.head.appendChild(fcss);
+      tools.addEventListener('click', function (e) {
+        var b = e.target.closest ? e.target.closest('button[data-fs]') : null;
+        if (!b) return;
+        fsIdx = Math.min(STEPS.length - 1, Math.max(0, fsIdx + parseInt(b.dataset.fs, 10)));
+        try { localStorage.setItem('yf-fs', String(fsIdx)); } catch (e2) { /* 무시 */ }
+        applyFs();
+      });
+      if (fsIdx !== 1) applyFs();
+    }
+
     var css = document.createElement('style');
     css.textContent =
       '.yf-progress{position:fixed;left:0;top:0;height:4px;width:100%;z-index:1000;background:transparent;pointer-events:none}' +
@@ -322,9 +366,10 @@
     var end = document.createElement('div');
     end.className = 'yf-end';
     end.innerHTML = '<div class="yf-share"><b>이 기사 공유하기</b>' +
-      '<button type="button" data-a="share">공유</button><button type="button" data-a="copy">링크 복사</button>' +
+      '<button type="button" data-a="mark">☆ 저장</button><button type="button" data-a="share">공유</button><button type="button" data-a="copy">링크 복사</button>' +
       '<button type="button" data-a="fb">페이스북</button><button type="button" data-a="x">X</button><button type="button" data-a="band">밴드</button></div><div class="yf-slot"></div>';
     page.appendChild(end);
+    if (lsGet('yf-bookmarks').indexOf(cur.url) !== -1) end.querySelector('[data-a="mark"]').textContent = '★ 저장됨';
     end.addEventListener('click', function (e) {
       var b = e.target.closest ? e.target.closest('button[data-a]') : null;
       if (!b) return;
@@ -332,6 +377,13 @@
         var done = function () { var o = b.textContent; b.textContent = '복사됨 ✓'; setTimeout(function () { b.textContent = o; }, 1800); };
         if (navigator.clipboard) navigator.clipboard.writeText(shareUrl).then(done, function () { window.prompt('링크를 복사하세요', shareUrl); });
         else window.prompt('링크를 복사하세요', shareUrl);
+      }
+      if (b.dataset.a === 'mark') {
+        var bm = lsGet('yf-bookmarks'), at = bm.indexOf(cur.url);
+        if (at === -1) bm.unshift(cur.url); else bm.splice(at, 1);
+        lsSet('yf-bookmarks', bm.slice(0, 100));
+        b.textContent = at === -1 ? '★ 저장됨' : '☆ 저장';
+        return;
       }
       var q = encodeURIComponent(shareUrl), t = encodeURIComponent(cur.title);
       var out = { fb: 'https://www.facebook.com/sharer/sharer.php?u=' + q,
@@ -378,6 +430,50 @@
           '<a class="yf-more" href="' + esc(link) + '">이슈 타임라인 전체 보기 〉</a></div>';
       })
       .catch(renderRelated);
+  }
+
+  // ── 배지(NEW·속보·단독)와 읽은 기사 표시 ───────────────────────────────────
+  // NEW = 업로드 24시간 이내. 속보·단독 등은 기사 <head>의 <meta name="yf-badge" content="속보">가
+  // articles.json 의 badge 필드로 들어온 값이다. 목록 곳곳(홈·카테고리·검색·티커)에 같은 방식으로 붙는다.
+  function lsGet(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch (e) { return []; } }
+  function lsSet(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) { /* 무시 */ } }
+  function pathTail(u) {
+    var seg = (u || '').split('?')[0].split('#')[0].split('/').filter(Boolean).slice(-2).join('/');
+    try { return decodeURIComponent(seg); } catch (e) { return seg; }
+  }
+  function initBadges(articles) {
+    var st = document.createElement('style');
+    st.textContent = '.yf-new{display:inline-block;margin-right:5px;padding:0 5px;border-radius:3px;background:#e8322a;color:#fff;' +
+      'font:700 10.5px/17px "Noto Sans KR",sans-serif;vertical-align:2px;letter-spacing:0}.yf-new.hot{background:#111}' +
+      '.yf-read{opacity:.62}';
+    document.head.appendChild(st);
+    var byTail = {};
+    articles.forEach(function (a) { byTail[pathTail(a.url)] = a; });
+    var SEL = '.feature-item h3,.side-list h4,#tickerBox a,#numList a,#plainList a,.yf-list h2,.aa-list a,.headline h3';
+    var busy = false;
+    function apply() {
+      busy = true;
+      var read = lsGet('yf-read');
+      document.querySelectorAll(SEL).forEach(function (el) {
+        var link = el.tagName === 'A' ? el : (el.closest ? el.closest('a') : null);
+        var a = link && byTail[pathTail(link.getAttribute('href'))];
+        if (!a) return;
+        if (read.indexOf(a.url) !== -1) el.classList.add('yf-read');
+        if (el.querySelector('.yf-new')) return;
+        var label = a.badge || ((Date.now() - (Date.parse(a.uploaded) || 0)) < 86400000 && Date.parse(a.uploaded) ? 'NEW' : '');
+        if (!label) return;
+        var b = document.createElement('span');
+        b.className = 'yf-new' + (label === 'NEW' ? '' : ' hot');
+        b.textContent = label;
+        el.insertBefore(b, el.firstChild);
+      });
+      busy = false;
+    }
+    window.__yfBadges = apply;
+    apply();
+    // 전체 기사 오버레이처럼 나중에 그려지는 목록에도 붙인다.
+    var ov = document.getElementById('allArticlesList');
+    if (ov && window.MutationObserver) new MutationObserver(function () { if (!busy) apply(); }).observe(ov, { childList: true });
   }
 
   // 인물·규정 팝업 카드: data/glossary.json에 적힌 용어가 기사 본문에 나오면 "처음 나온 한 곳"만

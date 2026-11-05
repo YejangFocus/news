@@ -783,7 +783,10 @@ def main():
 
         search_index[url] = extract_body_text(html_text)
 
-        new_index.append({
+        # 기사 <head>에 <meta name="yf-badge" content="속보"> 를 넣으면 목록에 그 배지가 붙는다(속보·단독 등).
+        badge = (_meta_content(html_text, "yf-badge", "name") or "").strip()[:6]
+
+        entry = {
             "tag": tag,
             "title": title,
             "url": url,
@@ -792,7 +795,10 @@ def main():
             "date": datetime.fromtimestamp(uploaded, tz=timezone.utc).astimezone(KST).strftime("%Y-%m-%d"),
             "uploaded": datetime.fromtimestamp(uploaded, tz=timezone.utc).astimezone(KST).isoformat(),
             "_sort_key": (uploaded, published),
-        })
+        }
+        if badge:
+            entry["badge"] = badge
+        new_index.append(entry)
 
     # 최신에 업로드된 기사가 맨 위로 오도록 정렬
     new_index.sort(key=lambda x: x["_sort_key"], reverse=True)
