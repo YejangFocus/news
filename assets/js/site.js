@@ -4,6 +4,9 @@
 (function () {
   var root = typeof window.SITE_ROOT === 'string' ? window.SITE_ROOT : '';
 
+  // 독자 확보·운영 기능(PWA·통계·구독 안내·제보 링크)은 별도 파일에서 불러온다.
+  (function () { var s = document.createElement('script'); s.src = root + 'assets/js/reader.js'; s.defer = true; document.head.appendChild(s); })();
+
   // 태그(카테고리)별 강조색과 이스케이프는 전체 기사 목록·홈페이지 썸네일에서
   // 공통으로 쓰므로 한 곳에서 관리한다.
   var TAG_COLOR = {
@@ -369,6 +372,8 @@
       '<button type="button" data-a="mark">☆ 저장</button><button type="button" data-a="share">공유</button><button type="button" data-a="copy">링크 복사</button>' +
       '<button type="button" data-a="fb">페이스북</button><button type="button" data-a="x">X</button><button type="button" data-a="band">밴드</button></div><div class="yf-slot"></div>';
     page.appendChild(end);
+    window.__yfArticle = { cur: cur, end: end, page: page };
+    document.dispatchEvent(new CustomEvent('yf:article'));
     if (lsGet('yf-bookmarks').indexOf(cur.url) !== -1) end.querySelector('[data-a="mark"]').textContent = '★ 저장됨';
     end.addEventListener('click', function (e) {
       var b = e.target.closest ? e.target.closest('button[data-a]') : null;
@@ -382,9 +387,11 @@
         var bm = lsGet('yf-bookmarks'), at = bm.indexOf(cur.url);
         if (at === -1) bm.unshift(cur.url); else bm.splice(at, 1);
         lsSet('yf-bookmarks', bm.slice(0, 100));
+        if (window.yfTrack && at === -1) window.yfTrack('bookmark', { label: cur.tag });
         b.textContent = at === -1 ? '★ 저장됨' : '☆ 저장';
         return;
       }
+      if (window.yfTrack) window.yfTrack('share', { label: b.dataset.a });
       var q = encodeURIComponent(shareUrl), t = encodeURIComponent(cur.title);
       var out = { fb: 'https://www.facebook.com/sharer/sharer.php?u=' + q,
         x: 'https://twitter.com/intent/tweet?url=' + q + '&text=' + t,

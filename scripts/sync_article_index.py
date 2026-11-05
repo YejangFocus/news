@@ -639,7 +639,7 @@ def load_existing_index() -> list[dict]:
 STATIC_PAGES = ["", "이슈.html", "주간브리핑.html", "공지.html",
                 "메인화면/예장포커스_매체소개.html", "메인화면/예장포커스_개인정보취급방침.html",
                 "메인화면/저작권보호정책.html", "메인화면/청소년보호정책.html",
-                "메인화면/정정반론추후보도_안내.html", "메인화면/이용약관.html"]
+                "메인화면/정정반론추후보도_안내.html", "메인화면/기사제보.html", "메인화면/이용약관.html"]
 
 
 HOME_LD_RE = re.compile(r'<script type="application/ld\+json" id="yf-site">.*?</script>\n?', re.S)

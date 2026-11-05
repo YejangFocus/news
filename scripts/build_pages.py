@@ -306,9 +306,76 @@ def inject_home(index):
         path.write_text(text, encoding="utf-8")
 
 
+def build_tip_page():
+    """기사 제보 · 정정/반론/추후보도 청구 폼 (메인화면/기사제보.html)."""
+    body = """
+  <main id="main">
+  <span class="tag">독자 참여</span>
+  <h1>기사 제보 · 정정 요청</h1>
+  <p class="subhead">제보와 잘못된 내용 신고를 받습니다. 정정·반론·추후보도 청구는 <a href="/메인화면/정정반론추후보도_안내.html" style="text-decoration:underline;">절차 안내</a>를 함께 확인해 주세요.</p>
+  <form id="tipForm" class="yf-tip" novalidate>
+    <label for="tip-type">종류</label>
+    <select id="tip-type" name="type">
+      <option>기사 제보</option><option>정정 요청</option><option>정정보도 청구</option>
+      <option>반론보도 청구</option><option>추후보도 청구</option><option>기타 문의</option>
+    </select>
+    <label for="tip-url">관련 기사 주소 <small>(해당하는 경우)</small></label>
+    <input id="tip-url" name="url" type="url" placeholder="https://yejangfocus.com/…" autocomplete="off">
+    <label for="tip-message">내용</label>
+    <textarea id="tip-message" name="message" rows="8" required placeholder="언제, 어디서, 어떤 일이 있었는지 구체적으로 적어 주세요. 정정 요청은 바로잡을 부분과 근거를 함께 적어 주세요."></textarea>
+    <p id="tipClaimNote" class="note" hidden>청구는 청구인의 성명, 주소, 연락처가 있어야 접수됩니다. 대리인이 청구하는 경우 위임장을 이메일로 따로 보내 주세요.</p>
+    <label for="tip-name">이름 <span class="req" hidden>(필수)</span> <small>(제보는 익명 가능)</small></label>
+    <input id="tip-name" name="name" type="text" autocomplete="name">
+    <label for="tip-contact">연락처(이메일 또는 전화) <span class="req" hidden>(필수)</span> <small>(회신이 필요할 때)</small></label>
+    <input id="tip-contact" name="contact" type="text" autocomplete="email">
+    <label for="tip-address">주소 <span class="req" hidden>(필수)</span> <small>(청구인만)</small></label>
+    <input id="tip-address" name="address" type="text" autocomplete="street-address">
+    <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;">
+    <p class="note">입력하신 이름·연락처·주소는 접수 확인과 회신, 청구 처리 목적으로만 쓰이며 처리가 끝난 뒤 지체 없이 파기합니다(법령에 따른 보관 의무가 있는 경우 제외). 제보자의 신원은 본인 동의 없이 공개하지 않습니다.</p>
+    <label class="chk"><input type="checkbox" name="agree" required> 위 개인정보 수집·이용에 동의합니다.</label>
+    <button type="submit">보내기</button>
+    <p id="tipOut" class="out" aria-live="polite"></p>
+  </form>
+  <noscript><p class="yf-empty">폼을 쓰려면 자바스크립트를 켜 주세요. 이메일로 보내셔도 됩니다: <a href="mailto:owenpej@naver.com">owenpej@naver.com</a></p></noscript>
+  </main>
+  <style>
+    .yf-tip{display:flex;flex-direction:column;gap:6px;margin:18px 0 28px;max-width:640px;font-family:'Noto Sans KR',sans-serif;position:relative;}
+    .yf-tip label{font-size:13.5px;font-weight:700;margin-top:8px;}
+    .yf-tip label small,.yf-tip label .req{font-weight:400;color:var(--muted);font-size:12px;}
+    .yf-tip label .req{color:#b91c2b;font-weight:700;}
+    .yf-tip input[type=text],.yf-tip input[type=url],.yf-tip select,.yf-tip textarea{padding:10px 12px;border:1px solid var(--rule-soft);border-radius:3px;font:15px 'Noto Sans KR',sans-serif;background:var(--paper);color:var(--ink);}
+    .yf-tip textarea{resize:vertical;line-height:1.6;}
+    .yf-tip .note{margin:6px 0 0;font-size:12.5px;line-height:1.6;color:var(--muted);}
+    .yf-tip .chk{display:flex;align-items:center;gap:8px;font-weight:500;}
+    .yf-tip button{align-self:flex-start;margin-top:10px;height:44px;padding:0 28px;border:0;border-radius:3px;background:var(--accent);color:#fff;font:700 15px 'Noto Sans KR',sans-serif;cursor:pointer;}
+    .yf-tip button:disabled{opacity:.6;cursor:default;}
+    .yf-tip .out{margin:10px 0 0;font-size:14px;line-height:1.6;}
+    .yf-tip .out a{text-decoration:underline;}
+  </style>
+"""
+    doc = page_shell("기사 제보 · 정정 요청", "예장포커스에 기사 제보와 정정·반론·추후보도 청구를 접수합니다.",
+                     "메인화면/기사제보.html", body, extra_script='<script src="/assets/js/tip-form.js" defer></script>\n')
+    (REPO_ROOT / "메인화면" / "기사제보.html").write_text(doc, encoding="utf-8")
+
+
+def build_offline_page():
+    """오프라인일 때 서비스워커가 보여 주는 안내 페이지."""
+    body = """
+  <main id="main" style="text-align:center;padding:60px 0;">
+  <h1>인터넷에 연결되어 있지 않습니다</h1>
+  <p class="subhead">연결이 돌아오면 최신 기사를 볼 수 있습니다. 이전에 열어 본 기사는 연결 없이도 다시 볼 수 있습니다.</p>
+  <p><a href="/" style="text-decoration:underline;">첫 화면으로</a></p>
+  </main>
+"""
+    doc = page_shell("오프라인", "인터넷 연결이 없습니다.", "메인화면/offline.html", body, noindex=True)
+    (REPO_ROOT / "메인화면" / "offline.html").write_text(doc, encoding="utf-8")
+
+
 def build_all(index, categories):
     """생성한 목록 페이지 경로들을 돌려준다(sitemap 에 넣기 위해)."""
     written = build_list_pages(index, categories)
     build_search_page()
+    build_tip_page()
+    build_offline_page()
     inject_home(index)
     return written

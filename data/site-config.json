@@ -1,0 +1,26 @@
+{
+  "_설명": "운영 설정 파일입니다. 비워 두면 해당 기능은 꺼진 상태(또는 이메일 방식)로 동작합니다. 값만 채우고 저장하면 사이트 전체에 반영됩니다.",
+  "analytics": {
+    "_설명": "provider: ga4 | goatcounter | naver. id: GA4 측정 ID(G-XXXXXXX) / GoatCounter 코드 / 네이버 애널리틱스 사이트 ID. 켜면 개인정보처리방침에 방문 통계 수집 안내를 넣어 주세요.",
+    "provider": "",
+    "id": ""
+  },
+  "newsletter": {
+    "_설명": "구독 페이지 주소(예: 스티비 구독 페이지). 비워 두면 구독 신청 이메일(mailto)로 연결됩니다.",
+    "url": "",
+    "email": "owenpej@naver.com"
+  },
+  "kakaoChannel": "",
+  "form": {
+    "_설명": "제보·정정 청구 폼의 전송 주소(예: Formspree https://formspree.io/f/xxxxxxx). 비워 두면 작성 내용이 담긴 이메일 작성창이 열립니다.",
+    "endpoint": "",
+    "email": "owenpej@naver.com"
+  },
+  "giscus": {
+    "_설명": "기사 하단 의견란(giscus). GitHub 저장소의 Discussions를 켠 뒤 giscus.app 에서 나온 값 4개를 채우면 켜집니다. 교단 이슈는 민감하니 운영 방침을 정한 뒤 켜세요.",
+    "repo": "",
+    "repoId": "",
+    "category": "",
+    "categoryId": ""
+  }
+}
