@@ -84,6 +84,13 @@ def rewrite_html() -> int:
         out = re.sub(r"<figure\b.*?</figure>",
                      lambda fm: IMG_RE.sub(lambda m: rewrite_tag(m.group(0), page, False), fm.group(0)),
                      text, flags=re.S)
+        # width/height 속성을 넣으면 CSS 에 height:auto 가 없는 `figure img{width:100%}` 는 이미지가 세로로 늘어난다.
+        def _auto_h(m):
+            body = m.group(2)
+            if re.search(r"(^|[;\s])height\s*:", body) or "aspect-ratio" in body:
+                return m.group(0)
+            return m.group(1) + body.rstrip().rstrip(";") + "; height:auto;}"
+        out = re.sub(r"(figure\s+img[^{}]*\{)([^{}]*)\}", _auto_h, out)
         if out != text:
             page.write_text(out, encoding="utf-8")
             changed += 1
