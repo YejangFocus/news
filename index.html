@@ -329,6 +329,17 @@
   .ticker-box a { color: var(--ink); }
   .ticker-box a:hover { color: var(--navy); }
   .ticker-box .sep { color: var(--ink-faint); flex: none; }
+  /* 최신뉴스가 오른쪽에서 왼쪽으로 흐르는 전광판 모드 */
+  .ticker-track {
+    display: inline-flex; align-items: center; gap: 10px; flex: none;
+    padding-left: 100%; animation: ticker-scroll 45s linear infinite;
+  }
+  .ticker-box:hover .ticker-track, .ticker-box:focus-within .ticker-track { animation-play-state: paused; }
+  @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-box { overflow-x: auto; }
+    .ticker-track { padding-left: 0; animation: none; }
+  }
 
   /* left column: featured article (image + title + summary) */
   .feature-item { display: flex; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--hair); }
@@ -897,7 +908,7 @@
     <div class="col-main">
       <div class="ticker-bar">
         <span class="ticker-badge">최신뉴스</span>
-        <div class="ticker-box" id="tickerBox"><!--yf:tickerBox--><a href="https://yejangfocus.com/목회/나눔과섬김의교회_40일천국잔치.html">40일 천국잔치 6일째, 다음세대가 강단을 채운 새벽</a><span class="sep">•</span><a href="https://yejangfocus.com/사설/261029_기자회견.html">‘법대로’ 외치며 결과 승복은 유보… 당선무효 기자회견, 스스로 무너뜨린 논리</a><span class="sep">•</span><a href="https://yejangfocus.com/특집/2026_8개노회_체육대회_결산_기사.html">&quot;때가 이르매 거두리라&quot; 대구 8개 노회 목회자 한마당… 대경노회 우승기 품었다</a><!--/yf:tickerBox--></div>
+        <div class="ticker-box"><div class="ticker-track" id="tickerBox"><!--yf:tickerBox--><a href="https://yejangfocus.com/목회/나눔과섬김의교회_40일천국잔치.html">40일 천국잔치 6일째, 다음세대가 강단을 채운 새벽</a><span class="sep">•</span><a href="https://yejangfocus.com/사설/261029_기자회견.html">‘법대로’ 외치며 결과 승복은 유보… 당선무효 기자회견, 스스로 무너뜨린 논리</a><span class="sep">•</span><a href="https://yejangfocus.com/특집/2026_8개노회_체육대회_결산_기사.html">&quot;때가 이르매 거두리라&quot; 대구 8개 노회 목회자 한마당… 대경노회 우승기 품었다</a><!--/yf:tickerBox--></div></div>
       </div>
       <div id="heroFeature" class="hero-slot"><!--yf:heroFeature--><a class="feature-item" href="https://yejangfocus.com/특집/2026_8개노회_체육대회_결산_기사.html"><img class="thumb" src="https://yejangfocus.com/assets/images/a24c46b8fc33c3f7.webp" srcset="https://yejangfocus.com/assets/images/a24c46b8fc33c3f7-640.webp 640w, https://yejangfocus.com/assets/images/a24c46b8fc33c3f7.webp 1600w" sizes="(max-width: 700px) 45vw, 260px" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='https://yejangfocus.com/assets/images/a24c46b8fc33c3f7.jpg'" alt="&quot;때가 이르매 거두리라&quot; 대구 8개 노회 목회자 한마당… 대경노회 우승기 품었다" fetchpriority="high" decoding="async"><div class="body"><span class="tag" style="color:var(--pine);">특집</span><h3>&quot;때가 이르매 거두리라&quot; 대구 8개 노회 목회자 한마당… 대경노회 우승기 품었다</h3><p>제29회 대구지역 8개 노회 목회자 친선체육대회가 10월 29일 대구복합스포츠타운 시민체육관에서 열렸다. 반년 넘게 손발을 맞춘 준비위원회의 촘촘한 팀워크 속에 예배부터 시상식까지 하루 일정이 순조롭게 이어졌다.</p></div></a><!--/yf:heroFeature--></div>
       <div class="card-pair">
