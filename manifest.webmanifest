@@ -1,0 +1,20 @@
+{
+  "name": "예장포커스",
+  "short_name": "예장포커스",
+  "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 전하는 교회 전문 매체",
+  "lang": "ko",
+  "start_url": "/?utm_source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16294f",
+  "icons": [
+    { "src": "/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "기사 검색", "url": "/%EA%B2%80%EC%83%89.html", "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "주간 브리핑", "url": "/%EC%A3%BC%EA%B0%84%EB%B8%8C%EB%A6%AC%ED%95%91.html", "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
