@@ -74,7 +74,7 @@
       var snip = inTitle ? (a.desc || '') : (snippet(bodies[a.url] || '', ts) || a.desc || '');
       var fallback = !a.image || a.image.indexOf('yejang-focus-ci') !== -1;
       return '<li><a href="' + esc(a.url) + '" aria-hidden="true" tabindex="-1"><img class="thumb' + (fallback ? ' is-fallback' : '') +
-        '" src="' + esc(a.image || '/assets/images/yejang-focus-ci.webp') + '" alt="" loading="lazy"></a><div>' +
+        '" src="' + esc(a.image || '/assets/images/yejang-focus-ci.webp') + '" alt="" loading="lazy" decoding="async"></a><div>' +
         '<span class="tg">' + esc(a.tag) + '</span>' +
         '<a href="' + esc(a.url) + '"><h2>' + highlight(a.title, ts) + '</h2></a>' +
         (snip ? '<p>' + highlight(snip, ts) + '</p>' : '') +

@@ -322,7 +322,8 @@
     var end = document.createElement('div');
     end.className = 'yf-end';
     end.innerHTML = '<div class="yf-share"><b>이 기사 공유하기</b>' +
-      '<button type="button" data-a="share">공유</button><button type="button" data-a="copy">링크 복사</button></div><div class="yf-slot"></div>';
+      '<button type="button" data-a="share">공유</button><button type="button" data-a="copy">링크 복사</button>' +
+      '<button type="button" data-a="fb">페이스북</button><button type="button" data-a="x">X</button><button type="button" data-a="band">밴드</button></div><div class="yf-slot"></div>';
     page.appendChild(end);
     end.addEventListener('click', function (e) {
       var b = e.target.closest ? e.target.closest('button[data-a]') : null;
@@ -332,6 +333,11 @@
         if (navigator.clipboard) navigator.clipboard.writeText(shareUrl).then(done, function () { window.prompt('링크를 복사하세요', shareUrl); });
         else window.prompt('링크를 복사하세요', shareUrl);
       }
+      var q = encodeURIComponent(shareUrl), t = encodeURIComponent(cur.title);
+      var out = { fb: 'https://www.facebook.com/sharer/sharer.php?u=' + q,
+        x: 'https://twitter.com/intent/tweet?url=' + q + '&text=' + t,
+        band: 'https://band.us/plugin/share?body=' + t + '%0A' + q + '&route=' + encodeURIComponent(location.hostname) }[b.dataset.a];
+      if (out) { window.open(out, '_blank', 'noopener,width=640,height=560'); return; }
       if (b.dataset.a === 'share' && navigator.share) navigator.share({ title: cur.title, url: shareUrl }).catch(function () {});
       else copy();
     });
@@ -989,11 +995,23 @@
     // object-fit:contain으로 전체가 보이게 따로 처리한다.
     var DEFAULT_IMAGE = root + 'assets/images/yejang-focus-ci.webp';
 
-    function thumbImgHtml(item, cls) {
+    // assets/images 의 사진은 scripts/optimize_images.py 가 만든 WebP(foo.webp, foo-640.webp)로 보여 준다.
+    // 변형이 없으면 onerror 로 원본 주소로 되돌린다. 첫 화면 큰 사진(eager)만 즉시, 나머지는 지연 로딩.
+    function thumbImgHtml(item, cls, eager, sizes) {
       var isFallback = !item.image || item.image.indexOf('yejang-focus-ci') !== -1;
       var src = item.image || DEFAULT_IMAGE;
       var extra = isFallback ? ' is-fallback' : '';
-      return '<img class="' + cls + extra + '" src="' + esc(src) + '" alt="' + esc(item.title) + '">';
+      var attrs = '';
+      var m = !isFallback && src.match(/^(.*\/assets\/images\/[^\/]+?)(-640)?\.(jpe?g|png|webp)$/i);
+      if (m) {
+        var base = m[1];
+        attrs = ' srcset="' + esc(base + '-640.webp') + ' 640w, ' + esc(base + '.webp') + ' 1600w"' +
+          ' sizes="' + (sizes || '(max-width: 700px) 45vw, 260px') + '"' +
+          ' onerror="this.onerror=null;this.removeAttribute(\'srcset\');this.src=\'' + esc(src) + '\'"';
+        src = base + '.webp';
+      }
+      return '<img class="' + cls + extra + '" src="' + esc(src) + '"' + attrs + ' alt="' + esc(item.title) + '"' +
+        (eager ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async">';
     }
     if (!ARTICLE_INDEX.length) {
       tickerBox.innerHTML = '<span style="color:var(--ink-faint);">아직 등록된 기사가 없습니다.</span>';
@@ -1013,14 +1031,14 @@
       }).slice(0, count);
     }
 
-    function featureItemHtml(item, extraStyle, emptyLabel) {
+    function featureItemHtml(item, extraStyle, emptyLabel, eager) {
       if (!item) {
         return emptyLabel ? '<div class="feature-item"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
           '<div class="body"><span class="tag" style="color:' + tagColor(emptyLabel) + ';">' + esc(emptyLabel) + '</span></div></div>' : '';
       }
       return '' +
         '<a class="feature-item" href="' + item.url + '"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
-          thumbImgHtml(item, 'thumb') +
+          thumbImgHtml(item, 'thumb', eager) +
           '<div class="body">' +
             '<span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
             '<h3>' + esc(item.title) + '</h3>' +
@@ -1036,7 +1054,7 @@
     var heroEl = document.getElementById('heroFeature');
     var secondEl = document.getElementById('secondFeature');
     var thirdEl = document.getElementById('thirdFeature');
-    if (heroEl) heroEl.innerHTML = featureItemHtml(hero, '', '특집');
+    if (heroEl) heroEl.innerHTML = featureItemHtml(hero, '', '특집', true);
     if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '교단');
     if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;', '신학');
 
@@ -1074,7 +1092,7 @@
     if (modHero && topThree[0]) {
       modHero.innerHTML =
         '<a class="mod-hero" href="' + topThree[0].url + '">' +
-          thumbImgHtml(topThree[0], 'thumb') +
+          thumbImgHtml(topThree[0], 'thumb', true, '(max-width: 700px) 100vw, 420px') +
           (topThree[0].desc ? '<p class="cap">' + esc(topThree[0].desc) + '</p>' : '') +
         '</a>';
     }
