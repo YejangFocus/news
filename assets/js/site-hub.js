@@ -21,7 +21,11 @@
       .then(function (issues) {
         var list = prepareIssues(issues, ARTICLE_INDEX);
         if (!list.length) return;
-        if (hub) buildHub(hub, list);
+        if (hub) {
+          // 홈 탭에서는 30일 넘은 '지난 이슈'를 뺀다(이슈 페이지에는 그대로 남는다). 전부 지난 이슈면 목록 그대로 쓴다.
+          var active = list.filter(function (x) { return issueStats(x).state !== 'past'; });
+          buildHub(hub, active.length ? active : list);
+        }
         if (detail) buildIssuePage(detail, list);
       })
       .catch(function (err) { console.error('이슈 목록(issues.json)을 불러오지 못했습니다.', err); });
@@ -34,7 +38,9 @@
       span: Math.max(dayNum(last) - dayNum(first), 0) + 1,
       ago: ago,
       agoText: ago === 0 ? '오늘' : ago + '일 전',
-      recent: ago <= 7
+      recent: ago <= 7,
+      // 자동 3단계: 7일 이내 진행 중 / 8~30일 최근 이슈 / 30일 초과 지난 이슈
+      state: ago <= 7 ? 'live' : (ago <= 30 ? 'recent' : 'past')
     };
   }
 
@@ -67,7 +73,7 @@
 
     return '<div class="fh-card">' +
       '<div class="fh-top"><span class="fh-badge">' + (opts.page ? '이슈 타임라인' : '오늘의 포커스') + '</span>' +
-      (st.recent ? '<span class="fh-live">진행 중인 이슈</span>' : '') + tabs + right + '</div>' +
+      (st.recent ? '<span class="fh-live">진행 중인 이슈</span>' : (opts.page ? '<span class="fh-state">' + (st.state === 'past' ? '지난 이슈' : '최근 이슈') + '</span>' : '')) + tabs + right + '</div>' +
       '<div class="fh-body">' +
         '<div><div class="fh-kicker">' + esc(is.kicker) + '</div>' +
         '<h2 class="fh-title">' + (opts.page ? esc(is.title) : '<a href="' + esc(link) + '">' + esc(is.title) + '</a>') + '</h2>' +
@@ -138,7 +144,7 @@
         var st = issueStats(x);
         return '<button type="button" class="is-card" data-i="' + i + '"' + (i === current ? ' aria-current="true"' : '') + '>' +
           '<div class="k">' + esc(x.def.kicker) + '</div><h3>' + esc(x.def.title) + '</h3>' +
-          '<div class="m">' + (st.recent ? '<span class="live">진행 중</span>' : '') +
+          '<div class="m">' + (st.recent ? '<span class="live">진행 중</span>' : '<span class="state ' + st.state + '">' + (st.state === 'past' ? '지난 이슈' : '최근 이슈') + '</span>') +
           '<span>기사 ' + x.arts.length + '건</span><span>' + st.agoText + ' 업데이트</span></div></button>';
       }).join('');
     }
