@@ -136,8 +136,7 @@
     width:100%;
     display:block;
     border-radius: 3px;
-    box-shadow: 0 8px 24px var(--shadow);
-  }
+    box-shadow: 0 8px 24px var(--shadow); height:auto;}
   figcaption{
     background: var(--caption-bg);
     font-size: 13px;
@@ -448,7 +447,7 @@
   }
 
   /* ===== 이미지 뷰어(라이트박스) ===== */
-  .page figure img{cursor:zoom-in}
+  .page figure img{cursor:zoom-in; height:auto;}
   .lb{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;display:none;flex-direction:column;align-items:center;background:rgba(0,0,0,.92)}
   .lb.open{display:flex}
   .lb-stage{flex:1;min-height:0;width:100%;overflow:auto;display:flex;-webkit-overflow-scrolling:touch}
@@ -537,7 +536,7 @@
   <p class="lede">대구 지역 세 교회를 하나로 묶는 이른바 '참성경교회' 대통합 구상이 11월 6일 목회자 단체 대화방에서 나왔다. 만촌중앙교회(서경원 목사)와 성원교회(박은제 목사), 참좋은교회(이윤찬 목사)가 3년에 걸쳐 단계적으로 통합한다는 내용이다. 구상의 뼈대는 '준비하고, 하나 되고, 기도하라'는 통일 지침이다. 구상이 공개되자마자 "절대 이루어질 수 없다"는 반대 여론도 함께 나왔다.</p>
 
   <figure>
-    <img src="../assets/images/photo-01.jpg" alt="카페에 모여 웃고 있는 목회자 다섯 명">
+    <img src="../assets/images/photo-01.webp" alt="카페에 모여 웃고 있는 목회자 다섯 명" srcset="../assets/images/photo-01-640.webp 640w, ../assets/images/photo-01.webp 1600w" sizes="(max-width: 700px) 100vw, 720px" width="1600" height="739" loading="lazy" decoding="async">
     <figcaption>참성경교회 통합 준비위원들이 모임을 마치고 기념 촬영을 하고 있다. 왼쪽부터 박은제, 이윤찬, 이남수, 서경원, 한승환 목사. ⓒ예장포커스</figcaption>
   </figure>
 
@@ -696,7 +695,7 @@
       cur=0,sx=0,sy=0,prevBody='',prevHtml='';
   if(imgs.length<2)lb.classList.add('single');
 
-  function figOf(el){while(el&&el.tagName!=='FIGURE')el=el.parentNode;return el;}
+  function figOf(el){while(el&&el.tagName!=='FIGURE')el=el.parentNode;return el; height:auto;}
   function show(i){
     cur=(i+imgs.length)%imgs.length;
     var im=imgs[cur],fig=figOf(im),fc=fig?fig.querySelector('figcaption'):null;
