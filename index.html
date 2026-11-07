@@ -874,9 +874,10 @@
   /* ---------- 제목 선명도 최종 보강: 순검정 + 더 굵은 서체 + 미세 외곽선 ---------- */
   .headline h1, .corner-hero h4, .side-list h4, .card-pair .feature-item h3, .col-main .feature-item h3,
   .plain-list a, .ticker-box a, .num-list a, .corner-sub a, .series-row a, .latest .num-list a, .latest .mod-hero .cap {
-    color: #000; font-weight: 900; -webkit-text-stroke: .25px currentColor; text-rendering: optimizeLegibility;
+    color: #000; font-weight: 500; -webkit-text-stroke: 0; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
   }
-  .plain-list a, .num-list a, .ticker-box a, .side-list h4 { font-weight: 800; }
+  .plain-list a, .num-list a, .ticker-box a, .side-list h4 { font-weight: 500; }
+  .latest .num-list .num { font-weight: 700; }
   .hero-slot .feature-item h3, :root[data-theme="dark"] .hero-slot .feature-item h3 { color: #fff; -webkit-text-stroke: 0; }
   .hero-slot .feature-item:hover h3 { color: #ffe38a; }
   :root[data-theme="dark"] .headline h1, :root[data-theme="dark"] .corner-hero h4, :root[data-theme="dark"] .side-list h4,
