@@ -49,6 +49,24 @@
 .yf-top .support-btn:hover { background: var(--gold-soft); }
 :root:not([data-theme="light"]) .yf-top .masthead { background: transparent; }
 
+/* ---------- 상단 배너(마스트헤드): 메인화면(index.html)과 동일한 크기·색상 ---------- */
+.yf-top .masthead { padding: 0 0 8px; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); width: 100vw; }
+:root:not([data-theme="dark"]) .yf-top .masthead { background: #fefefe; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .yf-top .masthead { background: transparent; } }
+.yf-top .masthead .wrap { max-width: 1180px; padding: 0 20px; }
+.yf-top .masthead .masthead-row { grid-template-columns: 1fr minmax(0, 400px) 1fr; gap: 12px; padding-top: 0; align-items: center; }
+.yf-top .masthead .ci-logo { margin: 0 auto; }
+.yf-top .masthead .tv-logo, .yf-top .masthead .gapck-logo { max-width: 110px; }
+.yf-top .masthead .tv-logo { box-shadow: none; }
+@media (max-width: 720px) {
+  .yf-top .masthead .masthead-row { grid-template-columns: minmax(0,.75fr) minmax(0,2.5fr) minmax(0,.75fr); gap: 6px; align-items: center; }
+  .yf-top .masthead .tv-link { grid-column: 1; grid-row: 1; justify-self: start; width: 100%; }
+  .yf-top .masthead .ci-link { grid-column: 2; grid-row: 1; justify-self: center; width: 100%; }
+  .yf-top .masthead .gapck-link { grid-column: 3; grid-row: 1; justify-self: end; width: 100%; }
+  .yf-top .masthead .tv-logo, .yf-top .masthead .gapck-logo { max-width: 100%; width: 100%; }
+  .yf-top .masthead .ci-logo { margin-top: 0; }
+}
+
 /* ---------- 메뉴줄: 심야 네이비 + 골드 밑줄 ---------- */
 nav.catnav { background: #0a1424; border-top: 0; border-bottom: 0; margin-bottom: 0; box-shadow: 0 6px 20px -10px rgba(0,0,0,.6); }
 nav.catnav button, nav.catnav a { color: #c3cddd; }
