@@ -7,6 +7,9 @@
   // 독자 확보·운영 기능(PWA·통계·구독 안내·제보 링크)은 별도 파일에서 불러온다.
   (function () { var s = document.createElement('script'); s.src = root + 'assets/js/reader.js'; s.defer = true; document.head.appendChild(s); })();
 
+  // 기사 본문 사진 배치(세로형 사진 나란히 보기)
+  (function () { var s = document.createElement('script'); s.src = root + 'assets/js/photo-layout.js'; s.defer = true; document.head.appendChild(s); })();
+
   // 태그(카테고리)별 강조색과 이스케이프는 전체 기사 목록·홈페이지 썸네일에서
   // 공통으로 쓰므로 한 곳에서 관리한다.
   var TAG_COLOR = {
