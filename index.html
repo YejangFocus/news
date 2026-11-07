@@ -861,6 +861,16 @@
     :root:not([data-theme="light"]) .ticker-box a, :root:not([data-theme="light"]) .num-list a,
     :root:not([data-theme="light"]) .corner-sub a, :root:not([data-theme="light"]) .series-row a { color: #fff; }
   }
+  /* ---------- 최신 소식 패널: 제목·번호를 검정으로 진하게 ---------- */
+  .latest .num-list a, .latest .mod-hero, .latest .mod-hero .cap { color: #000; font-weight: 800; }
+  .latest .num-list .num { color: #000; font-weight: 900; }
+  .latest .num-list a:hover, .latest .mod-hero:hover .cap { color: var(--navy); }
+  :root[data-theme="dark"] .latest .num-list a, :root[data-theme="dark"] .latest .mod-hero,
+  :root[data-theme="dark"] .latest .mod-hero .cap, :root[data-theme="dark"] .latest .num-list .num { color: #fff; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .latest .num-list a, :root:not([data-theme="light"]) .latest .mod-hero,
+    :root:not([data-theme="light"]) .latest .mod-hero .cap, :root:not([data-theme="light"]) .latest .num-list .num { color: #fff; }
+  }
 </style>
 <script type="application/ld+json" id="yf-site">{"@context": "https://schema.org", "@graph": [{"@type": "NewsMediaOrganization", "@id": "https://yejangfocus.com/#org", "name": "예장포커스", "alternateName": "Yejang Focus", "url": "https://yejangfocus.com/", "logo": {"@type": "ImageObject", "url": "https://yejangfocus.com/assets/images/38701da0735806f0.webp"}, "email": "owenpej@naver.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"}, {"@type": "WebSite", "@id": "https://yejangfocus.com/#site", "url": "https://yejangfocus.com/", "name": "예장포커스", "inLanguage": "ko-KR", "publisher": {"@id": "https://yejangfocus.com/#org"}, "potentialAction": {"@type": "SearchAction", "target": "https://yejangfocus.com/%EA%B2%80%EC%83%89.html?q={search_term_string}", "query-input": "required name=search_term_string"}}]}</script>
 </head>
