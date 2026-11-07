@@ -16,7 +16,7 @@
 <link rel="alternate" type="application/rss+xml" title="예장포커스 RSS" href="https://yejangfocus.com/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700;900&family=Noto+Sans+KR:wght@400;500;600;700&family=Do+Hyeon&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700;900&family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=Do+Hyeon&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/focus-hub.css">
 <style>
   :root {
@@ -871,6 +871,27 @@
     :root:not([data-theme="light"]) .latest .num-list a, :root:not([data-theme="light"]) .latest .mod-hero,
     :root:not([data-theme="light"]) .latest .mod-hero .cap, :root:not([data-theme="light"]) .latest .num-list .num { color: #fff; }
   }
+  /* ---------- 제목 선명도 최종 보강: 순검정 + 더 굵은 서체 + 미세 외곽선 ---------- */
+  .headline h1, .corner-hero h4, .side-list h4, .card-pair .feature-item h3, .col-main .feature-item h3,
+  .plain-list a, .ticker-box a, .num-list a, .corner-sub a, .series-row a, .latest .num-list a, .latest .mod-hero .cap {
+    color: #000; font-weight: 900; -webkit-text-stroke: .25px currentColor; text-rendering: optimizeLegibility;
+  }
+  .plain-list a, .num-list a, .ticker-box a, .side-list h4 { font-weight: 800; }
+  .hero-slot .feature-item h3, :root[data-theme="dark"] .hero-slot .feature-item h3 { color: #fff; -webkit-text-stroke: 0; }
+  .hero-slot .feature-item:hover h3 { color: #ffe38a; }
+  :root[data-theme="dark"] .headline h1, :root[data-theme="dark"] .corner-hero h4, :root[data-theme="dark"] .side-list h4,
+  :root[data-theme="dark"] .card-pair .feature-item h3, :root[data-theme="dark"] .col-main .feature-item h3,
+  :root[data-theme="dark"] .plain-list a, :root[data-theme="dark"] .ticker-box a, :root[data-theme="dark"] .num-list a,
+  :root[data-theme="dark"] .latest .mod-hero .cap { color: #fff; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .headline h1, :root:not([data-theme="light"]) .corner-hero h4,
+    :root:not([data-theme="light"]) .side-list h4, :root:not([data-theme="light"]) .card-pair .feature-item h3,
+    :root:not([data-theme="light"]) .col-main .feature-item h3, :root:not([data-theme="light"]) .plain-list a,
+    :root:not([data-theme="light"]) .ticker-box a, :root:not([data-theme="light"]) .num-list a,
+    :root:not([data-theme="light"]) .latest .mod-hero .cap { color: #fff; }
+  }
+  .hero-slot .feature-item h3 { color: #fff !important; }
+  .hero-slot .feature-item:hover h3 { color: #ffe38a !important; }
 </style>
 <script type="application/ld+json" id="yf-site">{"@context": "https://schema.org", "@graph": [{"@type": "NewsMediaOrganization", "@id": "https://yejangfocus.com/#org", "name": "예장포커스", "alternateName": "Yejang Focus", "url": "https://yejangfocus.com/", "logo": {"@type": "ImageObject", "url": "https://yejangfocus.com/assets/images/38701da0735806f0.webp"}, "email": "owenpej@naver.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"}, {"@type": "WebSite", "@id": "https://yejangfocus.com/#site", "url": "https://yejangfocus.com/", "name": "예장포커스", "inLanguage": "ko-KR", "publisher": {"@id": "https://yejangfocus.com/#org"}, "potentialAction": {"@type": "SearchAction", "target": "https://yejangfocus.com/%EA%B2%80%EC%83%89.html?q={search_term_string}", "query-input": "required name=search_term_string"}}]}</script>
 </head>
