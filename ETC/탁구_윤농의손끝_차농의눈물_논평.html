@@ -364,6 +364,8 @@
   }
   .yf-top .masthead .tv-link:hover{ transform: translateY(-2px); opacity: .9; }
   .yf-top .masthead .tv-logo{ display: block; width: 100%; max-width: 140px; height: auto; border-radius: 6px; }
+  /* 예장합동 배너와 같은 크기(2:1 박스)로 맞춤 */
+  .yf-top .masthead .tv-link .tv-logo{ aspect-ratio: 480 / 241; object-fit: contain; background: #fff; }
   .yf-top .masthead .gapck-link{
     grid-column: 3; grid-row: 1; justify-self: end; display: block;
     border-radius: 8px; transition: transform .15s ease, opacity .15s ease;
