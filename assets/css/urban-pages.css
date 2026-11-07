@@ -188,3 +188,6 @@ nav.catnav .cat-ico:hover, nav.catnav .cat-ico[aria-expanded="true"] { backgroun
 .focus-hub .fh-rest a { color: #1f4a8a; border-color: rgba(31,74,138,.45); }
 .focus-hub .fh-rest a:hover { background: rgba(31,74,138,.08); color: #0a1424; }
 .focus-hub .fh-share { background: #c9a45c; color: #0a1424; }
+
+/* 개별 기사 제목: 진한 검정 + 굵은 글씨 */
+main#main > h1 { color: #000; font-weight: 900; }
