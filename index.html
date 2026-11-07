@@ -839,6 +839,28 @@
   .focus-hub .fh-rest a { color: #1f4a8a; border-color: rgba(31,74,138,.45); }
   .focus-hub .fh-rest a:hover { background: rgba(31,74,138,.08); color: #0a1424; }
   .focus-hub .fh-share { background: #c9a45c; color: #0a1424; }
+  /* ---------- 기사 제목 가독성 강화: 진한 색 + 굵은 글씨 ---------- */
+  .headline h1, .corner-hero h4, .side-list h4,
+  .card-pair .feature-item h3, .col-main .feature-item h3,
+  .plain-list a, .ticker-box a, .num-list a, .corner-sub a, .series-row a {
+    color: #0a0a0a; font-weight: 800; letter-spacing: -.01em;
+  }
+  .headline h1 { font-weight: 900; }
+  .headline h1:hover, .corner-hero h4:hover, .side-list h4:hover, .feature-item h3:hover,
+  .plain-list a:hover, .ticker-box a:hover, .num-list a:hover, .corner-sub a:hover, .series-row a:hover { color: var(--navy); }
+  .hero-slot .feature-item h3 { color: #fff; font-weight: 900; text-shadow: 0 1px 6px rgba(0,0,0,.55); }
+  .hero-slot .feature-item:hover h3 { color: #ffe38a; }
+  :root[data-theme="dark"] .headline h1, :root[data-theme="dark"] .corner-hero h4, :root[data-theme="dark"] .side-list h4,
+  :root[data-theme="dark"] .card-pair .feature-item h3, :root[data-theme="dark"] .col-main .feature-item h3,
+  :root[data-theme="dark"] .plain-list a, :root[data-theme="dark"] .ticker-box a, :root[data-theme="dark"] .num-list a,
+  :root[data-theme="dark"] .corner-sub a, :root[data-theme="dark"] .series-row a { color: #fff; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .headline h1, :root:not([data-theme="light"]) .corner-hero h4,
+    :root:not([data-theme="light"]) .side-list h4, :root:not([data-theme="light"]) .card-pair .feature-item h3,
+    :root:not([data-theme="light"]) .col-main .feature-item h3, :root:not([data-theme="light"]) .plain-list a,
+    :root:not([data-theme="light"]) .ticker-box a, :root:not([data-theme="light"]) .num-list a,
+    :root:not([data-theme="light"]) .corner-sub a, :root:not([data-theme="light"]) .series-row a { color: #fff; }
+  }
 </style>
 <script type="application/ld+json" id="yf-site">{"@context": "https://schema.org", "@graph": [{"@type": "NewsMediaOrganization", "@id": "https://yejangfocus.com/#org", "name": "예장포커스", "alternateName": "Yejang Focus", "url": "https://yejangfocus.com/", "logo": {"@type": "ImageObject", "url": "https://yejangfocus.com/assets/images/38701da0735806f0.webp"}, "email": "owenpej@naver.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"}, {"@type": "WebSite", "@id": "https://yejangfocus.com/#site", "url": "https://yejangfocus.com/", "name": "예장포커스", "inLanguage": "ko-KR", "publisher": {"@id": "https://yejangfocus.com/#org"}, "potentialAction": {"@type": "SearchAction", "target": "https://yejangfocus.com/%EA%B2%80%EC%83%89.html?q={search_term_string}", "query-input": "required name=search_term_string"}}]}</script>
 </head>
