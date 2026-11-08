@@ -122,7 +122,7 @@
 
 
   // ── 배지(NEW·속보·단독)와 읽은 기사 표시 ───────────────────────────────────
-  // NEW = 업로드 24시간 이내. 속보·단독 등은 기사 <head>의 <meta name="yf-badge" content="속보">가
+  // NEW = 업로드 7일(168시간) 이내. 속보·단독 등은 기사 <head>의 <meta name="yf-badge" content="속보">가
   // articles.json 의 badge 필드로 들어온 값이다. 목록 곳곳(홈·카테고리·검색·티커)에 같은 방식으로 붙는다.
   // 예전에 저장된 주소(https://…com//목회/…)도 같은 기사로 맞도록 // 를 /로 고쳐서 읽는다.
   function lsGet(key) {
@@ -154,7 +154,7 @@
         if (!a) return;
         if (read.indexOf(a.url) !== -1) el.classList.add('yf-read');
         if (el.querySelector('.yf-new')) return;
-        var label = a.badge || ((Date.now() - (Date.parse(a.uploaded) || 0)) < 86400000 && Date.parse(a.uploaded) ? 'NEW' : '');
+        var label = a.badge || ((Date.now() - (Date.parse(a.uploaded) || 0)) < 7 * 86400000 && Date.parse(a.uploaded) ? 'NEW' : '');
         if (!label) return;
         var b = document.createElement('span');
         b.className = 'yf-new' + (label === 'NEW' ? '' : ' hot');
