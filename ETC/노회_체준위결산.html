@@ -738,7 +738,7 @@
       cur=0,sx=0,sy=0,prevBody='',prevHtml='';
   if(imgs.length<2)lb.classList.add('single');
 
-  function figOf(el){while(el&&el.tagName!=='FIGURE')el=el.parentNode;return el;}
+  function figOf(el){while(el&&el.tagName!=='FIGURE')el=el.parentNode;return el; height:auto;}
   function show(i){
     cur=(i+imgs.length)%imgs.length;
     var im=imgs[cur],fig=figOf(im),fc=fig?fig.querySelector('figcaption'):null;
