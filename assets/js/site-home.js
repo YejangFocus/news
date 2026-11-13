@@ -121,10 +121,10 @@
     // 우측 '최신 소식': 본문 칸에 이미 나온 기사를 뺀 최신 기사. 큰 사진은 사진이 있는 첫 기사로.
     // 다른 칸에 나온 기사도 빼지 않고, 전체 기사를 최신순 그대로: 맨 위 큰 칸이 가장 최신, 이어서 ①~⑥.
     var latestHero = ARTICLE_INDEX[0] || null;
-    var latestList = ARTICLE_INDEX.slice(1, 7);
+    var latestList = ARTICLE_INDEX.slice(1, 7); // 맨 위 사진이 ①, 목록은 ②부터
     var numList = document.getElementById('numList');
     if (numList) {
-      var numerals = ['①', '②', '③', '④', '⑤', '⑥'];
+      var numerals = ['②', '③', '④', '⑤', '⑥', '⑦'];
       numList.innerHTML = latestList.map(function (item, i) {
         return '<li><span class="num">' + numerals[i] + '</span><a href="' + item.url + '">' + esc(item.title) + '</a></li>';
       }).join('');
@@ -134,7 +134,7 @@
       modHero.innerHTML = !latestHero ? '' :
         '<a class="mod-hero" href="' + latestHero.url + '">' +
           thumbImgHtml(latestHero, 'thumb', true, '(max-width: 700px) 100vw, 420px') +
-          (latestHero.desc ? '<p class="cap">' + esc(latestHero.desc) + '</p>' : '') +
+          '<span class="hero-title"><span class="num">①</span><span class="t">' + esc(latestHero.title) + '</span></span>' +
         '</a>';
     }
     // 우측 컬럼: 칼럼 — 최신 3건

@@ -317,13 +317,13 @@ def render_home_blocks(index):
     # '최신 소식'은 다른 칸과 겹쳐도 빼지 않고 전체 기사를 최신순 그대로 보여 준다(site-home.js 와 같은 규칙).
     latest_hero = index[0] if index else None
     latest_list = index[1:7]
-    numerals = ["①", "②", "③", "④", "⑤", "⑥"]
+    numerals = ["②", "③", "④", "⑤", "⑥", "⑦"]  # 맨 위 사진이 ①
     blocks["numList"] = "".join(
         f'<li><span class="num">{numerals[i]}</span><a href="{a["url"]}">{esc(a["title"])}</a></li>'
         for i, a in enumerate(latest_list))
     blocks["modHero"] = ("" if not latest_hero else
                          f'<a class="mod-hero" href="{latest_hero["url"]}">{_home_thumb(latest_hero, "thumb", True, "(max-width: 700px) 100vw, 420px")}'
-                         + (f'<p class="cap">{esc(latest_hero["desc"])}</p>' if latest_hero.get("desc") else "") + "</a>")
+                         + f'<span class="hero-title"><span class="num">①</span><span class="t">{esc(latest_hero["title"])}</span></span></a>')
     blocks["sideList"] = "".join(
         (f'<li><a href="{a["url"]}">{_home_thumb(a, "thumb")}</a>' if _has_photo(a) else '<li>')
         + f'<div class="body"><a href="{a["url"]}"><h4>{esc(a["title"])}</h4></a>'
