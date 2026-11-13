@@ -82,11 +82,12 @@
     if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '교단');
     if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;', '신학');
 
-    // 최신뉴스 티커: 항상 전체 최신 3건
-    var tickerItems = ARTICLE_INDEX.slice(0, 3);
-    tickerBox.innerHTML = tickerItems.map(function (item) {
+    // 최신뉴스 티커: 항상 전체 최신 5건, 같은 묶음을 두 번 이어붙여 끊김 없이 순환
+    var tickerGroup = ARTICLE_INDEX.slice(0, 5).map(function (item) {
       return '<a href="' + item.url + '">' + esc(item.title) + '</a>';
     }).join('<span class="sep">•</span>');
+    tickerBox.innerHTML = '<span class="ticker-group">' + tickerGroup + '</span>' +
+      '<span class="ticker-group" aria-hidden="true">' + tickerGroup + '</span>';
 
     // 좌측 하단 텍스트 목록: 정해진 카테고리 순서대로 각 카테고리 최신 기사 1건씩.
     // 해당 카테고리에 기사가 없으면 카테고리명만 넣고 비워둔다.

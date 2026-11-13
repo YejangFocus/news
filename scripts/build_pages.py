@@ -271,8 +271,11 @@ def render_home_blocks(index):
         return [a for a in index if a["tag"] in tags][:n]
 
     blocks = {}
-    blocks["tickerBox"] = '<span class="sep">•</span>'.join(
-        f'<a href="{a["url"]}">{esc(a["title"])}</a>' for a in index[:3])
+    ticker_group = '<span class="ticker-group">' + '<span class="sep">•</span>'.join(
+        f'<a href="{a["url"]}">{esc(a["title"])}</a>' for a in index[:5]) + '</span>'
+    # 끊김 없는 무한 흐름: 같은 묶음을 한 번 더 이어붙이고 -50%까지 이동
+    blocks["tickerBox"] = ticker_group + ticker_group.replace(
+        '<span class="ticker-group">', '<span class="ticker-group" aria-hidden="true">', 1)
     blocks["heroFeature"] = _feature(latest(["특집"]), "", "특집", True)
     blocks["secondFeature"] = _feature(latest(["교단", "교단소식"]), "", "교단")
     blocks["thirdFeature"] = _feature(latest(["신학"]), "border-bottom:none;", "신학")
