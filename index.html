@@ -13,6 +13,10 @@
 <meta property="og:url" content="https://yejangfocus.com/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://yejangfocus.com/">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#16294f">
 <link rel="alternate" type="application/rss+xml" title="예장포커스 RSS" href="https://yejangfocus.com/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,8 +40,8 @@
     color-scheme: light;
   }
   .scribble { font-family: 'Noto Sans KR', sans-serif; }
-  :root:not([data-theme="light"]) {
-    @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
       --navy: #86a2dc; --navy-ink: #eef1fa; --red: #e2707d; --pine: #82bd8f;
       --paper: #121210; --paper-alt: #1a1a16; --ink: #ece9df; --ink-soft: #aba795;
       --ink-faint: #7d7a6a; --hair: #33322a; --hair-strong: #47453a; --amber: #e8a252;
@@ -51,6 +55,8 @@
     color-scheme: dark;
   }
 
+  .skip-link { position: absolute; left: 8px; top: -48px; z-index: 1000; padding: 10px 16px; background: var(--navy-ink); color: var(--paper); border-radius: 4px; font-size: 14px; font-weight: 700; }
+  .skip-link:focus { top: 8px; }
   * { box-sizing: border-box; }
   html { scroll-padding-top: env(safe-area-inset-top, 0px); }
   body {
@@ -112,7 +118,7 @@
   .search-results li:last-child { border-bottom: none; }
   .search-results a { display: block; padding: 10px 14px; font-size: 13.5px; line-height: 1.5; }
   .search-results a:hover { background: var(--paper-alt); color: var(--navy); }
-  .search-results .tag { font-size: 11px; font-weight: 700; color: var(--navy); margin-right: 6px; }
+  .search-results .tag { font-size: 12px; font-weight: 700; color: var(--navy); margin-right: 6px; }
   .search-results .count { padding: 8px 14px; font-size: 11.5px; font-weight: 700; color: var(--ink-faint); background: var(--paper-alt); }
   .search-results .snip { display: block; margin-top: 3px; font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); }
   .search-results mark { background: #ffe38a; color: #1c1a16; border-radius: 2px; padding: 0 1px; }
@@ -432,7 +438,7 @@
   .social-card .sc-head { display: flex; align-items: center; gap: 10px; padding: 13px 14px; border-bottom: 1px solid var(--hair); }
   .social-card .sc-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex: none; }
   .social-card .sc-name { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 700; }
-  .social-card .sc-name small { display: block; margin-top: 2px; font-size: 11px; font-weight: 400; color: var(--ink-faint); letter-spacing: .06em; }
+  .social-card .sc-name small { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: var(--ink-faint); letter-spacing: .06em; }
   .social-card .sc-follow {
     flex: none; font: 700 12px 'Noto Sans KR', sans-serif; color: #fff; background: var(--navy);
     padding: 7px 12px; border-radius: 3px;
@@ -441,7 +447,7 @@
   .social-card .sc-media { display: block; width: 100%; aspect-ratio: 1/1; overflow: hidden; background: var(--paper-alt); }
   .social-card .sc-media img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .social-card .sc-body { padding: 13px 14px; }
-  .social-card .sc-source { font-size: 11px; font-weight: 700; letter-spacing: .07em; color: var(--ink-faint); }
+  .social-card .sc-source { font-size: 12px; font-weight: 700; letter-spacing: .07em; color: var(--ink-faint); }
   .social-card .sc-title { display: block; margin-top: 6px; font-size: 14.5px; font-weight: 700; line-height: 1.45; }
   .social-card .sc-title:hover { color: var(--navy); }
   .social-card .sc-desc { margin-top: 6px; font-size: 12.5px; line-height: 1.55; color: var(--ink-soft); }
@@ -983,6 +989,7 @@
 <script type="application/ld+json" id="yf-site">{"@context": "https://schema.org", "@graph": [{"@type": "NewsMediaOrganization", "@id": "https://yejangfocus.com/#org", "name": "예장포커스", "alternateName": "Yejang Focus", "url": "https://yejangfocus.com/", "logo": {"@type": "ImageObject", "url": "https://yejangfocus.com/assets/images/38701da0735806f0.webp"}, "email": "owenpej@naver.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"}, {"@type": "WebSite", "@id": "https://yejangfocus.com/#site", "url": "https://yejangfocus.com/", "name": "예장포커스", "inLanguage": "ko-KR", "publisher": {"@id": "https://yejangfocus.com/#org"}, "potentialAction": {"@type": "SearchAction", "target": "https://yejangfocus.com/%EA%B2%80%EC%83%89.html?q={search_term_string}", "query-input": "required name=search_term_string"}}]}</script>
 </head>
 <body>
+<a class="skip-link" href="#main">본문 바로가기</a>
 
 <div class="searchrow">
   <div class="wrap" style="position:relative;">
