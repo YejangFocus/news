@@ -336,14 +336,16 @@
   .ticker-box .sep { color: var(--ink-faint); flex: none; }
   /* 최신뉴스가 오른쪽에서 왼쪽으로 흐르는 전광판 모드 */
   .ticker-track {
-    display: inline-flex; align-items: center; gap: 10px; flex: none;
-    padding-left: 100%; animation: ticker-scroll 45s linear infinite;
+    display: inline-flex; align-items: center; flex: none;
+    animation: ticker-scroll 60s linear infinite;
   }
+  .ticker-group { display: inline-flex; align-items: center; gap: 10px; flex: none; padding-right: 10px; }
   .ticker-box:hover .ticker-track, .ticker-box:focus-within .ticker-track { animation-play-state: paused; }
-  @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+  @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   @media (prefers-reduced-motion: reduce) {
     .ticker-box { overflow-x: auto; }
-    .ticker-track { padding-left: 0; animation: none; }
+    .ticker-track { animation: none; }
+    .ticker-group[aria-hidden="true"] { display: none; }
   }
 
   /* left column: featured article (image + title + summary) */
@@ -981,7 +983,7 @@
   <div style="margin:16px 0">
       <div class="ticker-bar">
         <span class="ticker-badge">최신뉴스</span>
-        <div class="ticker-box"><div class="ticker-track" id="tickerBox"><!--yf:tickerBox--><a href="https://yejangfocus.com/교단/부총회장_이의제기_종결.html">부총회장 이의제기 일단락…기각 불복 소송은 난관</a><span class="sep">•</span><a href="https://yejangfocus.com/목회/한홍목사세미나.html">한홍 목사 &#x27;교회는 군중 아닌 공격하는 군대&#x27;</a><span class="sep">•</span><a href="https://yejangfocus.com/칼럼/칼럼_순간과평생.html">순간을 위한 평생인가, 평생을 위한 순간인가</a><!--/yf:tickerBox--></div></div>
+        <div class="ticker-box"><div class="ticker-track" id="tickerBox"><!--yf:tickerBox--><span class="ticker-group"><a href="https://yejangfocus.com/교단/부총회장_이의제기_종결.html">부총회장 이의제기 일단락…기각 불복 소송은 난관</a><span class="sep">•</span><a href="https://yejangfocus.com/목회/한홍목사세미나.html">한홍 목사 &#x27;교회는 군중 아닌 공격하는 군대&#x27;</a><span class="sep">•</span><a href="https://yejangfocus.com/칼럼/칼럼_순간과평생.html">순간을 위한 평생인가, 평생을 위한 순간인가</a><span class="sep">•</span><a href="https://yejangfocus.com/칼럼/칼럼_너자신을알라.html">너 자신을 알라, 그러나 하나님의 얼굴 앞에서</a><span class="sep">•</span><a href="https://yejangfocus.com/칼럼/elder-duty.html">장로회 총회 설교 &#x27;장로의 생활이 곧 교회의 생활&#x27;</a></span><span class="ticker-group" aria-hidden="true"><a href="https://yejangfocus.com/교단/부총회장_이의제기_종결.html">부총회장 이의제기 일단락…기각 불복 소송은 난관</a><span class="sep">•</span><a href="https://yejangfocus.com/목회/한홍목사세미나.html">한홍 목사 &#x27;교회는 군중 아닌 공격하는 군대&#x27;</a><span class="sep">•</span><a href="https://yejangfocus.com/칼럼/칼럼_순간과평생.html">순간을 위한 평생인가, 평생을 위한 순간인가</a><span class="sep">•</span><a href="https://yejangfocus.com/칼럼/칼럼_너자신을알라.html">너 자신을 알라, 그러나 하나님의 얼굴 앞에서</a><span class="sep">•</span><a href="https://yejangfocus.com/칼럼/elder-duty.html">장로회 총회 설교 &#x27;장로의 생활이 곧 교회의 생활&#x27;</a></span><!--/yf:tickerBox--></div></div>
       </div>
   </div>
 
