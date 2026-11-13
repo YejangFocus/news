@@ -144,8 +144,8 @@
     var byTail = {};
     articles.forEach(function (a) { byTail[pathTail(a.url)] = a; });
     var SEL = '.feature-item h3,.side-list h4,#tickerBox a,#numList a,#plainList a,.yf-list h2,.aa-list a,.headline h3';
-    // 홈(#tickerBox 가 있는 페이지)은 업로드 후 7일, 그 밖의 목록 페이지는 2일 동안 NEW 를 붙인다.
-    var NEW_DAYS = document.getElementById('tickerBox') ? 7 : 2;
+    // 업로드 후 7일 동안 NEW 를 붙인다(홈·분류별 목록·전체 기사 공통).
+    var NEW_DAYS = 7;
     var busy = false;
     function apply() {
       busy = true;
