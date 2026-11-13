@@ -12,14 +12,11 @@
 
   // 태그(카테고리)별 강조색과 이스케이프는 전체 기사 목록·홈페이지 썸네일에서
   // 공통으로 쓰므로 한 곳에서 관리한다.
-  var TAG_COLOR = {
-    '속보': 'var(--red)', '사설': 'var(--red)',
-    '신학': 'var(--pine)', '오피니언': 'var(--pine)', '특집': 'var(--pine)', '칼럼': 'var(--pine)',
-    '교단': 'var(--navy)', '교단소식': 'var(--navy)', '교계': 'var(--navy)', '정치': 'var(--navy)',
-    '목회': 'var(--navy)', '노회': 'var(--navy)', '이슈': 'var(--navy)', '인물': 'var(--navy)'
-  };
+  // 색이 너무 많으면 산만하므로, 속보만 빨강이고 나머지 분류 표시는 모두 남색으로 통일한다.
+  var TAG_COLOR = { '속보': 'var(--red)' };
+  var TAG_DEFAULT = 'var(--navy)';
 
-  function tagColor(tag) { return TAG_COLOR[tag] || 'var(--ink)'; }
+  function tagColor(tag) { return TAG_COLOR[tag] || TAG_DEFAULT; }
 
   function esc(s) {
     return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -87,6 +84,7 @@
 
   initSkipLink();
   initCatScrollHint();
+  initMastheadWatch();
   initNoticeMarquee();
   initThemeToggle();
   initPlaceholderButtons();
@@ -246,7 +244,7 @@
       '.yf-tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--paper,#fff);border-top:1px solid var(--hair-strong,#ccc);padding-bottom:env(safe-area-inset-bottom,0px);}' +
       '.cat-sheet:not([hidden]){display:flex;}' +
       '.yf-tabbar > *{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:54px;padding:0;border:0;background:none;color:var(--ink-soft,#666);font:600 11px "Noto Sans KR",sans-serif;text-decoration:none;cursor:pointer;}' +
-      '.yf-tabbar i{font-style:normal;font-size:19px;line-height:1;}' +
+      '.yf-tabbar i{font-style:normal;line-height:0;display:block;}' +
       '.yf-tabbar .on{color:var(--red,#cc2b24);}' +
       'body{padding-bottom:calc(54px + env(safe-area-inset-bottom,0px));}' +
       '#themeToggleBtn{bottom:calc(68px + env(safe-area-inset-bottom,0px)) !important;}' +
@@ -427,11 +425,11 @@
     tabbar.setAttribute('aria-label', '하단 메뉴');
     var homeHref = NAV_IS_HOME ? '#' : root + 'index.html';
     tabbar.innerHTML =
-      '<a data-tab="home" href="' + homeHref + '"><i>🏠</i><span>홈</span></a>' +
-      '<button type="button" data-tab="cats"><i>☰</i><span>카테고리</span></button>' +
-      (row ? '<button type="button" data-tab="search"><i>🔍</i><span>검색</span></button>' : '') +
-      '<a data-tab="issues" href="' + navHref('이슈') + '"><i>📌</i><span>이슈</span></a>' +
-      (sup ? '<button type="button" data-tab="support"><i>✊</i><span>후원</span></button>' : '');
+      '<a data-tab="home" href="' + homeHref + '"><i><svg class="ti" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg></i><span>홈</span></a>' +
+      '<button type="button" data-tab="cats"><i><svg class="ti" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></i><span>카테고리</span></button>' +
+      (row ? '<button type="button" data-tab="search"><i><svg class="ti" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></i><span>검색</span></button>' : '') +
+      '<a data-tab="issues" href="' + navHref('이슈') + '"><i><svg class="ti" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4h11l-2 4 2 4H6"/></svg></i><span>이슈</span></a>' +
+      (sup ? '<button type="button" data-tab="support"><i><svg class="ti" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.8a4.3 4.3 0 0 1 7.5 2.7c0 5.4-7.5 10-7.5 10Z"/></svg></i><span>후원</span></button>' : '');
     document.body.appendChild(tabbar);
     tabbar.addEventListener('click', function (e) {
       var t = e.target.closest('[data-tab]');
@@ -719,6 +717,15 @@
     window.addEventListener('load', check);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(check);
     check();
+  }
+
+  // 머리(masthead)의 로고가 화면에 보이는 동안은 메뉴줄의 YF 로고를 숨기기 위해 body 에 mast-in 표시를 붙인다.
+  function initMastheadWatch() {
+    var m = document.querySelector('.masthead');
+    if (!m || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function (es) {
+      document.body.classList.toggle('mast-in', es[0].isIntersecting);
+    }).observe(m);
   }
 
   function initSkipLink() {

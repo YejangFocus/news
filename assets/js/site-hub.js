@@ -82,7 +82,7 @@
           '<div class="fh-stat"><b>' + st.span + '일</b><span>보도 기간</span></div>' +
           '<div class="fh-stat"><b>' + st.agoText + '</b><span>최근 업데이트</span></div>' +
         '</div>' +
-        '<div class="fh-glance"><h3>한눈에 보기</h3><ul>' + points + '</ul></div></div>' +
+        '<details class="fh-glance"' + (window.matchMedia && matchMedia('(max-width:640px)').matches ? '' : ' open') + '><summary><h3>한눈에 보기</h3></summary><ul>' + points + '</ul></details></div>' +
         '<div><div class="fh-tl-head">사건의 흐름 · 최신순' + (hidden ? ' · 최근 ' + opts.limit + '건' : '') + '</div><ol class="fh-timeline">' + tl + '</ol></div>' +
       '</div></div>';
   }

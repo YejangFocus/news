@@ -25,12 +25,8 @@ ALL_DIR = "전체"
 TEMPLATE_PAGE = REPO_ROOT / "메인화면" / "이용약관.html"   # 머리말·메뉴·푸터를 빌려 온다
 DEFAULT_IMAGE = "/assets/images/yejang-focus-ci.webp"
 
-TAG_COLOR = {
-    "속보": "var(--red)", "사설": "var(--red)",
-    "신학": "var(--pine)", "오피니언": "var(--pine)", "특집": "var(--pine)", "칼럼": "var(--pine)",
-    "교단": "var(--navy)", "교단소식": "var(--navy)", "교계": "var(--navy)", "정치": "var(--navy)",
-    "목회": "var(--navy)", "노회": "var(--navy)", "이슈": "var(--navy)", "인물": "var(--navy)",
-}
+# 색이 너무 많으면 산만하므로, 속보만 빨강이고 나머지 분류 표시는 모두 남색으로 통일한다(site.js 와 같은 규칙).
+TAG_COLOR = {"속보": "var(--red)"}
 
 
 def esc(s) -> str:
@@ -38,7 +34,7 @@ def esc(s) -> str:
 
 
 def tag_color(tag: str) -> str:
-    return TAG_COLOR.get(tag, "var(--ink)")
+    return TAG_COLOR.get(tag, "var(--navy)")
 
 
 def abs_path(rel: str) -> str:
