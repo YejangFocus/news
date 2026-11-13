@@ -253,12 +253,17 @@ def _home_thumb(item, cls, eager=False, sizes="(max-width: 700px) 45vw, 260px"):
             f'alt="{esc(item["title"])}"{load} decoding="async">')
 
 
+def _has_photo(item):
+    """진짜 사진이 있는 기사인가(없으면 CI 로고가 대신 들어가므로 작은 칸에서는 사진 없이 글로만 보여 준다)."""
+    return bool(item and item.get("image") and "yejang-focus-ci" not in item["image"])
+
+
 def _feature(item, extra_style, empty_label, eager=False):
     st = f' style="{extra_style}"' if extra_style else ""
     if not item:
         return (f'<div class="feature-item"{st}><div class="body"><span class="tag" style="color:{tag_color(empty_label)};">'
                 f'{esc(empty_label)}</span></div></div>') if empty_label else ""
-    return (f'<a class="feature-item" href="{item["url"]}"{st}>{_home_thumb(item, "thumb", eager)}<div class="body">'
+    return (f'<a class="feature-item" href="{item["url"]}"{st}>{_home_thumb(item, "thumb", eager) if (eager or _has_photo(item)) else ""}<div class="body">'
             f'<span class="tag" style="color:{tag_color(item["tag"])};">{esc(item["tag"])}</span>'
             f'<h3>{esc(item["title"])}</h3>' + (f'<p>{esc(item["desc"])}</p>' if item.get("desc") else "") + "</div></a>")
 
@@ -288,17 +293,28 @@ def render_home_blocks(index):
             rows.append(f'<li><span class="tag" style="color:{tag_color(it["tag"])};">{esc(it["tag"])}</span>'
                         f'<a href="{it["url"]}">{esc(it["title"])}</a></li>')
     blocks["plainList"] = "".join(rows)
+    # 같은 기사가 홈 여러 칸에 반복되지 않도록, 본문·칼럼 칸에 쓴 기사는 '최신 소식'에서 뺀다(site-home.js 와 같은 규칙).
+    columns = many(["칼럼"], 3)
+    used = {a["url"] for a in [latest(["특집"]), latest(["교단", "교단소식"]), latest(["신학"]), *columns] if a}
+    for cat in ["목회", "사설", "노회", "인물", "교계"]:
+        it = next((a for a in index if a["tag"] == cat), None)
+        if it:
+            used.add(it["url"])
+    rest = [a for a in index if a["url"] not in used]
+    latest_hero = next((a for a in rest if _has_photo(a)), None)
+    latest_list = [a for a in rest if a is not latest_hero][:6]
     numerals = ["①", "②", "③", "④", "⑤", "⑥"]
     blocks["numList"] = "".join(
         f'<li><span class="num">{numerals[i]}</span><a href="{a["url"]}">{esc(a["title"])}</a></li>'
-        for i, a in enumerate(index[:6]))
-    blocks["modHero"] = ("" if not index else
-                         f'<a class="mod-hero" href="{index[0]["url"]}">{_home_thumb(index[0], "thumb", True, "(max-width: 700px) 100vw, 420px")}'
-                         + (f'<p class="cap">{esc(index[0]["desc"])}</p>' if index[0].get("desc") else "") + "</a>")
+        for i, a in enumerate(latest_list))
+    blocks["modHero"] = ("" if not latest_hero else
+                         f'<a class="mod-hero" href="{latest_hero["url"]}">{_home_thumb(latest_hero, "thumb", True, "(max-width: 700px) 100vw, 420px")}'
+                         + (f'<p class="cap">{esc(latest_hero["desc"])}</p>' if latest_hero.get("desc") else "") + "</a>")
     blocks["sideList"] = "".join(
-        f'<li><a href="{a["url"]}">{_home_thumb(a, "thumb")}</a><div class="body"><a href="{a["url"]}"><h4>{esc(a["title"])}</h4></a>'
+        (f'<li><a href="{a["url"]}">{_home_thumb(a, "thumb")}</a>' if _has_photo(a) else '<li>')
+        + f'<div class="body"><a href="{a["url"]}"><h4>{esc(a["title"])}</h4></a>'
         + (f'<p>{esc(a["desc"])}</p>' if a.get("desc") else "") + "</div></li>"
-        for a in many(["칼럼"], 3))
+        for a in columns)
     return blocks
 
 

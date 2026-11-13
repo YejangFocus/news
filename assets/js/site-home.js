@@ -37,6 +37,8 @@
       return '<img class="' + cls + extra + '" src="' + esc(src) + '"' + attrs + ' alt="' + esc(item.title) + '"' +
         (eager ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async">';
     }
+    // 진짜 사진이 있는 기사인가(없으면 CI 로고가 대신 들어가 같은 그림이 반복되므로, 작은 칸에서는 사진 없이 글로만 보여 준다)
+    function hasPhoto(item) { return !!(item && item.image && item.image.indexOf('yejang-focus-ci') === -1); }
     if (!ARTICLE_INDEX.length) {
       tickerBox.innerHTML = '<span style="color:var(--ink-faint);">아직 등록된 기사가 없습니다.</span>';
       return;
@@ -62,7 +64,7 @@
       }
       return '' +
         '<a class="feature-item" href="' + item.url + '"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
-          thumbImgHtml(item, 'thumb', eager) +
+          (eager || hasPhoto(item) ? thumbImgHtml(item, 'thumb', eager) : '') +
           '<div class="body">' +
             '<span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
             '<h3>' + esc(item.title) + '</h3>' +
@@ -74,6 +76,17 @@
     var hero = latestOf(['특집']);
     var second = latestOf(['교단', '교단소식']);
     var third = latestOf(['신학']);
+
+    // 홈에서 같은 기사가 여러 칸에 반복되지 않도록, 본문·칼럼 칸에 쓴 기사를 기록해 두었다가
+    // '최신 소식'에서는 그것들을 뺀다. (맨 위 티커는 새 기사 알림이라 예외)
+    var used = {};
+    function mark(it) { if (it) used[it.url] = true; }
+    mark(hero); mark(second); mark(third);
+    ['목회', '사설', '노회', '인물', '교계'].forEach(function (cat) {
+      mark(ARTICLE_INDEX.find(function (a) { return a.tag === cat; }));
+    });
+    var columns = pickMany(['칼럼'], 3);
+    columns.forEach(mark);
 
     var heroEl = document.getElementById('heroFeature');
     var secondEl = document.getElementById('secondFeature');
@@ -104,31 +117,32 @@
       }).join('');
     }
 
-    // 중앙 컬럼: 최신 소식 — 카테고리와 무관하게 사이트 전체 최신 3건
-    var topThree = ARTICLE_INDEX.slice(0, 3);
+    // 우측 '최신 소식': 본문 칸에 이미 나온 기사를 뺀 최신 기사. 큰 사진은 사진이 있는 첫 기사로.
+    var rest = ARTICLE_INDEX.filter(function (a) { return !used[a.url]; });
+    var latestHero = rest.find(hasPhoto) || null;
+    var latestList = rest.filter(function (a) { return a !== latestHero; }).slice(0, 6);
     var numList = document.getElementById('numList');
     if (numList) {
       var numerals = ['①', '②', '③', '④', '⑤', '⑥'];
-      numList.innerHTML = ARTICLE_INDEX.slice(0, 6).map(function (item, i) {
+      numList.innerHTML = latestList.map(function (item, i) {
         return '<li><span class="num">' + numerals[i] + '</span><a href="' + item.url + '">' + esc(item.title) + '</a></li>';
       }).join('');
     }
     var modHero = document.getElementById('modHero');
-    if (modHero && topThree[0]) {
-      modHero.innerHTML =
-        '<a class="mod-hero" href="' + topThree[0].url + '">' +
-          thumbImgHtml(topThree[0], 'thumb', true, '(max-width: 700px) 100vw, 420px') +
-          (topThree[0].desc ? '<p class="cap">' + esc(topThree[0].desc) + '</p>' : '') +
+    if (modHero) {
+      modHero.innerHTML = !latestHero ? '' :
+        '<a class="mod-hero" href="' + latestHero.url + '">' +
+          thumbImgHtml(latestHero, 'thumb', true, '(max-width: 700px) 100vw, 420px') +
+          (latestHero.desc ? '<p class="cap">' + esc(latestHero.desc) + '</p>' : '') +
         '</a>';
     }
     // 우측 컬럼: 칼럼 — 최신 3건
-    var columns = pickMany(['칼럼'], 3);
     var sideList = document.getElementById('sideList');
     if (sideList) {
       sideList.innerHTML = columns.map(function (item) {
         return '' +
           '<li>' +
-            '<a href="' + item.url + '">' + thumbImgHtml(item, 'thumb') + '</a>' +
+            (hasPhoto(item) ? '<a href="' + item.url + '">' + thumbImgHtml(item, 'thumb') + '</a>' : '') +
             '<div class="body">' +
               '<a href="' + item.url + '"><h4>' + esc(item.title) + '</h4></a>' +
               (item.desc ? '<p>' + esc(item.desc) + '</p>' : '') +

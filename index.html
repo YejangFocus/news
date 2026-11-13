@@ -926,6 +926,14 @@
   /* 메인화면 제목 글씨 굵기를 모두 동일하게(굵게) */
   .ticker-box a, .notice-marquee a, .latest .num-list a, .latest .mod-hero .cap,
   .card-pair .feature-item h3, .col-panel .side-list h4, .plain-list a { font-weight: 700; }
+
+  /* 첫 화면에 기사가 먼저 보이도록 오늘의 말씀 띠를 한 줄로 얇게 줄인다 */
+  .verse-band { padding: 8px 16px; }
+  .verse-band .wrap { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 2px 12px; }
+  .verse-band .vb-label { display: none; }
+  .verse-band .vb-text { margin: 0; font-size: clamp(14px, 1.7vw, 17px); }
+  .verse-band .vb-ref { margin: 0; font-size: 12px; }
+  @media (max-width: 640px) { .verse-band { padding: 7px 14px; } .verse-band .vb-text { font-size: 13.5px; line-height: 1.45; } }
 </style>
 <script type="application/ld+json" id="yf-site">{"@context": "https://schema.org", "@graph": [{"@type": "NewsMediaOrganization", "@id": "https://yejangfocus.com/#org", "name": "예장포커스", "alternateName": "Yejang Focus", "url": "https://yejangfocus.com/", "logo": {"@type": "ImageObject", "url": "https://yejangfocus.com/assets/images/38701da0735806f0.webp"}, "email": "owenpej@naver.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"}, {"@type": "WebSite", "@id": "https://yejangfocus.com/#site", "url": "https://yejangfocus.com/", "name": "예장포커스", "inLanguage": "ko-KR", "publisher": {"@id": "https://yejangfocus.com/#org"}, "potentialAction": {"@type": "SearchAction", "target": "https://yejangfocus.com/%EA%B2%80%EC%83%89.html?q={search_term_string}", "query-input": "required name=search_term_string"}}]}</script>
 </head>
@@ -996,7 +1004,6 @@
       </div>
   </div>
 
-  <section class="focus-hub" id="focusHub" aria-label="오늘의 포커스"></section>
 
   <div class="home-grid">
     <div class="col-main">
@@ -1019,15 +1026,18 @@
       </a>
       <div class="panel latest">
         <div class="mod-head"><h3>최신 소식</h3><a class="more" id="totalNewsMore" href="https://yejangfocus.com/전체/">더보기〉</a></div>
-        <div id="modHero"><!--yf:modHero--><a class="mod-hero" href="https://yejangfocus.com/교단/부총회장_이의제기_종결.html"><img class="thumb" src="https://yejangfocus.com/assets/images/assembly111-vp-objection-01.webp" srcset="https://yejangfocus.com/assets/images/assembly111-vp-objection-01-640.webp 640w, https://yejangfocus.com/assets/images/assembly111-vp-objection-01.webp 1600w" sizes="(max-width: 700px) 100vw, 420px" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='https://yejangfocus.com/assets/images/assembly111-vp-objection-01.webp'" alt="부총회장 이의제기 일단락…기각 불복 소송은 난관" fetchpriority="high" decoding="async"><p class="cap">부총회장 당선무효 이의제기 2건이 취하와 기각으로 정리됐다. 지동빈 장로가 기각에 불복해 소송을 예고했지만 증거와 법리, 시간과 비용 면에서 넘어야 할 벽이 높다.</p></a><!--/yf:modHero--></div>
-        <ul class="num-list" id="numList"><!--yf:numList--><li><span class="num">①</span><a href="https://yejangfocus.com/교단/부총회장_이의제기_종결.html">부총회장 이의제기 일단락…기각 불복 소송은 난관</a></li><li><span class="num">②</span><a href="https://yejangfocus.com/목회/한홍목사세미나.html">한홍 목사 &#x27;교회는 군중 아닌 공격하는 군대&#x27;</a></li><li><span class="num">③</span><a href="https://yejangfocus.com/칼럼/칼럼_순간과평생.html">순간을 위한 평생인가, 평생을 위한 순간인가</a></li><li><span class="num">④</span><a href="https://yejangfocus.com/칼럼/칼럼_너자신을알라.html">너 자신을 알라, 그러나 하나님의 얼굴 앞에서</a></li><li><span class="num">⑤</span><a href="https://yejangfocus.com/칼럼/elder-duty.html">장로회 총회 설교 &#x27;장로의 생활이 곧 교회의 생활&#x27;</a></li><li><span class="num">⑥</span><a href="https://yejangfocus.com/목회/나눔과섬김의교회_40일천국잔치.html">40일 천국잔치 6일째, 다음세대가 강단을 채운 새벽</a></li><!--/yf:numList--></ul>
+        <div id="modHero"><!--yf:modHero--><a class="mod-hero" href="https://yejangfocus.com/목회/나눔과섬김의교회_40일천국잔치.html"><img class="thumb" src="https://yejangfocus.com/assets/images/40days_d6_01_sermon.webp" srcset="https://yejangfocus.com/assets/images/40days_d6_01_sermon-640.webp 640w, https://yejangfocus.com/assets/images/40days_d6_01_sermon.webp 1600w" sizes="(max-width: 700px) 100vw, 420px" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='https://yejangfocus.com/assets/images/40days_d6_01_sermon.webp'" alt="40일 천국잔치 6일째, 다음세대가 강단을 채운 새벽" fetchpriority="high" decoding="async"><p class="cap">나눔과섬김의교회, 10일 새벽 영아부·유치부 가족 특송에 이어 ‘주의 길을 준비하라’ 말씀… 목회자가 어린이들을 축복하며 11월 15일까지 여정 이어가</p></a><!--/yf:modHero--></div>
+        <ul class="num-list" id="numList"><!--yf:numList--><li><span class="num">①</span><a href="https://yejangfocus.com/칼럼/2026_송월야칼럼_받고싶은대로선대하라.html">받고 싶은 대로, 계산 없이 — 선대(善待)의 신앙</a></li><li><span class="num">②</span><a href="https://yejangfocus.com/칼럼/칼럼_건강10계명_할매선지자.html">몸은 성령의 전, 할매의 잔소리를 말씀으로 다시 듣다</a></li><li><span class="num">③</span><a href="https://yejangfocus.com/노회/동대구노회_연합수련회.html">&#x27;지혜 한 스푼&#x27; 나눈 동대구노회 목사회·교육부 연합수련회, 울산서 개막</a></li><li><span class="num">④</span><a href="https://yejangfocus.com/노회/대구수성노회_시찰별체육대회.html">땀과 웃음으로 하나 된 대구수성노회, 시찰별 체육대회 열렸다</a></li><li><span class="num">⑤</span><a href="https://yejangfocus.com/노회/news_susung59.html">대구수성노회 제59회 정기회 개최… 박민열 목사 안수·강도사 5명 인허</a></li><li><span class="num">⑥</span><a href="https://yejangfocus.com/노회/대구중노회_40주년_기념행사_기사.html">대구중노회, 설립 40주년 맞아 몽골 선교센터부터 오사카 수련회까지 기념사업 이어간다</a></li><!--/yf:numList--></ul>
       </div>
       <div class="panel col-panel">
         <div class="mod-head"><h3>칼럼</h3><a class="more" id="columnMore" href="https://yejangfocus.com/칼럼/">더보기〉</a></div>
-        <ul class="side-list" id="sideList"><!--yf:sideList--><li><a href="https://yejangfocus.com/칼럼/칼럼_순간과평생.html"><img class="thumb is-fallback" src="https://yejangfocus.com/assets/images/yejang-focus-ci.webp" alt="순간을 위한 평생인가, 평생을 위한 순간인가" loading="lazy" decoding="async"></a><div class="body"><a href="https://yejangfocus.com/칼럼/칼럼_순간과평생.html"><h4>순간을 위한 평생인가, 평생을 위한 순간인가</h4></a><p>카이로스와 크로노스, 두 시간관을 개혁신학의 눈으로 견주어 본다. 두 명제 모두 성경적 근거와 함께 은밀한 위험을 안고 있으며, 모든 준비의 주어는 하나님의 은혜다.</p></div></li><li><a href="https://yejangfocus.com/칼럼/칼럼_너자신을알라.html"><img class="thumb is-fallback" src="https://yejangfocus.com/assets/images/yejang-focus-ci.webp" alt="너 자신을 알라, 그러나 하나님의 얼굴 앞에서" loading="lazy" decoding="async"></a><div class="body"><a href="https://yejangfocus.com/칼럼/칼럼_너자신을알라.html"><h4>너 자신을 알라, 그러나 하나님의 얼굴 앞에서</h4></a><p>소크라테스는 성찰하는 이성으로 자기를 알려 했다. 성경은 하나님의 얼굴 앞에서, 그분께 알려질 때 비로소 자기가 드러난다고 말한다.</p></div></li><li><a href="https://yejangfocus.com/칼럼/elder-duty.html"><img class="thumb" src="https://yejangfocus.com/assets/images/elder-duty-01.webp" srcset="https://yejangfocus.com/assets/images/elder-duty-01-640.webp 640w, https://yejangfocus.com/assets/images/elder-duty-01.webp 1600w" sizes="(max-width: 700px) 45vw, 260px" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='https://yejangfocus.com/assets/images/elder-duty-01.webp'" alt="장로회 총회 설교 &#x27;장로의 생활이 곧 교회의 생활&#x27;" loading="lazy" decoding="async"></a><div class="body"><a href="https://yejangfocus.com/칼럼/elder-duty.html"><h4>장로회 총회 설교 &#x27;장로의 생활이 곧 교회의 생활&#x27;</h4></a><p>이○○ 목사는 사도행전 20장 28~32절을 본문으로 자신을 삼가고, 교회를 보살피며, 양 떼를 지키고, 교회를 은혜의 말씀에 맡기는 장로상을 제시했다.</p></div></li><!--/yf:sideList--></ul>
+        <ul class="side-list" id="sideList"><!--yf:sideList--><li><div class="body"><a href="https://yejangfocus.com/칼럼/칼럼_순간과평생.html"><h4>순간을 위한 평생인가, 평생을 위한 순간인가</h4></a><p>카이로스와 크로노스, 두 시간관을 개혁신학의 눈으로 견주어 본다. 두 명제 모두 성경적 근거와 함께 은밀한 위험을 안고 있으며, 모든 준비의 주어는 하나님의 은혜다.</p></div></li><li><div class="body"><a href="https://yejangfocus.com/칼럼/칼럼_너자신을알라.html"><h4>너 자신을 알라, 그러나 하나님의 얼굴 앞에서</h4></a><p>소크라테스는 성찰하는 이성으로 자기를 알려 했다. 성경은 하나님의 얼굴 앞에서, 그분께 알려질 때 비로소 자기가 드러난다고 말한다.</p></div></li><li><a href="https://yejangfocus.com/칼럼/elder-duty.html"><img class="thumb" src="https://yejangfocus.com/assets/images/elder-duty-01.webp" srcset="https://yejangfocus.com/assets/images/elder-duty-01-640.webp 640w, https://yejangfocus.com/assets/images/elder-duty-01.webp 1600w" sizes="(max-width: 700px) 45vw, 260px" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='https://yejangfocus.com/assets/images/elder-duty-01.webp'" alt="장로회 총회 설교 &#x27;장로의 생활이 곧 교회의 생활&#x27;" loading="lazy" decoding="async"></a><div class="body"><a href="https://yejangfocus.com/칼럼/elder-duty.html"><h4>장로회 총회 설교 &#x27;장로의 생활이 곧 교회의 생활&#x27;</h4></a><p>이○○ 목사는 사도행전 20장 28~32절을 본문으로 자신을 삼가고, 교회를 보살피며, 양 떼를 지키고, 교회를 은혜의 말씀에 맡기는 장로상을 제시했다.</p></div></li><!--/yf:sideList--></ul>
       </div>
     </aside>
   </div>
+
+  <!-- 진행 중인 이슈 박스: 첫 화면에는 기사가 먼저 보이도록 기사 목록 아래에 둔다 -->
+  <section class="focus-hub" id="focusHub" aria-label="오늘의 포커스"></section>
 
 </main>
 
