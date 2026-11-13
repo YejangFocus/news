@@ -989,11 +989,18 @@
     footer .legal-grid { gap: 4px; }
     footer .legal-grid .litem { white-space: normal; }
   }
-  .book-promo { display:flex; justify-content:center; padding:18px 0 4px; }
-  .book-promo a { display:block; width:132px; border-radius:14px; box-shadow:0 4px 14px rgba(15,29,58,.22); transition:transform .15s, box-shadow .15s; line-height:0; }
-  .book-promo a:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(15,29,58,.3); }
-  .book-promo img { width:100%; height:auto; border-radius:14px; display:block; }
-  @media (max-width:700px){ .book-promo a { width:104px; } }
+  /* 예장합동 배너 왼쪽의 도서 아이콘 */
+  .masthead .right-group { grid-column: 3; grid-row: 1; justify-self: end; display: flex; align-items: center; gap: 10px; }
+  .masthead .book-link { display: block; flex: 0 0 auto; width: 70px; line-height: 0; border-radius: 10px; box-shadow: 0 6px 16px -8px rgba(15,29,58,.55); transition: transform .15s ease, opacity .15s ease; }
+  .masthead .book-link:hover { transform: translateY(-2px); opacity: .9; }
+  .masthead .book-logo { display: block; width: 100%; height: auto; border-radius: 10px; }
+  @media (max-width: 720px) {
+    .masthead .masthead-row { grid-template-columns: minmax(0,.7fr) minmax(0,2fr) minmax(0,1.3fr) !important; gap: 6px !important; }
+    .masthead .right-group { gap: 4px; width: 100%; }
+    .masthead .right-group .gapck-link { flex: 1 1 0; min-width: 0; }
+    .masthead .book-link { width: 38%; border-radius: 6px; }
+    .masthead .book-logo { border-radius: 6px; }
+  }
 </style>
 <script type="application/ld+json" id="yf-site">{"@context": "https://schema.org", "@graph": [{"@type": "NewsMediaOrganization", "@id": "https://yejangfocus.com/#org", "name": "예장포커스", "alternateName": "Yejang Focus", "url": "https://yejangfocus.com/", "logo": {"@type": "ImageObject", "url": "https://yejangfocus.com/assets/images/38701da0735806f0.webp"}, "email": "owenpej@naver.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"}, {"@type": "WebSite", "@id": "https://yejangfocus.com/#site", "url": "https://yejangfocus.com/", "name": "예장포커스", "inLanguage": "ko-KR", "publisher": {"@id": "https://yejangfocus.com/#org"}, "potentialAction": {"@type": "SearchAction", "target": "https://yejangfocus.com/%EA%B2%80%EC%83%89.html?q={search_term_string}", "query-input": "required name=search_term_string"}}]}</script>
 </head>
@@ -1020,9 +1027,14 @@
     <a class="ci-link" href="https://yejangfocus.com/" aria-label="예장포커스 뉴스로 이동">
       <img class="ci-logo" src="assets/images/38701da0735806f0.webp" width="1926" height="481" decoding="async" alt="예장포커스 YEJANG FOCUS 교회를 바라보는 새로운 시선">
     </a>
-    <a class="gapck-link" href="https://www.gapck.org/" target="_blank" rel="noopener" aria-label="대한예수교장로회총회(예장합동) 홈페이지로 이동">
-      <img class="gapck-logo" src="assets/images/1665deb754d7f97f.webp" width="480" height="241" decoding="async" alt="예장합동 홈페이지 바로가기">
-    </a>
+    <div class="right-group">
+      <a class="book-link" href="https://bookk.co.kr/bookStore/6a225412d93c2b5287a11189" target="_blank" rel="noopener" aria-label="클로드 AI 목회활용 완전정복 — 부크크에서 보기">
+        <img class="book-logo" src="assets/images/book-claude-ai-ministry.webp" width="180" height="180" decoding="async" alt="클로드 AI 목회활용 완전정복 책 바로가기">
+      </a>
+      <a class="gapck-link" href="https://www.gapck.org/" target="_blank" rel="noopener" aria-label="대한예수교장로회총회(예장합동) 홈페이지로 이동">
+        <img class="gapck-logo" src="assets/images/1665deb754d7f97f.webp" width="480" height="241" decoding="async" alt="예장합동 홈페이지 바로가기">
+      </a>
+    </div>
   </div>
 </header>
 
@@ -1055,12 +1067,6 @@
   </div>
 </aside>
 <script src="assets/js/verse.js"></script>
-
-<div class="book-promo">
-  <a href="https://bookk.co.kr/bookStore/6a225412d93c2b5287a11189" target="_blank" rel="noopener" aria-label="클로드 AI 목회활용 완전정복 — 부크크에서 보기">
-    <img src="assets/images/book-claude-ai-ministry.webp" width="180" height="180" decoding="async" alt="클로드 AI 목회활용 완전정복 책 바로가기">
-  </a>
-</div>
 
 <main class="wrap" id="main">
 
