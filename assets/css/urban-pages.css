@@ -209,3 +209,16 @@ nav.catnav .cat-ico:hover, nav.catnav .cat-ico[aria-expanded="true"] { backgroun
 
 /* 개별 기사 제목: 진한 검정 + 굵은 글씨 */
 main#main > h1 { color: #000; font-weight: 900; }
+
+/* ---------- 예장합동 배너 왼쪽의 도서 아이콘 (메인화면과 동일 위치) ---------- */
+.yf-top .masthead .right-group { grid-column: 3; grid-row: 1; justify-self: end; display: flex; align-items: center; gap: 10px; }
+.yf-top .masthead .right-group .gapck-link { width: auto; flex: 0 1 auto; }
+.yf-top .masthead .book-link { display: block; flex: 0 0 auto; width: 70px; line-height: 0; border-radius: 10px; box-shadow: 0 6px 16px -8px rgba(15,29,58,.55); transition: transform .15s ease, opacity .15s ease; }
+.yf-top .masthead .book-link:hover { transform: translateY(-2px); opacity: .9; }
+.yf-top .masthead .book-logo { display: block; width: 100%; height: auto; border-radius: 10px; }
+@media (max-width: 720px) {
+  .yf-top .masthead .right-group { gap: 4px; width: 100%; }
+  .yf-top .masthead .right-group .gapck-link { flex: 1 1 0; min-width: 0; }
+  .yf-top .masthead .book-link { width: 38%; border-radius: 6px; }
+  .yf-top .masthead .book-logo { border-radius: 6px; }
+}
