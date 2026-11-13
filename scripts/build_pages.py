@@ -314,9 +314,9 @@ def render_home_blocks(index):
         it = next((a for a in index if a["tag"] == cat), None)
         if it:
             used.add(it["url"])
-    rest = [a for a in index if a["url"] not in used]
-    latest_hero = next((a for a in rest if _has_photo(a)), None)
-    latest_list = [a for a in rest if a is not latest_hero][:6]
+    # '최신 소식'은 다른 칸과 겹쳐도 빼지 않고 전체 기사를 최신순 그대로 보여 준다(site-home.js 와 같은 규칙).
+    latest_hero = index[0] if index else None
+    latest_list = index[1:7]
     numerals = ["①", "②", "③", "④", "⑤", "⑥"]
     blocks["numList"] = "".join(
         f'<li><span class="num">{numerals[i]}</span><a href="{a["url"]}">{esc(a["title"])}</a></li>'

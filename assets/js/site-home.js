@@ -119,9 +119,9 @@
     }
 
     // 우측 '최신 소식': 본문 칸에 이미 나온 기사를 뺀 최신 기사. 큰 사진은 사진이 있는 첫 기사로.
-    var rest = ARTICLE_INDEX.filter(function (a) { return !used[a.url]; });
-    var latestHero = rest.find(hasPhoto) || null;
-    var latestList = rest.filter(function (a) { return a !== latestHero; }).slice(0, 6);
+    // 다른 칸에 나온 기사도 빼지 않고, 전체 기사를 최신순 그대로: 맨 위 큰 칸이 가장 최신, 이어서 ①~⑥.
+    var latestHero = ARTICLE_INDEX[0] || null;
+    var latestList = ARTICLE_INDEX.slice(1, 7);
     var numList = document.getElementById('numList');
     if (numList) {
       var numerals = ['①', '②', '③', '④', '⑤', '⑥'];
