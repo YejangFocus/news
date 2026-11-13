@@ -24,6 +24,7 @@
     function thumbImgHtml(item, cls, eager, sizes) {
       var isFallback = !item.image || item.image.indexOf('yejang-focus-ci') !== -1;
       var src = item.image || DEFAULT_IMAGE;
+      if (src.indexOf(location.origin + '/') === 0) src = src.slice(location.origin.length); // 같은 사이트 이미지는 상대 주소로
       var extra = isFallback ? ' is-fallback' : '';
       var attrs = '';
       var m = !isFallback && src.match(/^(.*\/assets\/images\/[^\/]+?)(-640)?\.(jpe?g|png|webp)$/i);

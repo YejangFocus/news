@@ -233,9 +233,24 @@ def build_search_page():
 IMG_RE = re.compile(r"^(.*/assets/images/[^/]+?)(-640)?\.(?:jpe?g|png|webp)$", re.I)
 
 
+def _img_size(web_path):
+    """/assets/images/foo.webp 의 실제 가로·세로(없으면 None). 읽는 건 파일 머리말뿐이라 빠르다."""
+    p = REPO_ROOT / web_path.lstrip("/")
+    if not p.is_file():
+        return None
+    try:
+        from PIL import Image
+        with Image.open(p) as im:
+            return im.size
+    except Exception:
+        return None
+
+
 def _home_thumb(item, cls, eager=False, sizes="(max-width: 700px) 45vw, 260px"):
     """site.js 의 thumbImgHtml() 과 같은 마크업(WebP srcset + 지연 로딩)."""
     image = item.get("image") or DEFAULT_IMAGE
+    if image.startswith(SITE_URL + "/"):  # 같은 사이트 이미지는 상대 주소로(로컬·미리보기에서도 보이게)
+        image = image[len(SITE_URL):]
     fallback = (not item.get("image")) or "yejang-focus-ci" in image
     attrs = ""
     m = None if fallback else IMG_RE.match(image)
@@ -244,6 +259,9 @@ def _home_thumb(item, cls, eager=False, sizes="(max-width: 700px) 45vw, 260px"):
         attrs = (f' srcset="{esc(base)}-640.webp 640w, {esc(base)}.webp 1600w" sizes="{sizes}"'
                  f' onerror="this.onerror=null;this.removeAttribute(\'srcset\');this.src=\'{esc(image)}\'"')
         image = base + ".webp"
+    size = _img_size(image)
+    if size:
+        attrs += f' width="{size[0]}" height="{size[1]}"'
     load = ' fetchpriority="high"' if eager else ' loading="lazy"'
     return (f'<img class="{cls}{" is-fallback" if fallback else ""}" src="{esc(image)}"{attrs} '
             f'alt="{esc(item["title"])}"{load} decoding="async">')
