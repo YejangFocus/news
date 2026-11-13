@@ -143,7 +143,7 @@
     document.head.appendChild(st);
     var byTail = {};
     articles.forEach(function (a) { byTail[pathTail(a.url)] = a; });
-    var SEL = '.feature-item h3,.side-list h4,#tickerBox a,#numList a,#plainList a,.yf-list h2,.aa-list a,.headline h3';
+    var SEL = '.feature-item h3,.side-list h4,#tickerBox a,#numList a,#modHero .hero-title .t,#plainList a,.yf-list h2,.aa-list a,.headline h3';
     // 업로드 후 7일 동안 NEW 를 붙인다(홈·분류별 목록·전체 기사 공통).
     var NEW_DAYS = 7;
     var busy = false;
