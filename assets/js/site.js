@@ -144,6 +144,8 @@
     var byTail = {};
     articles.forEach(function (a) { byTail[pathTail(a.url)] = a; });
     var SEL = '.feature-item h3,.side-list h4,#tickerBox a,#numList a,#plainList a,.yf-list h2,.aa-list a,.headline h3';
+    // 홈(#tickerBox 가 있는 페이지)은 업로드 후 7일, 그 밖의 목록 페이지는 2일 동안 NEW 를 붙인다.
+    var NEW_DAYS = document.getElementById('tickerBox') ? 7 : 2;
     var busy = false;
     function apply() {
       busy = true;
@@ -154,7 +156,8 @@
         if (!a) return;
         if (read.indexOf(a.url) !== -1) el.classList.add('yf-read');
         if (el.querySelector('.yf-new')) return;
-        var label = a.badge || ((Date.now() - (Date.parse(a.uploaded) || 0)) < 2 * 86400000 && Date.parse(a.uploaded) ? 'NEW' : '');
+        var up = Date.parse(a.uploaded);
+        var label = a.badge || (up && (Date.now() - up) < NEW_DAYS * 86400000 ? 'NEW' : '');
         if (!label) return;
         var b = document.createElement('span');
         b.className = 'yf-new' + (label === 'NEW' ? '' : ' hot');
