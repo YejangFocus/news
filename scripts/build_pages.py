@@ -97,7 +97,7 @@ LIST_CSS = """<style>
   .yf-list .thumb{flex:none;width:168px;aspect-ratio:4/3;object-fit:cover;border-radius:3px;background:var(--caption-bg);}
   .yf-list .thumb.is-fallback{object-fit:contain;padding:8px;}
   .yf-list .tg{font-size:12px;font-weight:700;letter-spacing:.04em;}
-  .yf-list h2{font-family:'Noto Serif KR',serif;font-size:18px;line-height:1.45;margin:3px 0 6px;font-weight:700;}
+  .yf-list h2{font-family:'Noto Serif KR',serif;font-size:18px;line-height:1.45;margin:3px 0 6px;font-weight:700;word-break:keep-all;overflow-wrap:break-word;}
   .yf-list a{color:inherit;text-decoration:none;}
   .yf-list h2{border:0;padding:0;}
   .yf-list li h2{color:#0a0a0a;font-weight:800;letter-spacing:-.01em;}

@@ -86,6 +86,8 @@
     });
 
   initSkipLink();
+  initCatScrollHint();
+  initNoticeMarquee();
   initThemeToggle();
   initPlaceholderButtons();
   initSupportModal();
@@ -122,7 +124,7 @@
 
 
   // ── 배지(NEW·속보·단독)와 읽은 기사 표시 ───────────────────────────────────
-  // NEW = 업로드 7일(168시간) 이내. 속보·단독 등은 기사 <head>의 <meta name="yf-badge" content="속보">가
+  // NEW = 업로드 48시간 이내(오래 달아 두면 모든 기사에 붙어 의미가 없어진다). 속보·단독 등은 기사 <head>의 <meta name="yf-badge" content="속보">가
   // articles.json 의 badge 필드로 들어온 값이다. 목록 곳곳(홈·카테고리·검색·티커)에 같은 방식으로 붙는다.
   // 예전에 저장된 주소(https://…com//목회/…)도 같은 기사로 맞도록 // 를 /로 고쳐서 읽는다.
   function lsGet(key) {
@@ -154,7 +156,7 @@
         if (!a) return;
         if (read.indexOf(a.url) !== -1) el.classList.add('yf-read');
         if (el.querySelector('.yf-new')) return;
-        var label = a.badge || ((Date.now() - (Date.parse(a.uploaded) || 0)) < 7 * 86400000 && Date.parse(a.uploaded) ? 'NEW' : '');
+        var label = a.badge || ((Date.now() - (Date.parse(a.uploaded) || 0)) < 2 * 86400000 && Date.parse(a.uploaded) ? 'NEW' : '');
         if (!label) return;
         var b = document.createElement('span');
         b.className = 'yf-new' + (label === 'NEW' ? '' : ' hot');
@@ -689,6 +691,36 @@
 
   // 접근성: 키보드·스크린리더 사용자가 머리말·메뉴를 건너뛰고 본문으로 바로 갈 수 있는 링크.
   // 본문 영역(#main → main → article → .page)을 찾아 id를 달고, 포커스를 받을 때만 화면에 보인다.
+  // 메뉴줄이 가로로 넘칠 때, 더 넘길 수 있는 쪽 끝을 흐리게 해서 '더 있음'을 알린다.
+  function initCatScrollHint() {
+    var el = document.getElementById('catNav');
+    if (!el) return;
+    function update() {
+      var max = el.scrollWidth - el.clientWidth;
+      el.classList.toggle('fade-l', el.scrollLeft > 4);
+      el.classList.toggle('fade-r', max > 4 && el.scrollLeft < max - 4);
+    }
+    el.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    window.addEventListener('load', update);
+    update();
+  }
+
+  // 공지가 한 줄에 다 들어가면 그대로 두고, 넘칠 때만 흐르게 한다.
+  function initNoticeMarquee() {
+    var box = document.querySelector('.notice-marquee');
+    var a = box && box.querySelector('a');
+    if (!a) return;
+    function check() {
+      box.classList.remove('is-overflow');
+      box.classList.toggle('is-overflow', a.scrollWidth > box.clientWidth + 1);
+    }
+    window.addEventListener('resize', check);
+    window.addEventListener('load', check);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(check);
+    check();
+  }
+
   function initSkipLink() {
     var target = document.getElementById('main') || document.querySelector('main') ||
       document.querySelector('article') || document.querySelector('.page');

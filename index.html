@@ -184,6 +184,13 @@
   .brandmark img { height: 30px; width: auto; display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
   .catlist { display: flex; overflow-x: auto; scrollbar-width: none; flex: 1; }
   .catlist::-webkit-scrollbar { display: none; }
+  /* 가로로 더 넘길 수 있는 쪽 끝을 흐리게 보여 준다(site.js 가 .fade-l/.fade-r 를 켬) */
+  .catlist.fade-r { -webkit-mask-image: linear-gradient(90deg,#000 calc(100% - 36px),transparent); mask-image: linear-gradient(90deg,#000 calc(100% - 36px),transparent); }
+  .catlist.fade-l { -webkit-mask-image: linear-gradient(90deg,transparent,#000 36px); mask-image: linear-gradient(90deg,transparent,#000 36px); }
+  .catlist.fade-l.fade-r { -webkit-mask-image: linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent); mask-image: linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent); }
+
+  /* 한글은 글자 중간이 아니라 띄어쓰기에서만 줄바꿈 (긴 영문·주소는 넘치지 않게 따로 끊는다) */
+  body { word-break: keep-all; overflow-wrap: break-word; }
 
   /* ---------- category nav ---------- */
   nav.catnav {
@@ -228,16 +235,18 @@
   }
   .notice a:hover { color: var(--navy); }
   /* 공지가 오른쪽에서 왼쪽으로 흐르는 전광판 모드 */
-  .notice-marquee { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
-  .notice-marquee a {
-    display: inline-block; padding-left: 100%;
+  /* 한 줄에 들어가면 왼쪽 정렬로 가만히 두고, 넘칠 때만(.is-overflow, site.js 가 판단) 흐르게 한다 */
+  .notice-marquee { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-align: left; }
+  .notice-marquee a { display: block; overflow: hidden; text-overflow: ellipsis; }
+  .notice-marquee.is-overflow a {
+    display: inline-block; overflow: visible; text-overflow: clip; padding-left: 100%;
     animation: notice-scroll 22s linear infinite;
   }
   .notice-marquee:hover a, .notice-marquee:focus-within a { animation-play-state: paused; }
   @keyframes notice-scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
   @media (prefers-reduced-motion: reduce) {
-    .notice-marquee { white-space: normal; }
-    .notice-marquee a { padding-left: 0; animation: none; }
+    .notice-marquee.is-overflow { white-space: normal; }
+    .notice-marquee.is-overflow a { display: block; padding-left: 0; animation: none; }
   }
 
   /* ---------- section heading ---------- */
