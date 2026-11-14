@@ -272,12 +272,12 @@ def _has_photo(item):
     return bool(item and item.get("image") and "yejang-focus-ci" not in item["image"])
 
 
-def _feature(item, extra_style, empty_label, eager=False):
+def _feature(item, extra_style, empty_label, eager=False, always_img=False):
     st = f' style="{extra_style}"' if extra_style else ""
     if not item:
         return (f'<div class="feature-item"{st}><div class="body"><span class="tag" style="color:{tag_color(empty_label)};">'
                 f'{esc(empty_label)}</span></div></div>') if empty_label else ""
-    return (f'<a class="feature-item" href="{item["url"]}"{st}>{_home_thumb(item, "thumb", eager) if (eager or _has_photo(item)) else ""}<div class="body">'
+    return (f'<a class="feature-item" href="{item["url"]}"{st}>{_home_thumb(item, "thumb", eager) if (eager or always_img or _has_photo(item)) else ""}<div class="body">'
             f'<span class="tag" style="color:{tag_color(item["tag"])};">{esc(item["tag"])}</span>'
             f'<h3>{esc(item["title"])}</h3>' + (f'<p>{esc(item["desc"])}</p>' if item.get("desc") else "") + "</div></a>")
 
@@ -296,8 +296,8 @@ def render_home_blocks(index):
     blocks["tickerBox"] = ticker_group + ticker_group.replace(
         '<span class="ticker-group">', '<span class="ticker-group" aria-hidden="true">', 1)
     blocks["heroFeature"] = _feature(latest(["특집"]), "", "특집", True)
-    blocks["secondFeature"] = _feature(latest(["교단", "교단소식"]), "", "교단")
-    blocks["thirdFeature"] = _feature(latest(["신학"]), "border-bottom:none;", "신학")
+    blocks["secondFeature"] = _feature(latest(["교단", "교단소식"]), "", "교단", always_img=True)
+    blocks["thirdFeature"] = _feature(latest(["신학"]), "border-bottom:none;", "신학", always_img=True)
     rows = []
     for cat in ["목회", "사설", "노회", "인물", "교계"]:
         it = next((a for a in index if a["tag"] == cat), None)
