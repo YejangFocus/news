@@ -248,6 +248,15 @@
       draw();
     }
 
+    // 헤더 날짜
+    var mhDate = document.getElementById('mhDate');
+    if (mhDate) {
+      var now = new Date();
+      var wk = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
+      mhDate.textContent = now.getFullYear() + '년 ' + (now.getMonth() + 1) + '월 ' + now.getDate() + '일 ' + wk + '요일';
+      mhDate.setAttribute('datetime', now.toISOString().slice(0, 10));
+    }
+
     // 스크롤 등장 효과
     function reveal(scope) {
       var els = (scope || document).querySelectorAll('.yf-reveal:not(.in)');

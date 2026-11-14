@@ -53,3 +53,26 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--amber);outline-offs
 @keyframes heroFill{to{transform:scaleX(1)}}
 @media(max-width:700px){.hero-ctl{right:10px;top:10px}.hero-arrow{display:none}}
 @media(prefers-reduced-motion:reduce){.hero-carousel .hero-slide{transition:none}.hero-carousel.run .hero-dot.on i::after{animation:none;transform:scaleX(1)}}
+
+/* ───── 헤더 정리: 중앙 CI · 좌측 날짜/예포TV · 우측 동일 규격 바로가기 ───── */
+header.masthead .masthead-row{grid-template-columns:1fr minmax(0,340px) 1fr;gap:16px;padding-top:6px}
+header.masthead .ci-link{grid-column:2;grid-row:1}
+header.masthead .ci-logo{max-width:340px}
+header.masthead .mh-left{grid-column:1;grid-row:1;justify-self:start;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.mh-date{font-size:13px;font-weight:600;color:var(--ink-soft);letter-spacing:-.01em}
+.mh-tv{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#fff;background:#d92d20;padding:6px 14px;border-radius:999px;transition:transform .15s,filter .15s}
+.mh-tv span{font-size:10px}
+.mh-tv:hover{transform:translateY(-1px);filter:brightness(1.08)}
+header.masthead .right-group{grid-column:3;grid-row:1;justify-self:end;display:flex;align-items:center;gap:10px}
+header.masthead .book-link,header.masthead .gapck-link{display:block;flex:0 0 auto;width:auto;min-width:0;height:52px;line-height:0;border-radius:10px;overflow:hidden;box-shadow:0 6px 16px -10px rgba(15,29,58,.5);transition:transform .15s,opacity .15s}
+header.masthead .book-link:hover,header.masthead .gapck-link:hover{transform:translateY(-2px);opacity:.92}
+header.masthead .book-logo,header.masthead .gapck-logo{display:block;height:100%;width:auto;max-width:none;border-radius:0;box-shadow:none}
+@media(max-width:720px){
+  header.masthead .masthead-row{grid-template-columns:minmax(0,1fr) auto!important;gap:10px!important;padding-top:4px}
+  header.masthead .mh-left{display:none}
+  header.masthead .ci-link{grid-column:1;grid-row:1;justify-self:start;width:auto}
+  header.masthead .ci-logo{width:min(200px,52vw);margin:0}
+  header.masthead .right-group{grid-column:2;gap:6px;width:auto}
+  header.masthead .right-group .gapck-link{flex:0 0 auto}
+  header.masthead .book-link,header.masthead .gapck-link{height:40px;width:auto;border-radius:8px}
+}
