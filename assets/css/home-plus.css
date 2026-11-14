@@ -36,3 +36,20 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--amber);outline-offs
 @media(max-width:820px){.yf-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.yf-grid{grid-template-columns:1fr}.yf-feed-head h2{font-size:21px}}
 @media(prefers-reduced-motion:reduce){.yf-reveal{opacity:1;transform:none;transition:none}.yf-card,.yf-card *,.hero-slot *{transition:none!important}}
+
+/* 히어로 슬라이드 */
+.hero-carousel{display:grid;position:relative}
+.hero-carousel .hero-slide{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity .7s ease,visibility .7s}
+.hero-carousel .hero-slide.on{opacity:1;visibility:visible;z-index:1}
+.hero-ctl{position:absolute;right:18px;top:16px;z-index:5;display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:999px;background:rgba(8,14,32,.55);backdrop-filter:blur(6px)}
+.hero-arrow{width:28px;height:28px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:22px;line-height:1;cursor:pointer}
+.hero-arrow:hover{background:rgba(255,255,255,.2)}
+.hero-dots{display:flex;gap:6px}
+.hero-dot{width:26px;height:14px;padding:5px 0;border:0;background:none;cursor:pointer}
+.hero-dot i{display:block;height:4px;border-radius:2px;background:rgba(255,255,255,.4);position:relative;overflow:hidden}
+.hero-dot i::after{content:'';position:absolute;inset:0;background:#ffe38a;transform:scaleX(0);transform-origin:0 50%}
+.hero-dot.on i::after{transform:scaleX(1)}
+.hero-carousel.run .hero-dot.on i::after{transform:scaleX(0);animation:heroFill 6s linear forwards}
+@keyframes heroFill{to{transform:scaleX(1)}}
+@media(max-width:700px){.hero-ctl{right:10px;top:10px}.hero-arrow{display:none}}
+@media(prefers-reduced-motion:reduce){.hero-carousel .hero-slide{transition:none}.hero-carousel.run .hero-dot.on i::after{animation:none;transform:scaleX(1)}}

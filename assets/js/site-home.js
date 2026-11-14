@@ -75,6 +75,64 @@
         '</a>';
     }
 
+
+    // 특집 최신 3건 자동 슬라이드 (첫 장은 서버가 미리 그려 둔 그대로 두어 깜빡임·레이아웃 이동이 없다)
+    function buildHeroSlider(box, items) {
+      var slides = items.map(function (it, i) {
+        return featureItemHtml(it, '', '특집', i === 0).replace('class="feature-item"', 'class="feature-item hero-slide"');
+      });
+      box.innerHTML = '<div class="hero-carousel" role="region" aria-roledescription="carousel" aria-label="주요 특집 기사">' +
+        slides.join('') +
+        '<div class="hero-ctl"><button type="button" class="hero-arrow" data-d="-1" aria-label="이전 특집">‹</button>' +
+        '<div class="hero-dots">' + items.map(function (_, i) {
+          return '<button type="button" class="hero-dot" data-i="' + i + '" aria-label="특집 ' + (i + 1) + ' / ' + items.length + '"><i></i></button>';
+        }).join('') + '</div>' +
+        '<button type="button" class="hero-arrow" data-d="1" aria-label="다음 특집">›</button></div></div>';
+      var car = box.firstChild, els = car.querySelectorAll('.hero-slide'), dots = car.querySelectorAll('.hero-dot');
+      var idx = 0, timer = null, paused = false, DELAY = 6000;
+      var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function show(n) {
+        idx = (n + els.length) % els.length;
+        els.forEach(function (el, i) {
+          var on = i === idx;
+          el.classList.toggle('on', on);
+          el.setAttribute('aria-hidden', on ? 'false' : 'true');
+          el.tabIndex = on ? 0 : -1;
+        });
+        dots.forEach(function (d, i) {
+          d.classList.remove('on'); void d.offsetWidth; // 진행 애니메이션 재시작
+          d.classList.toggle('on', i === idx);
+          d.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+        car.classList.toggle('run', !reduce && !paused);
+      }
+      function schedule() {
+        clearTimeout(timer);
+        if (reduce || paused || document.hidden) return;
+        timer = setTimeout(function () { show(idx + 1); schedule(); }, DELAY);
+      }
+      function pause(v) { paused = v; car.classList.toggle('run', !reduce && !paused); if (!v) show(idx); schedule(); if (v) clearTimeout(timer); }
+      car.addEventListener('click', function (e) {
+        var b = e.target.closest('.hero-dot, .hero-arrow');
+        if (!b) return;
+        show(b.classList.contains('hero-dot') ? +b.getAttribute('data-i') : idx + +b.getAttribute('data-d'));
+        schedule();
+      });
+      car.addEventListener('mouseenter', function () { pause(true); });
+      car.addEventListener('mouseleave', function () { pause(false); });
+      car.addEventListener('focusin', function () { pause(true); });
+      car.addEventListener('focusout', function () { pause(false); });
+      var x0 = null;
+      car.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+      car.addEventListener('touchend', function (e) {
+        if (x0 === null) return;
+        var dx = e.changedTouches[0].clientX - x0; x0 = null;
+        if (Math.abs(dx) > 40) { show(idx + (dx < 0 ? 1 : -1)); schedule(); }
+      }, { passive: true });
+      document.addEventListener('visibilitychange', function () { document.hidden ? clearTimeout(timer) : schedule(); });
+      show(0); schedule();
+    }
+
     var hero = latestOf(['특집']);
     var second = latestOf(['교단', '교단소식']);
     var third = latestOf(['신학']);
@@ -93,7 +151,12 @@
     var heroEl = document.getElementById('heroFeature');
     var secondEl = document.getElementById('secondFeature');
     var thirdEl = document.getElementById('thirdFeature');
-    if (heroEl) heroEl.innerHTML = featureItemHtml(hero, '', '특집', true);
+    if (heroEl) {
+      var heroes = pickMany(['특집'], 3);
+      heroes.forEach(mark);
+      heroEl.innerHTML = featureItemHtml(hero, '', '특집', true);
+      if (heroes.length > 1) buildHeroSlider(heroEl, heroes);
+    }
     if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '교단', false, true);
     if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;', '신학', false, true);
 
