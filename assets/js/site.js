@@ -249,6 +249,19 @@
       '.yf-tabbar > *{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:54px;padding:0;border:0;background:none;color:var(--ink-soft,#666);font:600 11px "Noto Sans KR",sans-serif;text-decoration:none;cursor:pointer;}' +
       '.yf-tabbar i{font-style:normal;line-height:0;display:block;}' +
       '.yf-tabbar .on{color:var(--red,#cc2b24);}' +
+      '.yf-tabbar{background:color-mix(in srgb,var(--paper,#fff) 90%,transparent);-webkit-backdrop-filter:blur(12px) saturate(1.4);backdrop-filter:blur(12px) saturate(1.4);transition:transform .28s cubic-bezier(.2,.7,.2,1);box-shadow:0 -6px 18px -12px rgba(15,29,58,.35);}' +
+      '.yf-tabbar.hide{transform:translateY(100%);}' +
+      '.yf-tabbar > *{position:relative;-webkit-tap-highlight-color:transparent;transition:color .15s,transform .12s;}' +
+      '.yf-tabbar > *:active{transform:scale(.92);}' +
+      '.yf-tabbar .on{font-weight:800;}' +
+      '.yf-tabbar .on::before{content:"";position:absolute;top:0;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--red,#cc2b24);}' +
+      '.yf-tabbar .on .ti{stroke-width:2.4;}' +
+      '.yf-tabbar.modal > .on:not([data-tab=cats]):not([data-tab=search]){color:var(--ink-soft,#666);font-weight:600;}' +
+      '.yf-tabbar.modal > .on:not([data-tab=cats]):not([data-tab=search])::before{display:none;}' +
+      '.yf-tabbar.modal{transform:none;z-index:560;}' +
+      '.cat-sheet .box{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px));}' +
+      'html.yf-tb-hidden #themeToggleBtn{bottom:calc(14px + env(safe-area-inset-bottom,0px)) !important;}' +
+      '@media (prefers-reduced-motion:reduce){.yf-tabbar,.yf-tabbar > *{transition:none;}}' +
       'body{padding-bottom:calc(54px + env(safe-area-inset-bottom,0px));}' +
       '#themeToggleBtn{bottom:calc(68px + env(safe-area-inset-bottom,0px)) !important;}' +
       'nav.catnav .cat-tools,nav.catnav .cnt{display:none;}' +
@@ -443,6 +456,39 @@
       if (k === 'search') { setSheet(false); setSearch(!searchOpen); }
       if (k === 'support') { setSheet(false); sup.click(); }
     });
+
+    // 카테고리 시트·검색이 열려 있으면 그 탭을 강조하고, 홈/이슈 강조는 잠시 끈다
+    function syncTabs() {
+      var c = tabbar.querySelector('[data-tab="cats"]'), s = tabbar.querySelector('[data-tab="search"]');
+      c.classList.toggle('on', !sheet.hidden);
+      if (s) s.classList.toggle('on', !!searchOpen);
+      tabbar.classList.toggle('modal', !sheet.hidden || !!searchOpen);
+      if (tabbar.classList.contains('modal')) { tabbar.classList.remove('hide'); document.documentElement.classList.remove('yf-tb-hidden'); }
+    }
+    ['click', 'keyup'].forEach(function (ev) {
+      document.addEventListener(ev, function () { setTimeout(syncTabs, 0); }, true);
+    });
+
+    // 아래로 스크롤하면 탭바를 숨겨 읽을 공간을 넓히고, 위로 올리면 다시 보여 준다
+    var lastY = window.scrollY, hidden = false, ticking = false;
+    function setHidden(h) {
+      if (h === hidden) return;
+      hidden = h;
+      tabbar.classList.toggle('hide', h);
+      document.documentElement.classList.toggle('yf-tb-hidden', h);
+    }
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var y = window.scrollY, d = y - lastY;
+        var atEnd = y + innerHeight >= document.documentElement.scrollHeight - 60;
+        if (tabbar.classList.contains('modal') || y < 120 || atEnd || d < -8) setHidden(false);
+        else if (d > 8) setHidden(true);
+        if (Math.abs(d) > 8) lastY = y;
+        ticking = false;
+      });
+    }, { passive: true });
 
     // 현재 위치 표시. '더보기' 안의 카테고리를 보고 있으면 그 이름을 버튼에 보여 준다.
     var currentCat = '';
