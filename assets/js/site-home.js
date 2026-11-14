@@ -58,14 +58,15 @@
       }).slice(0, count);
     }
 
-    function featureItemHtml(item, extraStyle, emptyLabel, eager) {
+    // alwaysImg: 사진 없는 기사도 CI 로고 썸네일을 넣어 카드 높이가 비지 않게 한다(교단·신학 카드)
+    function featureItemHtml(item, extraStyle, emptyLabel, eager, alwaysImg) {
       if (!item) {
         return emptyLabel ? '<div class="feature-item"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
           '<div class="body"><span class="tag" style="color:' + tagColor(emptyLabel) + ';">' + esc(emptyLabel) + '</span></div></div>' : '';
       }
       return '' +
         '<a class="feature-item" href="' + item.url + '"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
-          (eager || hasPhoto(item) ? thumbImgHtml(item, 'thumb', eager) : '') +
+          (eager || alwaysImg || hasPhoto(item) ? thumbImgHtml(item, 'thumb', eager) : '') +
           '<div class="body">' +
             '<span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
             '<h3>' + esc(item.title) + '</h3>' +
@@ -93,8 +94,8 @@
     var secondEl = document.getElementById('secondFeature');
     var thirdEl = document.getElementById('thirdFeature');
     if (heroEl) heroEl.innerHTML = featureItemHtml(hero, '', '특집', true);
-    if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '교단');
-    if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;', '신학');
+    if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '교단', false, true);
+    if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;', '신학', false, true);
 
     // 최신뉴스 티커: 항상 전체 최신 5건, 같은 묶음을 두 번 이어붙여 끊김 없이 순환
     var tickerGroup = ARTICLE_INDEX.slice(0, 5).map(function (item) {
