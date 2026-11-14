@@ -26,6 +26,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=Do+Hyeon&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/focus-hub.css">
+<link rel="stylesheet" href="assets/css/home-plus.css">
 <style>
   :root {
     --navy: #1c3fae;
@@ -1009,6 +1010,7 @@
 <script type="application/ld+json" id="yf-site">{"@context": "https://schema.org", "@graph": [{"@type": "NewsMediaOrganization", "@id": "https://yejangfocus.com/#org", "name": "예장포커스", "alternateName": "Yejang Focus", "url": "https://yejangfocus.com/", "logo": {"@type": "ImageObject", "url": "https://yejangfocus.com/assets/images/38701da0735806f0.webp"}, "email": "owenpej@naver.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"}, {"@type": "WebSite", "@id": "https://yejangfocus.com/#site", "url": "https://yejangfocus.com/", "name": "예장포커스", "inLanguage": "ko-KR", "publisher": {"@id": "https://yejangfocus.com/#org"}, "potentialAction": {"@type": "SearchAction", "target": "https://yejangfocus.com/%EA%B2%80%EC%83%89.html?q={search_term_string}", "query-input": "required name=search_term_string"}}]}</script>
 </head>
 <body>
+<div class="yf-progress" id="yfProgress" aria-hidden="true"></div>
 <a class="skip-link" href="#main">본문 바로가기</a>
 
 <div class="searchrow">
@@ -1025,9 +1027,10 @@
 <header class="masthead">
 <h1 style="position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;">예장포커스 — 교회를 바라보는 새로운 시선</h1>
   <div class="wrap masthead-row">
-    <a class="tv-link" href="https://www.youtube.com/@%EC%98%88%EC%9E%A5%ED%8F%AC%EC%BB%A4%EC%8A%A4" target="_blank" rel="noopener" aria-label="예포TV 유튜브 채널로 이동">
-      <img class="tv-logo" src="assets/images/18b19830e6e40f7d.webp" width="1194" height="921" decoding="async" alt="예포TV YEJANG FOCUS 유튜브 채널">
-    </a>
+    <div class="mh-left">
+      <time class="mh-date" id="mhDate"></time>
+      <a class="mh-tv" href="https://www.youtube.com/@%EC%98%88%EC%9E%A5%ED%8F%AC%EC%BB%A4%EC%8A%A4" target="_blank" rel="noopener" aria-label="예포TV 유튜브 채널로 이동"><span aria-hidden="true">▶</span> 예포TV</a>
+    </div>
     <a class="ci-link" href="https://yejangfocus.com/" aria-label="예장포커스 뉴스로 이동">
       <img class="ci-logo" src="assets/images/38701da0735806f0.webp" width="1926" height="481" decoding="async" alt="예장포커스 YEJANG FOCUS 교회를 바라보는 새로운 시선">
     </a>
@@ -1114,6 +1117,8 @@
   </div>
 
   <!-- 진행 중인 이슈 박스: 첫 화면에는 기사가 먼저 보이도록 기사 목록 아래에 둔다 -->
+  <section class="yf-feed" id="yfFeed" aria-label="카테고리별 최신 기사" hidden></section>
+
   <section class="focus-hub" id="focusHub" aria-label="오늘의 포커스"></section>
 
 </main>

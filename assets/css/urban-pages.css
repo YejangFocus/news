@@ -222,3 +222,36 @@ main#main > h1 { color: #000; font-weight: 900; }
   .yf-top .masthead .book-link { width: 38%; border-radius: 6px; }
   .yf-top .masthead .book-logo { border-radius: 6px; }
 }
+
+
+/* ───── 기사 읽기 품질 개선 ───── */
+/* 한글은 어절 단위로 줄바꿈: "목/사", "상/임회장단" 같은 글자 중간 끊김 방지 */
+.page h1, .page h2, .page h3, .page p, .page li, .page blockquote, .page figcaption, .page .subhead, .page .lede {
+  word-break: keep-all; overflow-wrap: break-word;
+}
+.page h1, .page h2, .page .subhead { text-wrap: balance; }
+.page p, .page li, .page blockquote { text-wrap: pretty; }
+.page p { line-height: 1.9; }
+.page h1 { line-height: 1.32; }
+/* 기사 위쪽 '오늘의 말씀'은 한 줄 띠로 줄여 본문이 더 빨리 보이게 */
+.page .verse-band { min-height: 0; padding: 10px 16px; }
+.page .verse-band::before { background-size: cover; background-position: 50% 100%; opacity: .55; }
+.page .verse-band .wrap { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 2px 12px; }
+.page .verse-band .vb-label { display: none; }
+.page .verse-band .vb-text { margin: 0; font-size: clamp(14px, 2vw, 17px); }
+.page .verse-band .vb-ref { margin: 0; }
+/* 앵커 이동 시 고정 메뉴에 가리지 않게 */
+.page h2[id] { scroll-margin-top: 72px; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* 일부 기사(side-links 마크업)의 모바일 헤더: 예포TV · CI · 바로가기를 한 줄로 */
+@media (max-width: 720px) {
+  .yf-top .masthead .masthead-row:has(.side-links) { grid-template-columns: minmax(0,.7fr) minmax(0,2.2fr) minmax(0,1.1fr) !important; gap: 6px !important; }
+  .yf-top .masthead .side-links { display: flex !important; grid-column: 3; grid-row: 1; justify-self: end; align-items: center; gap: 4px; width: 100%; }
+  .yf-top .masthead .side-links .book-link { flex: 0 0 34%; width: auto; }
+  .yf-top .masthead .side-links .gapck-link { flex: 1 1 0; min-width: 0; width: auto; }
+  .yf-top .masthead .side-links img { width: 100%; height: auto; }
+  .yf-top .masthead .masthead-row:has(.side-links) .tv-link { grid-column: 1; grid-row: 1; justify-self: start; width: 100%; }
+  .yf-top .masthead .masthead-row:has(.side-links) .ci-link { grid-column: 2; grid-row: 1; justify-self: center; width: 100%; }
+}

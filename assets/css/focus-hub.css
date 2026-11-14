@@ -42,8 +42,10 @@
     content: ''; position: absolute; left: 6px; top: 6px; width: 2px; height: var(--fh-fill, 0%); max-height: calc(100% - 12px);
     background: linear-gradient(#ffe38a, var(--red)); transition: height 1.1s cubic-bezier(.2,.7,.2,1);
   }
-  .fh-item { position: relative; padding: 0 0 18px; opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
-  .fh-item.in { opacity: 1; transform: none; }
+  .fh-item { position: relative; padding: 0 0 18px; transition: opacity .5s ease, transform .5s ease; }
+  /* 애니메이션은 JS(IntersectionObserver)가 .fh-anim 을 붙였을 때만 — 스크롤 없는 환경(미리보기·인쇄·캡처)에서도 내용이 보이도록 기본은 표시 */
+  .fh-timeline.fh-anim .fh-item { opacity: 0; transform: translateY(14px); }
+  .fh-timeline.fh-anim .fh-item.in { opacity: 1; transform: none; }
   .fh-item::before {
     content: ''; position: absolute; left: -22px; top: 5px; width: 14px; height: 14px; border-radius: 50%;
     background: #0f1d3a; border: 3px solid #ffe38a; box-sizing: border-box;

@@ -72,8 +72,18 @@
       '.yf-end a{text-decoration:none;color:inherit}' +
       '.yf-share{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 0;border-top:2px solid var(--ink,#111);border-bottom:1px solid var(--rule-soft,#ddd)}' +
       '.yf-share b{font:400 15px "Do Hyeon","Noto Sans KR",sans-serif;margin-right:auto}' +
-      '.yf-share button{font:700 13px "Noto Sans KR",sans-serif;cursor:pointer;color:var(--ink,#111);background:var(--paper,#fff);border:2px solid #111;border-radius:14px 3px 14px 3px;padding:7px 14px;box-shadow:2px 2px 0 #111}' +
-      '.yf-share button:hover{background:#ffe38a;color:#1c1a16}' +
+      '.yf-share button{font:600 13px "Noto Sans KR",sans-serif;cursor:pointer;color:var(--ink,#111);background:var(--paper,#fff);border:1px solid var(--rule-soft,#ccd);border-radius:999px;padding:8px 15px;transition:background .15s,border-color .15s,transform .12s}' +
+      '.yf-share button:hover{background:var(--accent-soft,#e6ebf2);border-color:var(--accent,#1f4a8a)}' +
+      '.yf-share button:active{transform:scale(.95)}' +
+      '.yf-toc{margin:6px 0 26px;border:1px solid var(--rule-soft,#d5dbe4);border-radius:10px;background:var(--paper,#fff);font-family:"Noto Sans KR",sans-serif}' +
+      '.yf-toc summary{cursor:pointer;padding:11px 16px;font-size:13.5px;font-weight:700;color:var(--ink-soft,#333);list-style:none;display:flex;justify-content:space-between;align-items:center}' +
+      '.yf-toc summary::-webkit-details-marker{display:none}' +
+      '.yf-toc summary::after{content:"＋";color:var(--muted,#667)}' +
+      '.yf-toc[open] summary::after{content:"－"}' +
+      '.yf-toc ol{margin:0;padding:2px 16px 14px 36px;font-size:14.5px;line-height:1.6}' +
+      '.yf-toc li{padding:4px 0;color:var(--muted,#667)}' +
+      '.yf-toc a{color:var(--ink,#111);text-decoration:none;border-bottom:1px solid transparent}' +
+      '.yf-toc a:hover,.yf-toc a.on{color:var(--accent,#1f4a8a);border-bottom-color:currentColor}' +
       '.yf-box{margin-top:22px;padding:18px 20px;border:2px solid #111;border-radius:4px 16px 4px 16px;box-shadow:4px 4px 0 #111;background:var(--paper,#fff)}' +
       '.yf-box h3{margin:0 0 4px;font:400 17px "Do Hyeon","Noto Sans KR",sans-serif;color:var(--ink,#111)}' +
       '.yf-box .k{font-size:12px;font-weight:700;color:#cc2b24}' +
@@ -122,6 +132,35 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     update();
+
+    // 2-1) 기사 목차: 소제목이 3개 이상인 긴 기사에서만. 눌러 해당 소제목으로 이동하고, 읽는 위치를 따라 강조한다.
+    (function () {
+      var main = page.querySelector('main') || page;
+      var hs = Array.prototype.filter.call(main.querySelectorAll('h2'), function (h) {
+        return !h.closest('.yf-end,.yf-top,nav,footer,aside,.yf-box,.yf-card') && h.textContent.trim();
+      });
+      if (hs.length < 3 || document.querySelector('.yf-toc')) return;
+      hs.forEach(function (h, i) { if (!h.id) h.id = 'sec-' + (i + 1); });
+      var det = document.createElement('details');
+      det.className = 'yf-toc';
+      det.innerHTML = '<summary>기사 목차 · ' + hs.length + '개 대목</summary><ol>' + hs.map(function (h) {
+        return '<li><a href="#' + esc(h.id) + '">' + esc(h.textContent.trim()) + '</a></li>';
+      }).join('') + '</ol>';
+      var after = page.querySelector('.byline') || page.querySelector('.subhead') || page.querySelector('h1');
+      if (!after) return;
+      after.parentNode.insertBefore(det, after.nextSibling);
+      if (!window.matchMedia || !matchMedia('(max-width:640px)').matches) det.open = true;
+      if ('IntersectionObserver' in window) {
+        var links = det.querySelectorAll('a');
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            Array.prototype.forEach.call(links, function (a) { a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id); });
+          });
+        }, { rootMargin: '-10% 0px -75% 0px' });
+        hs.forEach(function (h) { io.observe(h); });
+      }
+    })();
 
     // 3) 공유·링크 복사 (모바일에서는 기기 공유창에 카카오톡 등이 뜬다)
     var canon = document.querySelector('link[rel="canonical"]');

@@ -75,6 +75,64 @@
         '</a>';
     }
 
+
+    // 특집 최신 3건 자동 슬라이드 (첫 장은 서버가 미리 그려 둔 그대로 두어 깜빡임·레이아웃 이동이 없다)
+    function buildHeroSlider(box, items) {
+      var slides = items.map(function (it, i) {
+        return featureItemHtml(it, '', '특집', i === 0).replace('class="feature-item"', 'class="feature-item hero-slide"');
+      });
+      box.innerHTML = '<div class="hero-carousel" role="region" aria-roledescription="carousel" aria-label="주요 특집 기사">' +
+        slides.join('') +
+        '<div class="hero-ctl"><button type="button" class="hero-arrow" data-d="-1" aria-label="이전 특집">‹</button>' +
+        '<div class="hero-dots">' + items.map(function (_, i) {
+          return '<button type="button" class="hero-dot" data-i="' + i + '" aria-label="특집 ' + (i + 1) + ' / ' + items.length + '"><i></i></button>';
+        }).join('') + '</div>' +
+        '<button type="button" class="hero-arrow" data-d="1" aria-label="다음 특집">›</button></div></div>';
+      var car = box.firstChild, els = car.querySelectorAll('.hero-slide'), dots = car.querySelectorAll('.hero-dot');
+      var idx = 0, timer = null, paused = false, DELAY = 6000;
+      var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function show(n) {
+        idx = (n + els.length) % els.length;
+        els.forEach(function (el, i) {
+          var on = i === idx;
+          el.classList.toggle('on', on);
+          el.setAttribute('aria-hidden', on ? 'false' : 'true');
+          el.tabIndex = on ? 0 : -1;
+        });
+        dots.forEach(function (d, i) {
+          d.classList.remove('on'); void d.offsetWidth; // 진행 애니메이션 재시작
+          d.classList.toggle('on', i === idx);
+          d.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+        car.classList.toggle('run', !reduce && !paused);
+      }
+      function schedule() {
+        clearTimeout(timer);
+        if (reduce || paused || document.hidden) return;
+        timer = setTimeout(function () { show(idx + 1); schedule(); }, DELAY);
+      }
+      function pause(v) { paused = v; car.classList.toggle('run', !reduce && !paused); if (!v) show(idx); schedule(); if (v) clearTimeout(timer); }
+      car.addEventListener('click', function (e) {
+        var b = e.target.closest('.hero-dot, .hero-arrow');
+        if (!b) return;
+        show(b.classList.contains('hero-dot') ? +b.getAttribute('data-i') : idx + +b.getAttribute('data-d'));
+        schedule();
+      });
+      car.addEventListener('mouseenter', function () { pause(true); });
+      car.addEventListener('mouseleave', function () { pause(false); });
+      car.addEventListener('focusin', function () { pause(true); });
+      car.addEventListener('focusout', function () { pause(false); });
+      var x0 = null;
+      car.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+      car.addEventListener('touchend', function (e) {
+        if (x0 === null) return;
+        var dx = e.changedTouches[0].clientX - x0; x0 = null;
+        if (Math.abs(dx) > 40) { show(idx + (dx < 0 ? 1 : -1)); schedule(); }
+      }, { passive: true });
+      document.addEventListener('visibilitychange', function () { document.hidden ? clearTimeout(timer) : schedule(); });
+      show(0); schedule();
+    }
+
     var hero = latestOf(['특집']);
     var second = latestOf(['교단', '교단소식']);
     var third = latestOf(['신학']);
@@ -93,7 +151,12 @@
     var heroEl = document.getElementById('heroFeature');
     var secondEl = document.getElementById('secondFeature');
     var thirdEl = document.getElementById('thirdFeature');
-    if (heroEl) heroEl.innerHTML = featureItemHtml(hero, '', '특집', true);
+    if (heroEl) {
+      var heroes = pickMany(['특집'], 3);
+      heroes.forEach(mark);
+      heroEl.innerHTML = featureItemHtml(hero, '', '특집', true);
+      if (heroes.length > 1) buildHeroSlider(heroEl, heroes);
+    }
     if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '교단', false, true);
     if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;', '신학', false, true);
 
@@ -151,6 +214,74 @@
             '</div>' +
           '</li>';
       }).join('');
+    }
+
+    // ───── 카테고리별 최신 기사 탭 피드 ─────
+    var feed = document.getElementById('yfFeed');
+    if (feed) {
+      var cats = ['전체'];
+      ARTICLE_INDEX.forEach(function (a) { if (cats.indexOf(a.tag) === -1) cats.push(a.tag); });
+      var cur = '전체', shown = 6;
+      var fmt = function (d) { return d ? d.slice(5).replace('-', '.') : ''; };
+      var draw = function () {
+        var list = ARTICLE_INDEX.filter(function (a) { return cur === '전체' || a.tag === cur; });
+        var cards = list.slice(0, shown).map(function (a) {
+          return '<a class="yf-card yf-reveal" href="' + a.url + '"><div class="yf-img">' + thumbImgHtml(a, 'thumb') + '</div>' +
+            '<div class="yf-b"><div class="yf-meta"><b style="color:' + tagColor(a.tag) + ';">' + esc(a.tag) + '</b><span>' + fmt(a.date) + '</span></div>' +
+            '<h3>' + esc(a.title) + '</h3>' + (a.desc ? '<p>' + esc(a.desc) + '</p>' : '') + '</div></a>';
+        }).join('');
+        feed.innerHTML = '<div class="yf-feed-head"><h2>카테고리별 최신 기사</h2><span class="yf-feed-count">' + list.length + '건</span></div>' +
+          '<div class="yf-tabs" role="tablist">' + cats.map(function (c) {
+            return '<button class="yf-tab" role="tab" data-c="' + esc(c) + '" aria-selected="' + (c === cur) + '">' + esc(c) + '</button>';
+          }).join('') + '</div><div class="yf-grid">' + cards + '</div>' +
+          (list.length > shown ? '<button class="yf-more" type="button">기사 더 보기</button>' : '');
+        reveal(feed);
+      };
+      feed.addEventListener('click', function (e) {
+        var t = e.target.closest('.yf-tab, .yf-more');
+        if (!t) return;
+        if (t.classList.contains('yf-more')) shown += 6; else { cur = t.getAttribute('data-c'); shown = 6; }
+        draw();
+        var act = feed.querySelector('.yf-tab[aria-selected="true"]'); if (act && act.scrollIntoView) act.scrollIntoView({ inline: 'center', block: 'nearest' });
+      });
+      feed.hidden = false;
+      draw();
+    }
+
+    // 헤더 날짜
+    var mhDate = document.getElementById('mhDate');
+    if (mhDate) {
+      var now = new Date();
+      var wk = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
+      mhDate.textContent = now.getFullYear() + '년 ' + (now.getMonth() + 1) + '월 ' + now.getDate() + '일 ' + wk + '요일';
+      mhDate.setAttribute('datetime', now.toISOString().slice(0, 10));
+    }
+
+    // 스크롤 등장 효과
+    function reveal(scope) {
+      var els = (scope || document).querySelectorAll('.yf-reveal:not(.in)');
+      if (!('IntersectionObserver' in window)) { els.forEach(function (el) { el.classList.add('in'); }); return; }
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+      }, { rootMargin: '0px 0px -40px 0px' });
+      els.forEach(function (el, i) { el.style.transitionDelay = Math.min(i % 6, 5) * 60 + 'ms'; io.observe(el); });
+    }
+    ['.hero-slot', '.panel', '.focus-hub'].forEach(function (s) {
+      document.querySelectorAll(s).forEach(function (el) { el.classList.add('yf-reveal'); });
+    });
+    reveal();
+
+    // 페이지 읽기 진행바
+    var bar = document.getElementById('yfProgress');
+    if (bar) {
+      var tick = false;
+      window.addEventListener('scroll', function () {
+        if (tick) return; tick = true;
+        requestAnimationFrame(function () {
+          var h = document.documentElement.scrollHeight - innerHeight;
+          bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(scrollY / h, 1) : 0) + ')'; tick = false;
+        });
+      }, { passive: true });
     }
   }
 
