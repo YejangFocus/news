@@ -97,6 +97,7 @@
       tl.style.setProperty('--fh-fill', '100%');
       return;
     }
+    tl.classList.add('fh-anim');
     var io = hubObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (!e.isIntersecting) return;
@@ -108,6 +109,7 @@
         if (pct > cur) tl.style.setProperty('--fh-fill', pct + '%');
       });
     }, { threshold: 0.25 });
+    window.addEventListener('beforeprint', function () { tl.classList.remove('fh-anim'); tl.style.setProperty('--fh-fill', '100%'); });
     Array.prototype.forEach.call(items, function (n, i) {
       n.style.transitionDelay = Math.min(i * 70, 420) + 'ms';
       io.observe(n);
