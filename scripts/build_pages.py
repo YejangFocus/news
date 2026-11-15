@@ -295,9 +295,16 @@ def render_home_blocks(index):
     # 끊김 없는 무한 흐름: 같은 묶음을 한 번 더 이어붙이고 -50%까지 이동
     blocks["tickerBox"] = ticker_group + ticker_group.replace(
         '<span class="ticker-group">', '<span class="ticker-group" aria-hidden="true">', 1)
-    blocks["heroFeature"] = _feature(latest(["특집"]), "", "특집", True)
-    blocks["secondFeature"] = _feature(latest(["교단", "교단소식"]), "", "교단", always_img=True)
-    blocks["thirdFeature"] = _feature(latest(["신학"]), "border-bottom:none;", "신학", always_img=True)
+    # 대표 기사: 카테고리와 무관하게 가장 최근 기사(슬라이더는 최신 3건). 교단·신학 카드는 대표 기사와 겹치지 않게 고른다.
+    heroes = index[:3]
+    hero_urls = {a["url"] for a in heroes}
+
+    def latest_new(tags):
+        return next((a for a in index if a["tag"] in tags and a["url"] not in hero_urls), None)
+
+    blocks["heroFeature"] = _feature(heroes[0] if heroes else None, "", "속보", True)
+    blocks["secondFeature"] = _feature(latest_new(["교단", "교단소식"]), "", "교단", always_img=True)
+    blocks["thirdFeature"] = _feature(latest_new(["신학"]), "border-bottom:none;", "신학", always_img=True)
     rows = []
     for cat in ["목회", "사설", "노회", "인물", "교계"]:
         it = next((a for a in index if a["tag"] == cat), None)
@@ -309,20 +316,22 @@ def render_home_blocks(index):
     blocks["plainList"] = "".join(rows)
     # 같은 기사가 홈 여러 칸에 반복되지 않도록, 본문·칼럼 칸에 쓴 기사는 '최신 소식'에서 뺀다(site-home.js 와 같은 규칙).
     columns = many(["칼럼"], 3)
-    used = {a["url"] for a in [latest(["특집"]), latest(["교단", "교단소식"]), latest(["신학"]), *columns] if a}
+    used = {a["url"] for a in [*heroes, latest_new(["교단", "교단소식"]), latest_new(["신학"]), *columns] if a}
     for cat in ["목회", "사설", "노회", "인물", "교계"]:
         it = next((a for a in index if a["tag"] == cat), None)
         if it:
             used.add(it["url"])
     # '최신 소식'은 다른 칸과 겹쳐도 빼지 않고 전체 기사를 최신순 그대로 보여 준다(site-home.js 와 같은 규칙).
-    latest_hero = index[0] if index else None
-    latest_list = index[1:7]
+    # 대표 기사 슬라이더(최신 3건)에 나온 기사는 빼고 그 다음 기사부터 보여 준다.
+    rest = index[len(heroes):]
+    latest_hero = rest[0] if rest else None
+    latest_list = rest[1:7]
     numerals = ["②", "③", "④", "⑤", "⑥", "⑦"]  # 맨 위 사진이 ①
     blocks["numList"] = "".join(
         f'<li><span class="num">{numerals[i]}</span><a href="{a["url"]}">{esc(a["title"])}</a></li>'
         for i, a in enumerate(latest_list))
     blocks["modHero"] = ("" if not latest_hero else
-                         f'<a class="mod-hero" href="{latest_hero["url"]}">{_home_thumb(latest_hero, "thumb", True, "(max-width: 700px) 100vw, 420px")}'
+                         f'<a class="mod-hero" href="{latest_hero["url"]}">{_home_thumb(latest_hero, "thumb", False, "(max-width: 700px) 100vw, 420px")}'
                          + f'<span class="hero-title"><span class="num">①</span><span class="t">{esc(latest_hero["title"])}</span></span></a>')
     blocks["sideList"] = "".join(
         (f'<li><a href="{a["url"]}">{_home_thumb(a, "thumb")}</a>' if _has_photo(a) else '<li>')
