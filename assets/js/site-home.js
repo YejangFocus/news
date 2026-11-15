@@ -79,15 +79,15 @@
     // 특집 최신 3건 자동 슬라이드 (첫 장은 서버가 미리 그려 둔 그대로 두어 깜빡임·레이아웃 이동이 없다)
     function buildHeroSlider(box, items) {
       var slides = items.map(function (it, i) {
-        return featureItemHtml(it, '', '특집', i === 0).replace('class="feature-item"', 'class="feature-item hero-slide"');
+        return featureItemHtml(it, '', '속보', i === 0).replace('class="feature-item"', 'class="feature-item hero-slide"');
       });
-      box.innerHTML = '<div class="hero-carousel" role="region" aria-roledescription="carousel" aria-label="주요 특집 기사">' +
+      box.innerHTML = '<div class="hero-carousel" role="region" aria-roledescription="carousel" aria-label="주요 기사">' +
         slides.join('') +
-        '<div class="hero-ctl"><button type="button" class="hero-arrow" data-d="-1" aria-label="이전 특집">‹</button>' +
+        '<div class="hero-ctl"><button type="button" class="hero-arrow" data-d="-1" aria-label="이전 기사">‹</button>' +
         '<div class="hero-dots">' + items.map(function (_, i) {
           return '<button type="button" class="hero-dot" data-i="' + i + '" aria-label="특집 ' + (i + 1) + ' / ' + items.length + '"><i></i></button>';
         }).join('') + '</div>' +
-        '<button type="button" class="hero-arrow" data-d="1" aria-label="다음 특집">›</button></div></div>';
+        '<button type="button" class="hero-arrow" data-d="1" aria-label="다음 기사">›</button></div></div>';
       var car = box.firstChild, els = car.querySelectorAll('.hero-slide'), dots = car.querySelectorAll('.hero-dot');
       var idx = 0, timer = null, paused = false, DELAY = 6000;
       var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -133,9 +133,16 @@
       show(0); schedule();
     }
 
-    var hero = latestOf(['특집']);
-    var second = latestOf(['교단', '교단소식']);
-    var third = latestOf(['신학']);
+    // 대표 기사: 카테고리와 무관하게 가장 최근 기사(슬라이더는 최신 3건). 교단·신학 카드는 대표 기사와 겹치지 않게 고른다.
+    var heroes = ARTICLE_INDEX.slice(0, 3);
+    var hero = heroes[0] || null;
+    function latestNew(tags) {
+      return ARTICLE_INDEX.find(function (item) {
+        return tags.indexOf(item.tag) !== -1 && heroes.indexOf(item) === -1;
+      }) || null;
+    }
+    var second = latestNew(['교단', '교단소식']);
+    var third = latestNew(['신학']);
 
     // 홈에서 같은 기사가 여러 칸에 반복되지 않도록, 본문·칼럼 칸에 쓴 기사를 기록해 두었다가
     // '최신 소식'에서는 그것들을 뺀다. (맨 위 티커는 새 기사 알림이라 예외)
@@ -152,9 +159,8 @@
     var secondEl = document.getElementById('secondFeature');
     var thirdEl = document.getElementById('thirdFeature');
     if (heroEl) {
-      var heroes = pickMany(['특집'], 3);
       heroes.forEach(mark);
-      heroEl.innerHTML = featureItemHtml(hero, '', '특집', true);
+      heroEl.innerHTML = featureItemHtml(hero, '', '속보', true);
       if (heroes.length > 1) buildHeroSlider(heroEl, heroes);
     }
     if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '교단', false, true);
@@ -184,8 +190,9 @@
 
     // 우측 '최신 소식': 본문 칸에 이미 나온 기사를 뺀 최신 기사. 큰 사진은 사진이 있는 첫 기사로.
     // 다른 칸에 나온 기사도 빼지 않고, 전체 기사를 최신순 그대로: 맨 위 큰 칸이 가장 최신, 이어서 ①~⑥.
-    var latestHero = ARTICLE_INDEX[0] || null;
-    var latestList = ARTICLE_INDEX.slice(1, 7); // 맨 위 사진이 ①, 목록은 ②부터
+    var restArticles = ARTICLE_INDEX.slice(heroes.length); // 대표 기사 슬라이더(최신 3건)에 나온 기사는 뺀다
+    var latestHero = restArticles[0] || null;
+    var latestList = restArticles.slice(1, 7); // 맨 위 사진이 ①, 목록은 ②부터
     var numList = document.getElementById('numList');
     if (numList) {
       var numerals = ['②', '③', '④', '⑤', '⑥', '⑦'];
@@ -197,7 +204,7 @@
     if (modHero) {
       modHero.innerHTML = !latestHero ? '' :
         '<a class="mod-hero" href="' + latestHero.url + '">' +
-          thumbImgHtml(latestHero, 'thumb', true, '(max-width: 700px) 100vw, 420px') +
+          thumbImgHtml(latestHero, 'thumb', false, '(max-width: 700px) 100vw, 420px') +
           '<span class="hero-title"><span class="num">①</span><span class="t">' + esc(latestHero.title) + '</span></span>' +
         '</a>';
     }
