@@ -2,8 +2,8 @@
   "_설명": "운영 설정 파일입니다. 비워 두면 해당 기능은 꺼진 상태(또는 이메일 방식)로 동작합니다. 값만 채우고 저장하면 사이트 전체에 반영됩니다.",
   "analytics": {
     "_설명": "provider: ga4 | goatcounter | naver. id: GA4 측정 ID(G-XXXXXXX) / GoatCounter 코드 / 네이버 애널리틱스 사이트 ID. 켜면 개인정보처리방침에 방문 통계 수집 안내를 넣어 주세요.",
-    "provider": "",
-    "id": ""
+    "provider": "goatcounter",
+    "id": "yejangfocus"
   },
   "newsletter": {
     "_설명": "구독 페이지 주소(예: 스티비 구독 페이지). 비워 두면 구독 신청 이메일(mailto)로 연결됩니다.",
