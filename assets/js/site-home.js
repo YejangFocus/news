@@ -218,18 +218,6 @@
           '<span class="hero-title"><span class="num">①</span><span class="t">' + esc(latestHero.title) + '</span>' + dateHtml(latestHero) + '</span>' +
         '</a>';
     }
-    // 분류별 최신 기사 칸 (build_pages.py 의 HOME_CATEGORIES 와 같은 값)
-    var catSections = document.getElementById('catSections');
-    if (catSections) {
-      catSections.innerHTML = ['교단', '목회', '노회', '신학', '사설', '특집'].map(function (cat) {
-        var items = ARTICLE_INDEX.filter(function (a) { return a.tag === cat; }).slice(0, 4);
-        if (!items.length) return '';
-        return '<section class="panel cat-card"><div class="mod-head"><h3>' + esc(cat) + '</h3>' +
-          '<a class="more" href="/' + cat + '/">더보기〉</a></div><ul class="cat-list">' +
-          items.map(function (a) { return '<li><a href="' + a.url + '">' + esc(a.title) + '</a>' + dateHtml(a) + '</li>'; }).join('') +
-          '</ul></section>';
-      }).join('');
-    }
     var sideList = document.getElementById('sideList');
     if (sideList) {
       sideList.innerHTML = columns.map(function (item) {
