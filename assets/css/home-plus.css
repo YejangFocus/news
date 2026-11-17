@@ -76,3 +76,25 @@ header.masthead .book-logo,header.masthead .gapck-logo{display:block;height:100%
   header.masthead .right-group .gapck-link{flex:0 0 auto}
   header.masthead .book-link,header.masthead .gapck-link{height:40px;width:auto;border-radius:8px}
 }
+
+/* 기사 날짜 표기(카드·목록 공통) */
+.date{display:block;font-size:12px;line-height:1.4;color:var(--ink-faint);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.feature-item .body .date{margin-top:8px}
+.hero-slot .feature-item .body .date{color:#d6dcf0}
+.plain-list li .date,.num-list li .date{flex:none;white-space:nowrap;margin-left:auto;padding-left:8px}
+.mod-hero .hero-title{flex-wrap:wrap}
+.mod-hero .hero-title .t{flex:1 1 0;min-width:0}
+.mod-hero .hero-title .date{flex-basis:100%;padding-left:calc(1em + 9px);margin-top:-4px}
+.side-list .body .date{margin-top:5px}
+
+/* 최신뉴스 티커 일시정지 버튼 (움직이는 콘텐츠는 멈출 수 있어야 한다) */
+.ticker-pause{flex:none;width:28px;height:28px;border:0;border-radius:50%;background:transparent;color:var(--ink-soft);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0}
+.ticker-pause:hover{background:var(--hair);color:var(--ink)}
+.ticker-pause svg{width:14px;height:14px;fill:currentColor}
+.ticker-pause .ic-play{display:none}
+.ticker-bar.is-paused .ticker-track{animation-play-state:paused!important}
+.ticker-bar.is-paused .ticker-pause .ic-play{display:block}
+.ticker-bar.is-paused .ticker-pause .ic-pause{display:none}
+
+/* 이모지 대신 SVG 아이콘 */
+.ico{width:1em;height:1em;display:inline-block;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
