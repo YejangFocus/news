@@ -1096,3 +1096,19 @@ footer .flinks a { padding: 3px 0; }
 :root[data-theme="dark"] .yf-sub.yf-sub-home { background: #1a1a16; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .yf-sub.yf-sub-home { background: var(--paper-alt); } }
 @media (max-width: 640px) { .yf-sub.yf-sub-home { padding: 16px 18px; } .yf-sub.yf-sub-home .row { width: 100%; } .yf-sub.yf-sub-home .row a, .yf-sub.yf-sub-home .row button { flex: 1 1 auto; text-align: center; } }
+
+/* ---------- 홈 상단 압축: 히어로 기사가 첫 화면에 더 크게 보이도록 (홈 전용) ---------- */
+body:has(#heroFeature) header.masthead { padding-bottom: 4px; }
+body:has(#heroFeature) .masthead .ci-logo { max-width: 270px; }
+body:has(#heroFeature) .masthead .masthead-row { gap: 8px; }
+body:has(#heroFeature) .verse-band { padding: 5px 16px; }
+body:has(#heroFeature) .verse-band .vb-text { font-size: 13.5px; }
+body:has(#heroFeature) .verse-band .vb-ref { font-size: 11.5px; }
+body:has(#heroFeature) main > div:first-child { margin: 10px 0 !important; }
+body:has(#heroFeature) .home-grid { padding-top: 0; }
+@media (max-width: 720px) {
+  body:has(#heroFeature) .masthead .ci-logo { width: min(172px, 46vw); }
+  body:has(#heroFeature) .verse-band { padding: 4px 14px; }
+  body:has(#heroFeature) main > div:first-child { margin: 8px 0 !important; }
+}
+body:has(#heroFeature) nav.catnav .brandmark { padding-top: 8px; padding-bottom: 8px; }
