@@ -384,7 +384,7 @@ def build_tip_page():
     <button type="submit">보내기</button>
     <p id="tipOut" class="out" aria-live="polite"></p>
   </form>
-  <noscript><p class="yf-empty">폼을 쓰려면 자바스크립트를 켜 주세요. 이메일로 보내셔도 됩니다: <a href="mailto:owenpej@naver.com">owenpej@naver.com</a></p></noscript>
+  <noscript><p class="yf-empty">폼을 쓰려면 자바스크립트를 켜 주세요. 이메일로 보내셔도 됩니다: <a href="mailto:contact@yejangfocus.com">contact@yejangfocus.com</a></p></noscript>
   </main>
   <style>
     .yf-tip{display:flex;flex-direction:column;gap:6px;margin:18px 0 28px;max-width:640px;font-family:'Noto Sans KR',sans-serif;position:relative;}

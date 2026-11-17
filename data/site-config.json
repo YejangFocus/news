@@ -8,13 +8,13 @@
   "newsletter": {
     "_설명": "구독 페이지 주소(예: 스티비 구독 페이지). 비워 두면 구독 신청 이메일(mailto)로 연결됩니다.",
     "url": "",
-    "email": "owenpej@naver.com"
+    "email": "contact@yejangfocus.com"
   },
   "kakaoChannel": "",
   "form": {
     "_설명": "제보·정정 청구 폼의 전송 주소(예: Formspree https://formspree.io/f/xxxxxxx). 비워 두면 작성 내용이 담긴 이메일 작성창이 열립니다.",
     "endpoint": "",
-    "email": "owenpej@naver.com"
+    "email": "contact@yejangfocus.com"
   },
   "giscus": {
     "_설명": "기사 하단 의견란(giscus). GitHub 저장소의 Discussions를 켠 뒤 giscus.app 에서 나온 값 4개를 채우면 켜집니다. 교단 이슈는 민감하니 운영 방침을 정한 뒤 켜세요.",

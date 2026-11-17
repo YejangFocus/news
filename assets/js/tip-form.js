@@ -44,7 +44,7 @@
     var d = {};
     ['type', 'url', 'message', 'name', 'contact', 'address'].forEach(function (n) { d[n] = form.elements[n].value.trim(); });
     var endpoint = (cfg.form && cfg.form.endpoint) || '';
-    var email = (cfg.form && cfg.form.email) || 'owenpej@naver.com';
+    var email = (cfg.form && cfg.form.email) || 'contact@yejangfocus.com';
     var btn = form.querySelector('button[type=submit]');
     if (endpoint) {
       btn.disabled = true; out.textContent = '보내는 중입니다…';
