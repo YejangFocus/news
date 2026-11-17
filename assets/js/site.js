@@ -593,6 +593,7 @@
     var resultsBox = document.getElementById('searchResults');
     if (!input || !resultsBox) return;
     var wrap = input.closest('.wrap');
+    if (input.form) input.form.addEventListener('submit', function (e) { e.preventDefault(); });
     input.placeholder = '기사 검색 (제목·내용 모두 검색)';
     var st = document.createElement('style');
     st.textContent =
