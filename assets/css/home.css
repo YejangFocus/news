@@ -1033,3 +1033,24 @@ header.masthead .gapck-link:hover { transform: none; opacity: .85; }
 .card-pair .feature-item p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; min-height: 0; height: 4.95em; }
 .feature-item .thumb, .side-list .thumb, .mod-hero .thumb { background: var(--paper-alt); }
 .hero-slot .feature-item .thumb { background: var(--navy-ink); }
+
+/* ===== 모바일·가독성·푸터 보정 ===== */
+/* 8) 옅은 회색 글자의 대비를 WCAG AA(4.5:1) 수준으로 */
+:root { --ink-faint: #756f5d; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ink-faint: #9a9786; } }
+:root[data-theme="dark"] { --ink-faint: #9a9786; }
+
+/* 6) 모바일 */
+@media (max-width: 640px) {
+  /* 카테고리 바: 오른쪽이 더 있다는 것을 흐림으로 알려 줌 */
+  nav.catnav .wrap { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent 100%); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent 100%); }
+  /* 두 번째·세 번째 기사 카드: 한 줄 카드(왼쪽 사진, 오른쪽 제목)로 줄여 한 화면에 더 많이 보이게 */
+  .card-pair { gap: 12px; }
+  .card-pair .feature-item { flex-direction: row; align-items: stretch; }
+  .card-pair .feature-item .thumb { width: 40%; flex: none; height: auto; aspect-ratio: auto; min-height: 120px; object-fit: cover; }
+  .card-pair .feature-item .body { padding: 12px 14px; }
+  .card-pair .feature-item h3 { font-size: 15.5px; height: auto; -webkit-line-clamp: 3; }
+  .card-pair .feature-item p { display: none; }
+}
+/* 7) 푸터 링크: 터치하기 쉽게 줄 간격 확보 */
+footer .flinks a { padding: 3px 0; }
