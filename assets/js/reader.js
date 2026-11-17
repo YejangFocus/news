@@ -119,20 +119,21 @@
     '.yf-sub small{display:block;margin-top:12px;font-size:12px;color:var(--muted,#777)}.yf-sub small a{text-decoration:underline}' +
     '.yf-cmt{margin:26px 0 0;font-family:"Noto Sans KR",sans-serif}.yf-cmt h3{margin:0 0 4px;font:400 17px "Do Hyeon","Noto Sans KR",sans-serif}.yf-cmt p{margin:0 0 10px;font-size:12.5px;color:var(--muted,#777)}' +
     '@media print{.yf-sub,.yf-cmt{display:none}}';
-  function subBox(articleUrl) {
+  function subBox(articleUrl, home) {
     var n = cfg.newsletter || {};
     var mail = n.url || ('mailto:' + (n.email || 'contact@yejangfocus.com') + '?subject=' + encodeURIComponent('[구독 신청]'));
     var ext = n.url ? ' target="_blank" rel="noopener"' : '';
     var tip = TIP + (articleUrl ? '?type=' + encodeURIComponent('정정 요청') + '&url=' + encodeURIComponent(articleUrl) : '');
     var d = document.createElement('div');
-    d.className = 'yf-sub';
-    d.innerHTML = '<b>예장포커스 소식 받아보기</b><p>총회·교계 소식을 놓치지 않도록, 편한 방법으로 구독하세요.</p><div class="row">' +
+    d.className = 'yf-sub' + (home ? ' yf-sub-home' : '');
+    if (home) d.id = 'homeSubscribe';
+    d.innerHTML = (home ? '<div class="ys-text">' : '') + '<b>예장포커스 소식 받아보기</b><p>총회·교계 소식을 놓치지 않도록, 편한 방법으로 구독하세요.</p>' + (home ? '</div>' : '') + '<div class="row">' +
       '<a class="pri" href="' + esc(mail) + '"' + ext + ' data-t="subscribe_email">이메일 구독</a>' +
       (cfg.kakaoChannel ? '<a href="' + esc(cfg.kakaoChannel) + '" target="_blank" rel="noopener" data-t="subscribe_kakao">카카오톡 채널</a>' : '') +
       '<a href="' + YOUTUBE + '" target="_blank" rel="noopener" data-t="subscribe_youtube">예포TV 구독</a>' +
       '<a href="' + esc(root) + 'feed.xml" data-t="subscribe_rss">RSS</a>' +
       '<button type="button" data-yf-install hidden>앱 설치</button></div>' +
-      '<small>기사 제보나 잘못된 내용 신고는 <a href="' + tip + '">제보·정정 요청</a>에서 받습니다.</small>';
+      (home ? '' : '<small>기사 제보나 잘못된 내용 신고는 <a href="' + tip + '">제보·정정 요청</a>에서 받습니다.</small>');
     d.addEventListener('click', function (e) {
       var a = e.target.closest ? e.target.closest('[data-t]') : null;
       if (a) track(a.getAttribute('data-t'));
@@ -179,6 +180,16 @@
     }, { passive: true });
   }
 
+  // ── 홈: 오늘의 포커스 아래 구독 띠(정적 기본 마크업을 설정이 반영된 상자로 교체) ──
+  function onHome() {
+    var ph = document.getElementById('homeSubscribe');
+    if (!ph || ph.getAttribute('data-ready')) return;
+    addCss();
+    var box = subBox('', true);
+    box.setAttribute('data-ready', '1');
+    ph.parentNode.replaceChild(box, ph);
+  }
+
   // ── 주간 브리핑 페이지: 구독 상자 ─────────────────────────────────────────
   function onBriefing() {
     var br = document.getElementById('briefing');
@@ -196,6 +207,7 @@
       initAnalytics();
       fixFooter();
       onBriefing();
+      onHome();
       if (window.__yfArticle) onArticle();
       document.addEventListener('yf:article', onArticle);
     });
