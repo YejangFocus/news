@@ -29,23 +29,12 @@
 <link rel="stylesheet" href="assets/css/focus-hub.css">
 <link rel="stylesheet" href="assets/css/home-plus.css">
 <link rel="stylesheet" href="assets/css/home.css">
+<link rel="stylesheet" href="assets/css/site-ui.css">
 <script type="application/ld+json" id="yf-site">{"@context": "https://schema.org", "@graph": [{"@type": "NewsMediaOrganization", "@id": "https://yejangfocus.com/#org", "name": "예장포커스", "alternateName": "Yejang Focus", "url": "https://yejangfocus.com/", "logo": {"@type": "ImageObject", "url": "https://yejangfocus.com/assets/images/38701da0735806f0.webp"}, "email": "contact@yejangfocus.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"}, {"@type": "WebSite", "@id": "https://yejangfocus.com/#site", "url": "https://yejangfocus.com/", "name": "예장포커스", "inLanguage": "ko-KR", "publisher": {"@id": "https://yejangfocus.com/#org"}, "potentialAction": {"@type": "SearchAction", "target": "https://yejangfocus.com/%EA%B2%80%EC%83%89.html?q={search_term_string}", "query-input": "required name=search_term_string"}}]}</script>
 </head>
 <body>
 <div class="yf-progress" id="yfProgress" aria-hidden="true"></div>
 <a class="skip-link" href="#main">본문 바로가기</a>
-
-<div class="searchrow">
-  <div class="wrap" style="position:relative;">
-    <form id="siteSearchForm" role="search">
-      <span class="search-ic" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
-      <label class="sr-only" for="siteSearchInput">기사 검색</label>
-      <input type="text" id="siteSearchInput" placeholder="기사 검색 (제목·내용 모두 검색)" autocomplete="off">
-    </form>
-    <ul id="searchResults" class="search-results" hidden></ul>
-    <button type="button" class="support-btn">✊ 후원문의</button>
-  </div>
-</div>
 
 <header class="masthead">
 <h1 class="sr-only">예장포커스 — 교회를 바라보는 새로운 시선</h1>
@@ -82,9 +71,24 @@
       <a data-cat="인물" href="/인물/">인물</a>
       <a data-cat="교계" href="/교계/">교계</a>
       <a data-cat="칼럼" href="/칼럼/">칼럼</a>
+      <a data-cat="브리핑" href="/주간브리핑.html" class="cat-brief"><span class="lg">주간브리핑</span><span class="sh">브리핑</span></a>
+    </div>
+    <div class="cat-tools">
+      <button type="button" class="cat-ico" aria-label="기사 검색" aria-expanded="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+      <button type="button" class="support-btn" aria-label="후원문의"><span class="sb-ic" aria-hidden="true">✊</span><span class="sb-tx">후원문의</span></button>
     </div>
   </div>
 </nav>
+<div class="searchrow cat-search" hidden>
+  <div class="wrap" style="position:relative;">
+    <form id="siteSearchForm" role="search">
+      <span class="search-ic" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+      <label class="sr-only" for="siteSearchInput">기사 검색</label>
+      <input type="text" id="siteSearchInput" placeholder="기사 검색 (제목·내용 모두 검색)" autocomplete="off">
+    </form>
+    <ul id="searchResults" class="search-results" hidden></ul>
+  </div>
+</div>
 
 <aside class="verse-band" aria-label="오늘의 말씀">
   <div class="wrap">

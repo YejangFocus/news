@@ -4,6 +4,13 @@
 (function () {
   var root = typeof window.SITE_ROOT === 'string' ? window.SITE_ROOT : '';
 
+  // 공통 UI 스타일(메뉴·배지·검색 결과·후원 팝업). 홈은 <link>로 직접 싣고, 나머지 페이지는 여기서 한 번 붙인다.
+  if (!document.querySelector('link[href$="assets/css/site-ui.css"]')) {
+    var uiCss = document.createElement('link');
+    uiCss.rel = 'stylesheet'; uiCss.href = root + 'assets/css/site-ui.css';
+    document.head.appendChild(uiCss);
+  }
+
   // 독자 확보·운영 기능(PWA·통계·구독 안내·제보 링크)은 별도 파일에서 불러온다.
   (function () { var s = document.createElement('script'); s.src = root + 'assets/js/reader.js'; s.defer = true; document.head.appendChild(s); })();
 
@@ -136,11 +143,6 @@
     try { return decodeURIComponent(seg); } catch (e) { return seg; }
   }
   function initBadges(articles) {
-    var st = document.createElement('style');
-    st.textContent = '.yf-new{display:inline-block;margin-right:5px;padding:0 5px;border-radius:3px;background:#cc2b24;color:#fff;' +
-      'font:700 10.5px/17px "Noto Sans KR",sans-serif;vertical-align:2px;letter-spacing:0}.yf-new.hot{background:#111}' +
-      '.yf-read{opacity:.62}';
-    document.head.appendChild(st);
     var byTail = {};
     articles.forEach(function (a) { byTail[pathTail(a.url)] = a; });
     var SEL = '.feature-item h3,.side-list h4,#tickerBox a,#numList a,#modHero .hero-title .t,#plainList a,.yf-list h2,.aa-list a,.headline h3';
@@ -218,74 +220,12 @@
     return NAV_IS_ISSUES ? '이슈' : NAV_IS_BRIEFING ? '브리핑' : (window.SITE_CAT || '전체');
   }
 
-  var NAV_CSS =
-    'nav.catnav .cat-tools{display:flex;align-items:center;gap:8px;flex:none;margin-left:auto;padding-left:10px;}' +
-    'nav.catnav .cat-ico{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:rgba(128,128,128,.14);color:inherit;font-size:16px;line-height:1;cursor:pointer;}' +
-    'nav.catnav .cat-ico:hover,nav.catnav .cat-ico[aria-expanded="true"]{background:rgba(128,128,128,.3);}' +
-    'nav.catnav .cat-tools .support-btn{display:inline-flex;align-items:center;background:linear-gradient(90deg,#ff9f1c,#cc2b24);color:#fff;border:0;height:34px;padding:0 14px;font-size:13.5px;border-radius:17px;box-shadow:none;animation:none;white-space:nowrap;gap:4px;}' +
-    'nav.catnav .cat-tools .support-btn:hover{transform:none;}' +
-    '.catlist .cat-more-btn .car{font-size:10px;margin-left:5px;opacity:.8;}' +
-    '.catlist .cat-brief .sh{display:none;}' +
-    '.cat-panel{position:fixed;z-index:35;background:var(--paper,#fff);color:var(--ink,#111);border:1px solid var(--hair-strong,#ccc);border-radius:10px;box-shadow:0 14px 30px -12px rgba(15,29,58,.4);padding:6px;min-width:150px;}' +
-    '.cat-panel[hidden]{display:none;}' +
-    '.cat-panel a{display:block;padding:10px 14px;border-radius:6px;font:700 14px/1.2 "Noto Sans KR",sans-serif;color:inherit;text-decoration:none;white-space:nowrap;}' +
-    '.cat-panel a:hover{background:var(--paper-alt,#f1f2f7);}' +
-    '.cat-panel a.active{color:var(--red,#cc2b24);}' +
-    '.searchrow.cat-search{position:fixed;left:0;right:0;z-index:35;background:var(--paper,#fff);border-bottom:1px solid var(--hair-strong,#ccc);box-shadow:0 14px 24px -14px rgba(15,29,58,.4);}' +
-    '.searchrow.cat-search[hidden]{display:none;}' +
-    '.searchrow.cat-search .search-results{left:18px;right:18px;}' +
-    'nav.catnav .cnt,.cat-panel .cnt,.cat-sheet .cnt{margin-left:5px;font-size:10.5px;font-weight:700;opacity:.9;}' +
-    '.cat-panel a.zero,.cat-sheet a.zero{opacity:.45;}' +
-    '.yf-tabbar,.cat-sheet{display:none;}' +
-    '.cat-sheet{position:fixed;inset:0;z-index:550;background:rgba(15,29,58,.5);align-items:flex-end;}' +
-    '.cat-sheet .box{width:100%;box-sizing:border-box;background:var(--paper,#fff);color:var(--ink,#111);border-radius:16px 16px 0 0;padding:16px 14px calc(16px + env(safe-area-inset-bottom,0px));max-height:80vh;overflow:auto;}' +
-    '.cat-sheet h3{margin:0 0 12px;font:700 15px "Noto Sans KR",sans-serif;color:inherit;}' +
-    '.cat-sheet .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}' +
-    '.cat-sheet a{display:flex;align-items:center;justify-content:center;padding:12px 6px;border:1px solid var(--hair-strong,#ccc);border-radius:10px;font:700 14px "Noto Sans KR",sans-serif;color:inherit;text-decoration:none;}' +
-    '.cat-sheet a.active{color:var(--red,#cc2b24);border-color:var(--red,#cc2b24);}' +
-    '@media (max-width:640px){' +
-      '.yf-tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--paper,#fff);border-top:1px solid var(--hair-strong,#ccc);padding-bottom:env(safe-area-inset-bottom,0px);}' +
-      '.cat-sheet:not([hidden]){display:flex;}' +
-      '.yf-tabbar > *{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:54px;padding:0;border:0;background:none;color:var(--ink-soft,#666);font:600 11px "Noto Sans KR",sans-serif;text-decoration:none;cursor:pointer;}' +
-      '.yf-tabbar i{font-style:normal;line-height:0;display:block;}' +
-      '.yf-tabbar .on{color:var(--red,#cc2b24);}' +
-      '.yf-tabbar{background:color-mix(in srgb,var(--paper,#fff) 90%,transparent);-webkit-backdrop-filter:blur(12px) saturate(1.4);backdrop-filter:blur(12px) saturate(1.4);transition:transform .28s cubic-bezier(.2,.7,.2,1);box-shadow:0 -6px 18px -12px rgba(15,29,58,.35);}' +
-      '.yf-tabbar.hide{transform:translateY(100%);}' +
-      '.yf-tabbar > *{position:relative;-webkit-tap-highlight-color:transparent;transition:color .15s,transform .12s;}' +
-      '.yf-tabbar > *:active{transform:scale(.92);}' +
-      '.yf-tabbar .on{font-weight:800;}' +
-      '.yf-tabbar .on::before{content:"";position:absolute;top:0;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--red,#cc2b24);}' +
-      '.yf-tabbar .on .ti{stroke-width:2.4;}' +
-      '.yf-tabbar.modal > .on:not([data-tab=cats]):not([data-tab=search]){color:var(--ink-soft,#666);font-weight:600;}' +
-      '.yf-tabbar.modal > .on:not([data-tab=cats]):not([data-tab=search])::before{display:none;}' +
-      '.yf-tabbar.modal{transform:none;z-index:560;}' +
-      '.cat-sheet .box{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px));}' +
-      'html.yf-tb-hidden #themeToggleBtn{bottom:calc(14px + env(safe-area-inset-bottom,0px)) !important;}' +
-      '@media (prefers-reduced-motion:reduce){.yf-tabbar,.yf-tabbar > *{transition:none;}}' +
-      'body{padding-bottom:calc(54px + env(safe-area-inset-bottom,0px));}' +
-      '#themeToggleBtn{bottom:calc(68px + env(safe-area-inset-bottom,0px)) !important;}' +
-      'nav.catnav .cat-tools,nav.catnav .cnt{display:none;}' +
-      'nav.catnav .brandmark{display:none;}' +
-      'nav.catnav .wrap{padding-left:8px;padding-right:8px;}' +
-      'nav.catnav .catlist > a,nav.catnav .catlist > button{padding:0 7px;font-size:13px;}' +
-      '.catlist .cat-brief .lg{display:none;}.catlist .cat-brief .sh{display:inline;}' +
-      'nav.catnav .cat-tools{gap:2px;padding-left:4px;}' +
-      'nav.catnav .cat-ico{width:32px;height:32px;}' +
-      'nav.catnav .cat-tools .support-btn{width:32px;height:32px;padding:0;justify-content:center;border-radius:50%;}' +
-      'nav.catnav .cat-tools .support-btn .sb-tx{display:none;}' +
-      '.searchrow.cat-search .search-results{left:14px;right:14px;}' +
-    '}';
-
   function upgradeNav() {
     var nav = document.querySelector('nav.catnav');
     var list = document.getElementById('catNav');
     if (!nav || !list || nav.getAttribute('data-yf-nav')) return;
     nav.setAttribute('data-yf-nav', '1');
     var wrap = list.parentNode;
-
-    var st = document.createElement('style');
-    st.textContent = NAV_CSS;
-    document.head.appendChild(st);
 
     // 1) 메뉴 항목 만들기. 기사 수(counts)를 알게 되면 배지를 달고, 기사가 0건인 분류는 '더보기'로 내린다.
     var moreList = NAV_MORE.slice();
@@ -354,11 +294,18 @@
     layout();
 
     // 2) 검색창·후원 버튼을 메뉴줄로 올린다
-    var tools = document.createElement('div');
+    //    홈(index.html)은 이 마크업을 HTML 에 미리 넣어 두므로(첫 화면에서 버튼이 옮겨 다니지 않게), 있으면 그대로 쓴다.
+    var tools = wrap.querySelector('.cat-tools');
+    var preRendered = !!tools;
+    if (!tools) tools = document.createElement('div');
     tools.className = 'cat-tools';
     var row = document.querySelector('.searchrow');
-    var searchBtn = null;
-    if (row) {
+    var searchBtn = null, sup = null;
+    if (preRendered) {
+      searchBtn = tools.querySelector('.cat-ico');
+      sup = tools.querySelector('.support-btn');
+      if (!row) searchBtn = null;
+    } else if (row) {
       searchBtn = document.createElement('button');
       searchBtn.type = 'button';
       searchBtn.className = 'cat-ico';
@@ -366,18 +313,20 @@
       searchBtn.setAttribute('aria-expanded', 'false');
       searchBtn.innerHTML = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
       tools.appendChild(searchBtn);
-      var sup = row.querySelector('.support-btn');
+      sup = row.querySelector('.support-btn');
       if (sup) {
         var txt = (sup.textContent || '').replace('✊', '').trim() || '후원';
         sup.setAttribute('aria-label', txt);
         sup.innerHTML = '<span class="sb-ic" aria-hidden="true">✊</span><span class="sb-tx">' + esc(txt) + '</span>';
         tools.appendChild(sup);
       }
+    }
+    if (row) {
       row.classList.add('cat-search');
       row.hidden = true;
-      nav.parentNode.insertBefore(row, nav.nextSibling);
+      if (row.previousElementSibling !== nav) nav.parentNode.insertBefore(row, nav.nextSibling);
     }
-    wrap.appendChild(tools);
+    if (!preRendered) wrap.appendChild(tools);
 
     function below() { return Math.max(0, Math.round(nav.getBoundingClientRect().bottom)) + 'px'; }
 
@@ -595,13 +544,6 @@
     var wrap = input.closest('.wrap');
     if (input.form) input.form.addEventListener('submit', function (e) { e.preventDefault(); });
     input.placeholder = '기사 검색 (제목·내용 모두 검색)';
-    var st = document.createElement('style');
-    st.textContent =
-      '.search-results .count{padding:8px 14px;font-size:11.5px;font-weight:700;opacity:.7;}' +
-      '.search-results .snip{display:block;margin-top:3px;font-size:12.5px;line-height:1.5;opacity:.75;font-weight:400;}' +
-      '.search-results mark{background:#ffe38a;color:#1c1a16;border-radius:2px;padding:0 1px;}' +
-      '.search-results a{display:block;}';
-    document.head.appendChild(st);
 
     // 기사 본문 검색용 데이터(data/search-index.json: {기사 URL: 본문}).
     // 검색창을 처음 쓸 때 한 번만 내려받고, 받는 동안에는 제목·요약만으로 먼저 보여준다.
@@ -783,12 +725,6 @@
       document.querySelector('article') || document.querySelector('.page');
     if (!target || document.querySelector('.yf-skip')) return;
     if (!target.id) target.id = 'main';
-    var st = document.createElement('style');
-    st.textContent = '.yf-skip{position:absolute;left:8px;top:-60px;z-index:1000;background:#0f1d3a;color:#fff;' +
-      'padding:10px 16px;border-radius:0 0 6px 6px;font:700 14px "Noto Sans KR",sans-serif;text-decoration:none;}' +
-      '.yf-skip:focus{top:0;outline:3px solid #ffbf47;}' +
-      ':focus-visible{outline:3px solid #ffbf47;outline-offset:2px;}';
-    document.head.appendChild(st);
     var a = document.createElement('a');
     a.className = 'yf-skip';
     a.href = '#' + target.id;
@@ -812,14 +748,6 @@
     var buttons = document.querySelectorAll('.topbar button');
     if (!buttons.length) return;
 
-    var toastStyle = document.createElement('style');
-    toastStyle.textContent =
-      '#siteToast{position:fixed;left:50%;bottom:74px;transform:translate(-50%,12px);' +
-      'background:var(--ink);color:var(--paper);font-size:13px;padding:10px 18px;border-radius:4px;' +
-      'z-index:600;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;' +
-      'box-shadow:0 6px 18px rgba(0,0,0,.2);white-space:nowrap;}' +
-      '#siteToast.show{opacity:1;transform:translate(-50%,0);}';
-    document.head.appendChild(toastStyle);
 
     var toast = document.createElement('div');
     toast.id = 'siteToast';
@@ -849,26 +777,6 @@
     var ACCOUNT_NO = '352-2415-1903-53';
     var ACCOUNT_HOLDER = '윤기로';
 
-    var css = document.createElement('style');
-    css.textContent =
-      '.sp-overlay{position:fixed;inset:0;z-index:1000;background:rgba(15,29,58,.55);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease;}' +
-      '.sp-overlay.open{opacity:1;visibility:visible;}' +
-      '.sp-modal{position:relative;width:100%;max-width:400px;max-height:calc(100vh - 32px);overflow-y:auto;background:var(--paper);color:var(--ink);border:2px solid var(--doodle);border-radius:10px;box-shadow:6px 6px 0 var(--doodle);padding:28px 24px 22px;transform:translateY(12px);transition:transform .2s ease;}' +
-      '.sp-overlay.open .sp-modal{transform:translateY(0);}' +
-      '.sp-close{position:absolute;top:8px;right:10px;background:none;border:none;font-size:20px;line-height:1;color:var(--ink-soft);cursor:pointer;padding:8px;}' +
-      '.sp-close:hover{color:var(--ink);}' +
-      '.sp-title{font-family:"Noto Serif KR",serif;font-size:20px;font-weight:700;margin:0 0 8px;color:var(--ink);}' +
-      '.sp-desc{font-size:14px;line-height:1.6;color:var(--ink-soft);margin:0 0 18px;word-break:keep-all;}' +
-      '.sp-box{background:var(--paper-alt);border:1px solid var(--hair-strong);border-radius:8px;padding:14px 16px;margin-bottom:14px;}' +
-      '.sp-label{font-size:12px;color:var(--ink-faint);margin-bottom:4px;}' +
-      '.sp-bank{font-size:14px;color:var(--ink);margin-bottom:6px;}' +
-      '.sp-no{font-size:22px;font-weight:700;letter-spacing:.02em;color:var(--navy);word-break:break-all;}' +
-      '.sp-copy{display:block;width:100%;padding:13px;font-size:15px;font-weight:700;font-family:inherit;color:#fff;background:var(--navy);border:none;border-radius:8px;cursor:pointer;}' +
-      '.sp-copy:hover{filter:brightness(1.1);}' +
-      '.sp-copy.done{background:var(--pine);}' +
-      '.sp-note{font-size:12px;line-height:1.5;color:var(--ink-faint);text-align:center;margin:12px 0 0;}' +
-      '@media (max-width:480px){.sp-modal{padding:26px 18px 18px;}.sp-no{font-size:20px;}}';
-    document.head.appendChild(css);
 
     var overlay = document.createElement('div');
     overlay.className = 'sp-overlay';
