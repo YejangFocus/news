@@ -653,7 +653,7 @@ def write_home_jsonld():
     data = {"@context": "https://schema.org", "@graph": [
         {"@type": "NewsMediaOrganization", "@id": f"{SITE_URL}/#org", "name": "예장포커스", "alternateName": "Yejang Focus",
          "url": f"{SITE_URL}/", "logo": {"@type": "ImageObject", "url": f"{SITE_URL}/assets/images/38701da0735806f0.webp"},
-         "email": "owenpej@naver.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"},
+         "email": "contact@yejangfocus.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"},
         {"@type": "WebSite", "@id": f"{SITE_URL}/#site", "url": f"{SITE_URL}/", "name": "예장포커스", "inLanguage": "ko-KR",
          "publisher": {"@id": f"{SITE_URL}/#org"},
          "potentialAction": {"@type": "SearchAction", "target": f"{SITE_URL}/%EA%B2%80%EC%83%89.html?q={{search_term_string}}",

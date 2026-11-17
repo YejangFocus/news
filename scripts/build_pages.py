@@ -246,8 +246,9 @@ def _img_size(web_path):
         return None
 
 
-def _home_thumb(item, cls, eager=False, sizes="(max-width: 700px) 45vw, 260px"):
+def _home_thumb(item, cls, eager=False, sizes=None):
     """site.js 의 thumbImgHtml() 과 같은 마크업(WebP srcset + 지연 로딩)."""
+    sizes = sizes or "(max-width: 700px) 45vw, 260px"
     image = item.get("image") or DEFAULT_IMAGE
     if image.startswith(SITE_URL + "/"):  # 같은 사이트 이미지는 상대 주소로(로컬·미리보기에서도 보이게)
         image = image[len(SITE_URL):]
@@ -272,23 +273,29 @@ def _has_photo(item):
     return bool(item and item.get("image") and "yejang-focus-ci" not in item["image"])
 
 
-def _feature(item, extra_style, empty_label, eager=False, always_img=False):
+HERO_SIZES = "(max-width: 700px) 100vw, 760px"   # 큰 대표 사진(칼럼 폭 약 760px)
+CARD_SIZES = "(max-width: 700px) 100vw, 380px"   # 교단·신학 카드(절반 폭 약 380px)
+
+
+def _date(item):
+    """기사 날짜(2026-11-14 → 2026.11.14). site-home.js 의 dateHtml() 과 같은 마크업."""
+    d = (item or {}).get("date") or ""
+    if not re.match(r"\d{4}-\d{2}-\d{2}", d):
+        return ""
+    return f'<time class="date" datetime="{d[:10]}">{d[:4]}.{d[5:7]}.{d[8:10]}</time>'
+
+
+def _feature(item, extra_style, empty_label, eager=False, always_img=False, sizes=None):
     st = f' style="{extra_style}"' if extra_style else ""
     if not item:
         return (f'<div class="feature-item"{st}><div class="body"><span class="tag" style="color:{tag_color(empty_label)};">'
                 f'{esc(empty_label)}</span></div></div>') if empty_label else ""
-    return (f'<a class="feature-item" href="{item["url"]}"{st}>{_home_thumb(item, "thumb", eager) if (eager or always_img or _has_photo(item)) else ""}<div class="body">'
+    return (f'<a class="feature-item" href="{item["url"]}"{st}>{_home_thumb(item, "thumb", eager, sizes) if (eager or always_img or _has_photo(item)) else ""}<div class="body">'
             f'<span class="tag" style="color:{tag_color(item["tag"])};">{esc(item["tag"])}</span>'
-            f'<h3>{esc(item["title"])}</h3>' + (f'<p>{esc(item["desc"])}</p>' if item.get("desc") else "") + "</div></a>")
+            f'<h3>{esc(item["title"])}</h3>' + (f'<p>{esc(item["desc"])}</p>' if item.get("desc") else "") + _date(item) + "</div></a>")
 
 
 def render_home_blocks(index):
-    def latest(tags):
-        return next((a for a in index if a["tag"] in tags), None)
-
-    def many(tags, n):
-        return [a for a in index if a["tag"] in tags][:n]
-
     blocks = {}
     ticker_group = '<span class="ticker-group">' + '<span class="sep">•</span>'.join(
         f'<a href="{a["url"]}">{esc(a["title"])}</a>' for a in index[:5]) + '</span>'
@@ -302,41 +309,45 @@ def render_home_blocks(index):
     def latest_new(tags):
         return next((a for a in index if a["tag"] in tags and a["url"] not in hero_urls), None)
 
-    blocks["heroFeature"] = _feature(heroes[0] if heroes else None, "", "속보", True)
-    blocks["secondFeature"] = _feature(latest_new(["교단", "교단소식"]), "", "교단", always_img=True)
-    blocks["thirdFeature"] = _feature(latest_new(["신학"]), "border-bottom:none;", "신학", always_img=True)
+    second = latest_new(["교단", "교단소식"])
+    third = latest_new(["신학"])
+    blocks["heroFeature"] = _feature(heroes[0] if heroes else None, "", "속보", True, sizes=HERO_SIZES)
+    blocks["secondFeature"] = _feature(second, "", "교단", always_img=True, sizes=CARD_SIZES)
+    blocks["thirdFeature"] = _feature(third, "border-bottom:none;", "신학", always_img=True, sizes=CARD_SIZES)
+    # 같은 기사가 홈 여러 칸에 반복되지 않도록, 위(대표·교단·신학) → 목록 → 칼럼 → 최신 소식 순서로
+    # 이미 쓴 기사를 건너뛴다(티커는 새 기사 알림이라 예외). site-home.js 와 같은 규칙.
+    used = {a["url"] for a in [*heroes, second, third] if a}
+
+    def pick_unused(pred):
+        it = next((a for a in index if pred(a) and a["url"] not in used), None)
+        if it:
+            used.add(it["url"])
+        return it
+
     rows = []
     for cat in ["목회", "사설", "노회", "인물", "교계"]:
-        it = next((a for a in index if a["tag"] == cat), None)
+        it = pick_unused(lambda a, c=cat: a["tag"] == c)
         if not it:
             rows.append(f'<li><span class="tag" style="color:{tag_color(cat)};">{esc(cat)}</span></li>')
         else:
             rows.append(f'<li><span class="tag" style="color:{tag_color(it["tag"])};">{esc(it["tag"])}</span>'
-                        f'<a href="{it["url"]}">{esc(it["title"])}</a></li>')
+                        f'<a href="{it["url"]}">{esc(it["title"])}</a>{_date(it)}</li>')
     blocks["plainList"] = "".join(rows)
-    # 같은 기사가 홈 여러 칸에 반복되지 않도록, 본문·칼럼 칸에 쓴 기사는 '최신 소식'에서 뺀다(site-home.js 와 같은 규칙).
-    columns = many(["칼럼"], 3)
-    used = {a["url"] for a in [*heroes, latest_new(["교단", "교단소식"]), latest_new(["신학"]), *columns] if a}
-    for cat in ["목회", "사설", "노회", "인물", "교계"]:
-        it = next((a for a in index if a["tag"] == cat), None)
-        if it:
-            used.add(it["url"])
-    # '최신 소식'은 다른 칸과 겹쳐도 빼지 않고 전체 기사를 최신순 그대로 보여 준다(site-home.js 와 같은 규칙).
-    # 대표 기사 슬라이더(최신 3건)에 나온 기사는 빼고 그 다음 기사부터 보여 준다.
-    rest = index[len(heroes):]
+    columns = [c for c in (pick_unused(lambda a: a["tag"] == "칼럼") for _ in range(3)) if c]
+    rest = [a for a in index if a["url"] not in used]
     latest_hero = rest[0] if rest else None
     latest_list = rest[1:7]
     numerals = ["②", "③", "④", "⑤", "⑥", "⑦"]  # 맨 위 사진이 ①
     blocks["numList"] = "".join(
-        f'<li><span class="num">{numerals[i]}</span><a href="{a["url"]}">{esc(a["title"])}</a></li>'
+        f'<li><span class="num">{numerals[i]}</span><a href="{a["url"]}">{esc(a["title"])}</a>{_date(a)}</li>'
         for i, a in enumerate(latest_list))
     blocks["modHero"] = ("" if not latest_hero else
                          f'<a class="mod-hero" href="{latest_hero["url"]}">{_home_thumb(latest_hero, "thumb", False, "(max-width: 700px) 100vw, 420px")}'
-                         + f'<span class="hero-title"><span class="num">①</span><span class="t">{esc(latest_hero["title"])}</span></span></a>')
+                         + f'<span class="hero-title"><span class="num">①</span><span class="t">{esc(latest_hero["title"])}</span>{_date(latest_hero)}</span></a>')
     blocks["sideList"] = "".join(
         (f'<li><a href="{a["url"]}">{_home_thumb(a, "thumb")}</a>' if _has_photo(a) else '<li>')
         + f'<div class="body"><a href="{a["url"]}"><h4>{esc(a["title"])}</h4></a>'
-        + (f'<p>{esc(a["desc"])}</p>' if a.get("desc") else "") + "</div></li>"
+        + (f'<p>{esc(a["desc"])}</p>' if a.get("desc") else "") + _date(a) + "</div></li>"
         for a in columns)
     return blocks
 
@@ -384,7 +395,7 @@ def build_tip_page():
     <button type="submit">보내기</button>
     <p id="tipOut" class="out" aria-live="polite"></p>
   </form>
-  <noscript><p class="yf-empty">폼을 쓰려면 자바스크립트를 켜 주세요. 이메일로 보내셔도 됩니다: <a href="mailto:owenpej@naver.com">owenpej@naver.com</a></p></noscript>
+  <noscript><p class="yf-empty">폼을 쓰려면 자바스크립트를 켜 주세요. 이메일로 보내셔도 됩니다: <a href="mailto:contact@yejangfocus.com">contact@yejangfocus.com</a></p></noscript>
   </main>
   <style>
     .yf-tip{display:flex;flex-direction:column;gap:6px;margin:18px 0 28px;max-width:640px;font-family:'Noto Sans KR',sans-serif;position:relative;}

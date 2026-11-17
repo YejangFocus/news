@@ -121,7 +121,7 @@
     '@media print{.yf-sub,.yf-cmt{display:none}}';
   function subBox(articleUrl) {
     var n = cfg.newsletter || {};
-    var mail = n.url || ('mailto:' + (n.email || 'owenpej@naver.com') + '?subject=' + encodeURIComponent('[구독 신청]'));
+    var mail = n.url || ('mailto:' + (n.email || 'contact@yejangfocus.com') + '?subject=' + encodeURIComponent('[구독 신청]'));
     var ext = n.url ? ' target="_blank" rel="noopener"' : '';
     var tip = TIP + (articleUrl ? '?type=' + encodeURIComponent('정정 요청') + '&url=' + encodeURIComponent(articleUrl) : '');
     var d = document.createElement('div');

@@ -364,7 +364,7 @@
       searchBtn.className = 'cat-ico';
       searchBtn.setAttribute('aria-label', '기사 검색');
       searchBtn.setAttribute('aria-expanded', 'false');
-      searchBtn.textContent = '🔍';
+      searchBtn.innerHTML = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
       tools.appendChild(searchBtn);
       var sup = row.querySelector('.support-btn');
       if (sup) {
