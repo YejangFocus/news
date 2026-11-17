@@ -98,3 +98,5 @@ header.masthead .book-logo,header.masthead .gapck-logo{display:block;height:100%
 
 /* 이모지 대신 SVG 아이콘 */
 .ico{width:1em;height:1em;display:inline-block;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}

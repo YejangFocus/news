@@ -29,25 +29,15 @@
 <link rel="stylesheet" href="assets/css/focus-hub.css">
 <link rel="stylesheet" href="assets/css/home-plus.css">
 <link rel="stylesheet" href="assets/css/home.css">
+<link rel="stylesheet" href="assets/css/site-ui.css">
 <script type="application/ld+json" id="yf-site">{"@context": "https://schema.org", "@graph": [{"@type": "NewsMediaOrganization", "@id": "https://yejangfocus.com/#org", "name": "예장포커스", "alternateName": "Yejang Focus", "url": "https://yejangfocus.com/", "logo": {"@type": "ImageObject", "url": "https://yejangfocus.com/assets/images/38701da0735806f0.webp"}, "email": "contact@yejangfocus.com", "description": "대한예수교장로회(예장합동) 총회와 교계 소식을 사실에 기반해 전하는 교회 전문 매체"}, {"@type": "WebSite", "@id": "https://yejangfocus.com/#site", "url": "https://yejangfocus.com/", "name": "예장포커스", "inLanguage": "ko-KR", "publisher": {"@id": "https://yejangfocus.com/#org"}, "potentialAction": {"@type": "SearchAction", "target": "https://yejangfocus.com/%EA%B2%80%EC%83%89.html?q={search_term_string}", "query-input": "required name=search_term_string"}}]}</script>
 </head>
 <body>
 <div class="yf-progress" id="yfProgress" aria-hidden="true"></div>
 <a class="skip-link" href="#main">본문 바로가기</a>
 
-<div class="searchrow">
-  <div class="wrap" style="position:relative;">
-    <form id="siteSearchForm" onsubmit="return false;">
-      <span class="search-ic" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
-      <input type="text" id="siteSearchInput" placeholder="기사 검색 (제목·내용 모두 검색)" autocomplete="off">
-    </form>
-    <ul id="searchResults" class="search-results" hidden></ul>
-    <button type="button" class="support-btn">✊ 후원문의</button>
-  </div>
-</div>
-
 <header class="masthead">
-<h1 style="position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;">예장포커스 — 교회를 바라보는 새로운 시선</h1>
+<h1 class="sr-only">예장포커스 — 교회를 바라보는 새로운 시선</h1>
   <div class="wrap masthead-row">
     <div class="mh-left">
       <time class="mh-date" id="mhDate"></time>
@@ -81,9 +71,24 @@
       <a data-cat="인물" href="/인물/">인물</a>
       <a data-cat="교계" href="/교계/">교계</a>
       <a data-cat="칼럼" href="/칼럼/">칼럼</a>
+      <a data-cat="브리핑" href="/주간브리핑.html" class="cat-brief"><span class="lg">주간브리핑</span><span class="sh">브리핑</span></a>
+    </div>
+    <div class="cat-tools">
+      <button type="button" class="cat-ico" aria-label="기사 검색" aria-expanded="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+      <button type="button" class="support-btn" aria-label="후원문의"><span class="sb-ic" aria-hidden="true">✊</span><span class="sb-tx">후원문의</span></button>
     </div>
   </div>
 </nav>
+<div class="searchrow cat-search" hidden>
+  <div class="wrap" style="position:relative;">
+    <form id="siteSearchForm" role="search">
+      <span class="search-ic" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+      <label class="sr-only" for="siteSearchInput">기사 검색</label>
+      <input type="text" id="siteSearchInput" placeholder="기사 검색 (제목·내용 모두 검색)" autocomplete="off">
+    </form>
+    <ul id="searchResults" class="search-results" hidden></ul>
+  </div>
+</div>
 
 <aside class="verse-band" aria-label="오늘의 말씀">
   <div class="wrap">
@@ -187,27 +192,12 @@
 </div>
 
 <style>
-  .aa-overlay{position:fixed;inset:0;z-index:999;background:var(--paper);overflow-y:auto;padding:24px 18px 60px;}
-  .aa-overlay[hidden]{display:none;}
-  .aa-panel{max-width:1040px;margin:0 auto;}
-  .aa-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:9px;margin-bottom:14px;border-bottom:2px solid var(--ink);}
-  .aa-head h2{margin:0;font-size:18px;font-weight:700;color:var(--ink);}
-  .aa-close{background:none;border:none;font-size:20px;line-height:1;cursor:pointer;color:var(--ink-soft);padding:4px 8px;}
-  .aa-close:hover{color:var(--ink);}
-  .aa-list{list-style:none;margin:0;padding:0;}
-  .aa-list li{padding:12px 0;border-bottom:1px solid rgba(128,128,128,.25);font-size:15px;line-height:1.5;}
-  .aa-list li:last-child{border-bottom:none;}
-  .aa-list a{color:var(--ink);text-decoration:none;}
-  .aa-tag{font-weight:700;margin-right:2px;}
-  .aa-list a:hover{color:var(--ink-soft);text-decoration:underline;}
-  .aa-empty{padding:40px 0;text-align:center;color:var(--muted);font-size:14px;}
-  /* 모바일: TV · CI · 예장합동 배너를 한 줄에 모두 표시 */
+  /* 모바일: 예포TV · CI · 예장합동 배너를 한 줄에 모두 표시 */
   @media (max-width: 720px) {
     .masthead .masthead-row { grid-template-columns: minmax(0,.75fr) minmax(0,2.5fr) minmax(0,.75fr); gap: 6px; align-items: center; }
-    .masthead .tv-link { grid-column: 1; grid-row: 1; justify-self: start; width: 100%; }
     .masthead .ci-link { grid-column: 2; grid-row: 1; justify-self: center; width: 100%; }
     .masthead .gapck-link { grid-column: 3; grid-row: 1; justify-self: end; width: 100%; }
-    .masthead .tv-logo, .masthead .gapck-logo { max-width: 100%; width: 100%; }
+    .masthead .gapck-logo { max-width: 100%; width: 100%; }
     .masthead .ci-logo { margin-top: 0; }
   }
 </style>
