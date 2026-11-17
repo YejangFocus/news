@@ -138,23 +138,27 @@
       show(0); schedule();
     }
 
-    // 대표 기사: 카테고리와 무관하게 가장 최근 기사(슬라이더는 최신 3건). 교단·신학 카드는 대표 기사와 겹치지 않게 고른다.
+    // 최신순 우선 배치(build_pages.py 와 같은 규칙): 카테고리 칸마다 오래된 기사가 올라오지 않도록
+    // 대표(최신 3건) → 칼럼 칸(최신 칼럼 3건 예약) → 주요 카드 2칸 → 텍스트 목록 5칸 → 최신 소식 순으로,
+    // 칼럼을 뺀 나머지 기사를 날짜순으로 채운다. 같은 기사는 한 번만 쓴다. (맨 위 티커는 새 기사 알림이라 예외)
     var heroes = ARTICLE_INDEX.slice(0, 3);
     var hero = heroes[0] || null;
-    function latestNew(tags) {
-      return ARTICLE_INDEX.find(function (item) {
-        return tags.indexOf(item.tag) !== -1 && heroes.indexOf(item) === -1;
-      }) || null;
-    }
-    var second = latestNew(['교단', '교단소식']);
-    var third = latestNew(['신학']);
-
-    // 홈에서 같은 기사가 여러 칸에 반복되지 않도록, 위(대표·교단·신학) → 목록 → 칼럼 → 최신 소식 순서로
-    // 이미 쓴 기사를 기록해 두고 다음 칸에서는 건너뛴다. (맨 위 티커는 새 기사 알림이라 예외)
     var used = {};
     function mark(it) { if (it) used[it.url] = true; }
     function unused(a) { return !used[a.url]; }
-    heroes.forEach(mark); mark(second); mark(third);
+    function notColumn(a) { return a.tag !== '칼럼'; }
+    heroes.forEach(mark);
+    var columns = ARTICLE_INDEX.filter(function (a) { return a.tag === '칼럼' && unused(a); }).slice(0, 3);
+    columns.forEach(mark);
+    // 주요 카드 2칸은 큰 사진이 들어가므로 사진 있는 최신 기사를 우선(부족하면 사진 없는 최신 기사로 채움)
+    var cards = ARTICLE_INDEX.filter(function (a) { return notColumn(a) && unused(a) && hasPhoto(a); }).slice(0, 2);
+    cards.forEach(mark);
+    if (cards.length < 2) {
+      ARTICLE_INDEX.filter(function (a) { return notColumn(a) && unused(a); }).slice(0, 2 - cards.length)
+        .forEach(function (a) { cards.push(a); mark(a); });
+    }
+    var second = cards[0] || null;
+    var third = cards[1] || null;
 
     var heroEl = document.getElementById('heroFeature');
     var secondEl = document.getElementById('secondFeature');
@@ -163,8 +167,8 @@
       heroEl.innerHTML = featureItemHtml(hero, '', '속보', true, false, HERO_SIZES);
       if (heroes.length > 1) buildHeroSlider(heroEl, heroes);
     }
-    if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '교단', false, true, CARD_SIZES);
-    if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;', '신학', false, true, CARD_SIZES);
+    if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '', false, true, CARD_SIZES);
+    if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;', '', false, true, CARD_SIZES);
 
     // 최신뉴스 티커: 항상 전체 최신 5건, 같은 묶음을 두 번 이어붙여 끊김 없이 순환
     var tickerGroup = ARTICLE_INDEX.slice(0, 5).map(function (item) {
@@ -184,25 +188,16 @@
       });
     }
 
-    // 좌측 하단 텍스트 목록: 정해진 카테고리 순서대로, 위 칸에 나오지 않은 최신 기사 1건씩.
-    // 해당 카테고리에 보여 줄 기사가 없으면 카테고리명만 넣고 비워둔다.
-    var PLAIN_LIST_CATS = ['목회', '사설', '노회', '인물', '교계'];
+    // 좌측 하단 텍스트 목록: 위 칸에 나오지 않은 최신 기사(칼럼 제외) 5건을 날짜순으로.
     var plainList = document.getElementById('plainList');
     if (plainList) {
-      plainList.innerHTML = PLAIN_LIST_CATS.map(function (cat) {
-        var item = ARTICLE_INDEX.find(function (a) { return a.tag === cat && unused(a); });
-        if (!item) {
-          return '<li><span class="tag" style="color:' + tagColor(cat) + ';">' + esc(cat) + '</span></li>';
-        }
-        mark(item);
+      var plain = ARTICLE_INDEX.filter(function (a) { return notColumn(a) && unused(a); }).slice(0, 5);
+      plain.forEach(mark);
+      plainList.innerHTML = plain.map(function (item) {
         return '<li><span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
           '<a href="' + item.url + '">' + esc(item.title) + '</a>' + dateHtml(item) + '</li>';
       }).join('');
     }
-
-    // 우측 칼럼 칸: 앞에서 쓰지 않은 칼럼 최신 3건
-    var columns = ARTICLE_INDEX.filter(function (a) { return a.tag === '칼럼' && unused(a); }).slice(0, 3);
-    columns.forEach(mark);
 
     // 우측 '이어지는 소식': 위 칸들에 나오지 않은 기사를 최신순으로. 맨 위 큰 사진이 ①, 목록은 ②부터.
     var restArticles = ARTICLE_INDEX.filter(unused);

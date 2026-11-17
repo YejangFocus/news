@@ -302,21 +302,11 @@ def render_home_blocks(index):
     # 끊김 없는 무한 흐름: 같은 묶음을 한 번 더 이어붙이고 -50%까지 이동
     blocks["tickerBox"] = ticker_group + ticker_group.replace(
         '<span class="ticker-group">', '<span class="ticker-group" aria-hidden="true">', 1)
-    # 대표 기사: 카테고리와 무관하게 가장 최근 기사(슬라이더는 최신 3건). 교단·신학 카드는 대표 기사와 겹치지 않게 고른다.
+    # 최신순 우선 배치(site-home.js 와 같은 규칙): 카테고리 칸마다 오래된 기사가 올라오지 않도록
+    #   대표(최신 3건) → 칼럼 칸(최신 칼럼 3건 예약) → 주요 카드 2칸 → 텍스트 목록 5칸 → 최신 소식 순으로,
+    #   칼럼을 뺀 나머지 기사를 날짜순으로 채운다. 같은 기사는 한 번만 쓴다(티커는 새 기사 알림이라 예외).
     heroes = index[:3]
-    hero_urls = {a["url"] for a in heroes}
-
-    def latest_new(tags):
-        return next((a for a in index if a["tag"] in tags and a["url"] not in hero_urls), None)
-
-    second = latest_new(["교단", "교단소식"])
-    third = latest_new(["신학"])
-    blocks["heroFeature"] = _feature(heroes[0] if heroes else None, "", "속보", True, sizes=HERO_SIZES)
-    blocks["secondFeature"] = _feature(second, "", "교단", always_img=True, sizes=CARD_SIZES)
-    blocks["thirdFeature"] = _feature(third, "border-bottom:none;", "신학", always_img=True, sizes=CARD_SIZES)
-    # 같은 기사가 홈 여러 칸에 반복되지 않도록, 위(대표·교단·신학) → 목록 → 칼럼 → 최신 소식 순서로
-    # 이미 쓴 기사를 건너뛴다(티커는 새 기사 알림이라 예외). site-home.js 와 같은 규칙.
-    used = {a["url"] for a in [*heroes, second, third] if a}
+    used = {a["url"] for a in heroes}
 
     def pick_unused(pred):
         it = next((a for a in index if pred(a) and a["url"] not in used), None)
@@ -324,16 +314,24 @@ def render_home_blocks(index):
             used.add(it["url"])
         return it
 
-    rows = []
-    for cat in ["목회", "사설", "노회", "인물", "교계"]:
-        it = pick_unused(lambda a, c=cat: a["tag"] == c)
-        if not it:
-            rows.append(f'<li><span class="tag" style="color:{tag_color(cat)};">{esc(cat)}</span></li>')
-        else:
-            rows.append(f'<li><span class="tag" style="color:{tag_color(it["tag"])};">{esc(it["tag"])}</span>'
-                        f'<a href="{it["url"]}">{esc(it["title"])}</a>{_date(it)}</li>')
-    blocks["plainList"] = "".join(rows)
     columns = [c for c in (pick_unused(lambda a: a["tag"] == "칼럼") for _ in range(3)) if c]
+    # 주요 카드 2칸은 큰 사진이 들어가므로 사진 있는 최신 기사를 우선(부족하면 사진 없는 최신 기사로 채움)
+    cards = [c for c in (pick_unused(lambda a: a["tag"] != "칼럼" and _has_photo(a)) for _ in range(2)) if c]
+    while len(cards) < 2:
+        extra = pick_unused(lambda a: a["tag"] != "칼럼")
+        if not extra:
+            break
+        cards.append(extra)
+    second = cards[0] if len(cards) > 0 else None
+    third = cards[1] if len(cards) > 1 else None
+    blocks["heroFeature"] = _feature(heroes[0] if heroes else None, "", "속보", True, sizes=HERO_SIZES)
+    blocks["secondFeature"] = _feature(second, "", "", always_img=True, sizes=CARD_SIZES)
+    blocks["thirdFeature"] = _feature(third, "border-bottom:none;", "", always_img=True, sizes=CARD_SIZES)
+
+    plain = [c for c in (pick_unused(lambda a: a["tag"] != "칼럼") for _ in range(5)) if c]
+    blocks["plainList"] = "".join(
+        f'<li><span class="tag" style="color:{tag_color(it["tag"])};">{esc(it["tag"])}</span>'
+        f'<a href="{it["url"]}">{esc(it["title"])}</a>{_date(it)}</li>' for it in plain)
     rest = [a for a in index if a["url"] not in used]
     latest_hero = rest[0] if rest else None
     latest_list = rest[1:7]
