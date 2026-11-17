@@ -1013,7 +1013,7 @@ header.masthead .gapck-link:hover { transform: none; opacity: .85; }
 @media (max-width: 720px) { header.masthead .gapck-link { height: 34px; } }
 
 /* 사이드바 도서 카드 */
-.book-card { display: flex; align-items: center; gap: 14px; margin-top: 20px; padding: 14px 16px; background: var(--paper); border: 1px solid var(--hair); border-radius: 12px; transition: border-color .2s, box-shadow .2s; }
+.book-card { display: flex; align-items: center; gap: 14px; margin-top: 0; padding: 14px 16px; background: var(--paper); border: 1px solid var(--hair); border-radius: 12px; transition: border-color .2s, box-shadow .2s; }
 .book-card:hover { border-color: var(--navy); box-shadow: 0 10px 22px -16px rgba(15,29,58,.5); }
 .book-card img { width: 56px; height: 56px; flex: none; border-radius: 8px; object-fit: cover; }
 .book-card span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -1028,7 +1028,6 @@ header.masthead .gapck-link:hover { transform: none; opacity: .85; }
 .col-side .latest #modHero { margin: 0; }
 .col-side .latest .num-list { margin-top: 4px; }
 .col-side .num-list li { min-height: 52px; }
-.col-side .ad-horiz { margin-top: 20px; }
 /* 5) 카드: 제목 2줄·요약 3줄로 고정해 높이를 맞추고, 이미지가 늦게 떠도 빈 칸이 흰색으로 튀지 않게 배경 지정 */
 .card-pair .feature-item h3 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.42; min-height: 0; height: 2.84em; word-break: keep-all; }
 .card-pair .feature-item p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; min-height: 0; height: 4.95em; }
