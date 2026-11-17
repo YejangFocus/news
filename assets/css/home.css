@@ -1082,3 +1082,17 @@ footer .flinks a { padding: 3px 0; }
 .cat-more-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
 @media (max-width: 980px) { .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .cat-grid { grid-template-columns: 1fr; gap: 14px; } .cat-sec-head h2 { font-size: 20px; } .cat-list li:nth-child(n+4) { display: none; } }
+
+/* ---------- 홈 구독 띠 (reader.js 의 .yf-sub 를 홈 카드 스타일로 덮어쓴다) ---------- */
+.yf-sub.yf-sub-home { display: flex; align-items: center; justify-content: space-between; gap: 18px 24px; flex-wrap: wrap; margin: 0 0 20px; padding: 18px 24px; border: 0; border-left: 4px solid var(--red); border-radius: var(--radius); box-shadow: var(--shadow); background: #fff; color: var(--ink); }
+.yf-sub-home .ys-text { flex: 1 1 260px; min-width: 0; }
+.yf-sub-home b { font: 400 19px 'Do Hyeon', 'Noto Sans KR', sans-serif; color: var(--ink); }
+.yf-sub-home p { margin: 4px 0 0; font-size: 13.5px; color: var(--ink-soft); }
+.yf-sub.yf-sub-home .row { flex: 0 0 auto; }
+.yf-sub.yf-sub-home .row a, .yf-sub.yf-sub-home .row button { border: 1px solid var(--hair-strong); border-radius: 999px; box-shadow: none; padding: 9px 18px; background: transparent; color: var(--navy); }
+.yf-sub.yf-sub-home .row a:hover, .yf-sub.yf-sub-home .row button:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+.yf-sub.yf-sub-home .row .pri { background: var(--navy); color: #fff; border-color: var(--navy); }
+.yf-sub.yf-sub-home .row .pri:hover { filter: brightness(1.15); }
+:root[data-theme="dark"] .yf-sub.yf-sub-home { background: #1a1a16; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .yf-sub.yf-sub-home { background: var(--paper-alt); } }
+@media (max-width: 640px) { .yf-sub.yf-sub-home { padding: 16px 18px; } .yf-sub.yf-sub-home .row { width: 100%; } .yf-sub.yf-sub-home .row a, .yf-sub.yf-sub-home .row button { flex: 1 1 auto; text-align: center; } }
