@@ -362,11 +362,11 @@
   .ticker-group { display: inline-flex; align-items: center; gap: 10px; flex: none; padding-right: 48px; }
   .ticker-box:hover .ticker-track, .ticker-box:focus-within .ticker-track { animation-play-state: paused; }
   @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-  @media (prefers-reduced-motion: reduce) {
-    .ticker-box { overflow-x: auto; }
-    .ticker-track { animation: none; }
-    .ticker-group[aria-hidden="true"] { display: none; }
-  }
+  /* 모바일·태블릿(동작 줄이기 설정 포함)에서도 항상 흐르도록 유지. 호버/터치 시 일시정지 */
+  .ticker-track { will-change: transform; -webkit-animation: ticker-scroll 60s linear infinite; }
+  @-webkit-keyframes ticker-scroll { from { -webkit-transform: translateX(0); } to { -webkit-transform: translateX(-50%); } }
+  .ticker-box:active .ticker-track { animation-play-state: paused; }
+  @media (max-width: 1024px) { .ticker-box { min-width: 0; width: 100%; } }
 
   /* left column: featured article (image + title + summary) */
   .feature-item { display: flex; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--hair); }
