@@ -295,8 +295,26 @@ def _feature(item, extra_style, empty_label, eager=False, always_img=False, size
             f'<h3>{esc(item["title"])}</h3>' + (f'<p>{esc(item["desc"])}</p>' if item.get("desc") else "") + _date(item) + "</div></a>")
 
 
+# 홈 '분류별 최신 기사' 칸: 순서와 칸당 기사 수 (site-home.js 와 같은 값)
+HOME_CATEGORIES = ["교단", "목회", "노회", "신학", "사설", "특집"]
+HOME_CATEGORY_ITEMS = 4
+
+
+def render_category_sections(index):
+    cards = []
+    for cat in HOME_CATEGORIES:
+        items = [a for a in index if a["tag"] == cat][:HOME_CATEGORY_ITEMS]
+        if not items:
+            continue
+        rows = "".join(f'<li><a href="{a["url"]}">{esc(a["title"])}</a>{_date(a)}</li>' for a in items)
+        cards.append(
+            f'<section class="panel cat-card"><div class="mod-head"><h3>{esc(cat)}</h3>'
+            f'<a class="more" href="/{cat}/">더보기〉</a></div><ul class="cat-list">{rows}</ul></section>')
+    return "".join(cards)
+
+
 def render_home_blocks(index):
-    blocks = {}
+    blocks = {"catSections": render_category_sections(index)}
     ticker_group = '<span class="ticker-group">' + '<span class="sep">•</span>'.join(
         f'<a href="{a["url"]}">{esc(a["title"])}</a>' for a in index[:5]) + '</span>'
     # 끊김 없는 무한 흐름: 같은 묶음을 한 번 더 이어붙이고 -50%까지 이동

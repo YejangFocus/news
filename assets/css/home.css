@@ -1062,3 +1062,23 @@ footer .flinks a { padding: 3px 0; }
 .book-card small { color: var(--gold-soft, #e3cf9f); font-size: 12px; }
 .book-card b { color: #fff; font-family: 'Noto Serif KR', serif; font-size: 17px; line-height: 1.4; }
 .book-card em { align-self: flex-start; margin-top: 6px; padding: 5px 12px; border-radius: 999px; background: var(--gold, #c9a45c); color: #0a1424; font-size: 12.5px; }
+
+/* ---------- 분류별 최신 기사 ---------- */
+.cat-sections { margin: 8px 0 28px; }
+.cat-sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 14px; padding-bottom: 9px; border-bottom: 2px solid var(--ink); }
+.cat-sec-head h2 { font-family: 'Do Hyeon', sans-serif; font-weight: 400; font-size: 22px; color: var(--ink); }
+.cat-sec-all { font-size: 12.5px; color: var(--ink-soft); }
+.cat-sec-all:hover { color: var(--navy); }
+.cat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.cat-card { padding: 16px 20px 6px; }
+.cat-card .mod-head { padding-bottom: 8px; margin-bottom: 4px; border-bottom: 1px solid var(--hair); }
+.cat-list { list-style: none; margin: 0; padding: 0; }
+.cat-list li { padding: 10px 0; border-bottom: 1px dashed var(--hair); font-size: 14px; line-height: 1.5; }
+.cat-list li:last-child { border-bottom: none; }
+.cat-list a { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: 700; color: var(--ink); }
+.cat-list a:hover { color: var(--navy); }
+.cat-list .date { display: block; margin-top: 3px; font-size: 11.5px; color: var(--ink-faint); }
+.cat-more-btn { display: block; margin: 18px auto 0; width: fit-content; padding: 11px 26px; border: 1px solid var(--hair-strong); border-radius: 999px; font-weight: 700; font-size: 14px; color: var(--navy); }
+.cat-more-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+@media (max-width: 980px) { .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .cat-grid { grid-template-columns: 1fr; gap: 14px; } .cat-sec-head h2 { font-size: 20px; } .cat-list li:nth-child(n+4) { display: none; } }
