@@ -59,7 +59,14 @@
         .then(function () { btn.disabled = false; });
     } else {
       location.href = 'mailto:' + email + '?subject=' + encodeURIComponent('[' + d.type + '] ' + (d.message.slice(0, 30))) + '&body=' + encodeURIComponent(summary(d));
-      out.innerHTML = '이메일 작성창이 열렸습니다. 열리지 않으면 <a href="mailto:' + email + '">' + email + '</a> 으로 직접 보내 주세요. 첨부 파일이 있으면 이메일에 함께 붙여 주세요.';
+      out.innerHTML = '이메일 작성창이 열렸습니다. 메일 앱이 없거나 열리지 않으면 아래 <b>내용 복사</b>를 눌러 붙여 넣은 뒤 <a href="mailto:' + email + '">' + email + '</a> 으로 보내 주세요. 첨부 파일이 있으면 이메일에 함께 붙여 주세요. <button type="button" class="tip-copy" style="margin-left:6px;padding:4px 10px;font:inherit;cursor:pointer">내용 복사</button>';
+      var cp = out.querySelector('.tip-copy');
+      cp.addEventListener('click', function () {
+        var text = '받는 사람: ' + email + '\n제목: [' + d.type + ']\n\n' + summary(d);
+        var done = function () { cp.textContent = '복사했습니다'; };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { window.prompt('아래 내용을 복사하세요', text); });
+        else window.prompt('아래 내용을 복사하세요', text);
+      });
       window.yfTrack && window.yfTrack('tip_submit', { label: d.type });
     }
   });
