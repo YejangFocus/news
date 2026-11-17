@@ -1042,8 +1042,7 @@ header.masthead .gapck-link:hover { transform: none; opacity: .85; }
 
 /* 6) 모바일 */
 @media (max-width: 640px) {
-  /* 카테고리 바: 오른쪽이 더 있다는 것을 흐림으로 알려 줌 */
-  nav.catnav .wrap { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent 100%); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent 100%); }
+  /* 카테고리 바의 스크롤 힌트(가장자리 흐림 + ‹ › 버튼)는 site.js initCatScrollHint 가 .catlist 에 켠다 */
   /* 두 번째·세 번째 기사 카드: 한 줄 카드(왼쪽 사진, 오른쪽 제목)로 줄여 한 화면에 더 많이 보이게 */
   .card-pair { gap: 12px; }
   .card-pair .feature-item { flex-direction: row; align-items: stretch; }
