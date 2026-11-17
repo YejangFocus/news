@@ -2,7 +2,7 @@
  * - 페이지·CSS·JS·데이터는 "네트워크 우선"(배포 직후에도 항상 최신), 오프라인이면 마지막으로 본 사본을 보여 준다.
  * - 사진은 "캐시 우선 + 백그라운드 갱신". 영상(mp4)과 다른 사이트 요청은 건드리지 않는다.
  * 캐시 구조를 바꿀 때는 VERSION 을 올리면 옛 캐시가 지워진다. */
-const VERSION = 'yf-v1';
+const VERSION = 'yf-v2';
 const PAGES = VERSION + '-pages';
 const IMAGES = VERSION + '-images';
 const MAX_IMAGES = 150;
@@ -47,7 +47,7 @@ async function imageStrategy(req) {
     if (res.ok && res.type === 'basic') { cache.put(req, res.clone()); trim(IMAGES, MAX_IMAGES); }
     return res;
   }).catch(() => hit);
-  return hit || fetching;
+  return hit || (await fetching) || Response.error();
 }
 
 self.addEventListener('fetch', (e) => {
