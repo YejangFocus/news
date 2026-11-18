@@ -136,8 +136,7 @@
     width:100%;
     display:block;
     border-radius: 3px;
-    box-shadow: 0 8px 24px var(--shadow);
-  }
+    box-shadow: 0 8px 24px var(--shadow); height:auto;}
   figcaption{
     background: var(--caption-bg);
     font-size: 13px;
@@ -462,7 +461,7 @@
     footer.yf-footer .legal-grid .litem{ white-space: normal; }
   }
   /* ===== 이미지 뷰어(라이트박스) ===== */
-  .page figure img{cursor:zoom-in}
+  .page figure img{cursor:zoom-in; height:auto;}
   .lb{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;display:none;flex-direction:column;align-items:center;background:rgba(0,0,0,.92)}
   .lb.open{display:flex}
   .lb-stage{flex:1;min-height:0;width:100%;overflow:auto;display:flex;-webkit-overflow-scrolling:touch}
@@ -561,7 +560,7 @@
   <p>이 같은 내용은 교수 측의 전언으로, 당사자 확인은 거치지 않았다. 다만 교수들이 문제 삼아 온 학교 운영 사안들은 규정 조문과 공개된 문서, 수치로 확인할 수 있다. 가장 분명하게 드러나는 것이 총장 선거 규칙의 변경이다.</p>
 
   <figure>
-    <img src="../assets/images/20261116-chongshin-faculty-statement-01.jpg" alt="교수협의회 성명서가 붙은 총신대 건물 입구">
+    <img src="../assets/images/20261116-chongshin-faculty-statement-01.webp" alt="교수협의회 성명서가 붙은 총신대 건물 입구" srcset="../assets/images/20261116-chongshin-faculty-statement-01-640.webp 640w, ../assets/images/20261116-chongshin-faculty-statement-01.webp 1600w" sizes="(max-width: 700px) 100vw, 720px" width="1600" height="2133" loading="lazy" decoding="async">
     <figcaption>총신대 건물 입구 유리문에 신대원 교수협의회의 성명서가 붙어 있다. ⓒ예장포커스</figcaption>
   </figure>
 
@@ -612,7 +611,7 @@
   <p>성명에 따르면 입학인재개발처장은 학교의 승인을 받지 않은 게시물을 규정에 따라 철거했다는 입장이다. 교수협의회는 국가인권위원회가 2022년과 2025년 대학의 게시물 사전 승인 요구와 철거가 표현의 자유를 침해한다고 판단한 사례를 들어 이를 반박했다. 교수협의회는 총장 명의의 공개 사과와 재발 방지 약속, 관련자의 보직 해임, 훼손된 대자보에 대한 손해배상을 요구하며 11월 9일 자정까지 응하지 않으면 민·형사상 법적 조치를 하겠다고 밝혔다. 교수협의회는 현재 고소를 검토하고 있다. 의견을 밝힐 통로마저 막혔다는 것이 교수들의 주장이다.</p>
 
   <figure>
-    <img src="../assets/images/20261116-chongshin-faculty-statement-02.jpg" alt="대자보 철거를 규탄하는 교수협의회 성명서">
+    <img src="../assets/images/20261116-chongshin-faculty-statement-02.webp" alt="대자보 철거를 규탄하는 교수협의회 성명서" srcset="../assets/images/20261116-chongshin-faculty-statement-02-640.webp 640w, ../assets/images/20261116-chongshin-faculty-statement-02.webp 1600w" sizes="(max-width: 700px) 100vw, 720px" width="1600" height="2133" loading="lazy" decoding="async">
     <figcaption>신대원 교수협의회가 11월 2일 낸 '대자보 무단 철거를 공개 사과하고 책임자를 문책하라' 성명서가 게시돼 있다. ⓒ예장포커스</figcaption>
   </figure>
 
@@ -735,7 +734,7 @@
       cur=0,sx=0,sy=0,prevBody='',prevHtml='';
   if(imgs.length<2)lb.classList.add('single');
 
-  function figOf(el){while(el&&el.tagName!=='FIGURE')el=el.parentNode;return el;}
+  function figOf(el){while(el&&el.tagName!=='FIGURE')el=el.parentNode;return el; height:auto;}
   function show(i){
     cur=(i+imgs.length)%imgs.length;
     var im=imgs[cur],fig=figOf(im),fc=fig?fig.querySelector('figcaption'):null;
