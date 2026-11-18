@@ -111,7 +111,7 @@
     document.head.appendChild(css);
     var fl = document.createElement('link');
     fl.rel = 'stylesheet';
-    fl.href = 'https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap';
+    fl.href = '/assets/css/fonts.css';
     document.head.appendChild(fl);
 
     // 1) 읽기 진행률 바
