@@ -333,9 +333,10 @@ def render_home_blocks(index):
         f'<li><span class="tag" style="color:{tag_color(it["tag"])};">{esc(it["tag"])}</span>'
         f'<a href="{it["url"]}">{esc(it["title"])}</a>{_date(it)}</li>' for it in plain)
     rest = [a for a in index if a["url"] not in used]
-    latest_hero = rest[0] if rest else None
-    latest_list = rest[1:7]
-    numerals = ["②", "③", "④", "⑤", "⑥", "⑦"]  # 맨 위 사진이 ①
+    # 맨 위 큰 칸에는 진짜 사진이 있는 기사를 쓴다(없으면 CI 로고가 대신 크게 걸리므로 사진 칸을 두지 않는다)
+    latest_hero = next((a for a in rest if _has_photo(a)), None)
+    latest_list = [a for a in rest if a is not latest_hero][:6]
+    numerals = ["②", "③", "④", "⑤", "⑥", "⑦"] if latest_hero else ["①", "②", "③", "④", "⑤", "⑥"]
     blocks["numList"] = "".join(
         f'<li><span class="num">{numerals[i]}</span><a href="{a["url"]}">{esc(a["title"])}</a>{_date(a)}</li>'
         for i, a in enumerate(latest_list))
