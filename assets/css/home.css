@@ -620,7 +620,7 @@
     --navy: #1f4a8a; --navy-ink: #0a1424;
     --red: #b3343c; --pine: #3f7a68;
     --paper: #f4f6f9; --paper-alt: #e6ebf2;
-    --ink: #0e1520; --ink-soft: #566274; --ink-faint: #5f6c7e;
+    --ink: #0e1520; --ink-soft: #566274; --ink-faint: #8794a6;
     --hair: #d5dbe4; --hair-strong: #bcc5d2;
     --amber: #c9a45c; --doodle: #0e1520; --gold: #c9a45c; --gold-soft: #e3cf9f;
     --shadow: 0 1px 2px rgba(10,20,36,.06), 0 10px 28px -14px rgba(10,20,36,.28);
@@ -629,7 +629,7 @@
     :root:not([data-theme="light"]) {
       --navy: #8aa4c8; --navy-ink: #eaf0f8; --red: #d4707a; --pine: #7fb5a3;
       --paper: #0b0f16; --paper-alt: #141b26; --ink: #e8edf4; --ink-soft: #a3afc0;
-      --ink-faint: #8f9cb2; --hair: #243040; --hair-strong: #33425a; --amber: #cdb06f;
+      --ink-faint: #738096; --hair: #243040; --hair-strong: #33425a; --amber: #cdb06f;
       --doodle: #8aa4c8; --gold: #cdb06f; --gold-soft: #cdb06f;
     }
     :root:not([data-theme="light"]) body { background: #070a10; }
@@ -641,7 +641,7 @@
   :root[data-theme="dark"] {
     --navy: #8aa4c8; --navy-ink: #eaf0f8; --red: #d4707a; --pine: #7fb5a3;
     --paper: #0b0f16; --paper-alt: #141b26; --ink: #e8edf4; --ink-soft: #a3afc0;
-    --ink-faint: #8f9cb2; --hair: #243040; --hair-strong: #33425a; --amber: #cdb06f;
+    --ink-faint: #738096; --hair: #243040; --hair-strong: #33425a; --amber: #cdb06f;
     --doodle: #8aa4c8; --gold: #cdb06f; --gold-soft: #cdb06f;
   }
   :root[data-theme="dark"] body { background: #070a10; }
@@ -1105,3 +1105,6 @@ body:has(#heroFeature) nav.catnav .brandmark { padding-top: 8px; padding-bottom:
 .aa-list a:hover{color:var(--ink-soft);text-decoration:underline;}
 .aa-empty{padding:40px 0;text-align:center;color:var(--muted);font-size:14px;}
 @media (prefers-reduced-motion: reduce){ .support-btn{animation:none!important;transition:none!important} }
+
+/* 세로형 포스터·카드뉴스 이미지를 16:9 칸에 넣을 때 제목이 있는 윗부분이 잘리지 않게 위쪽 기준으로 자른다 */
+.card-pair img.thumb:not(.is-fallback) { object-position: center 6%; }

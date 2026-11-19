@@ -201,12 +201,11 @@
 
     // 우측 '이어지는 소식': 위 칸들에 나오지 않은 기사를 최신순으로. 맨 위 큰 사진이 ①, 목록은 ②부터.
     var restArticles = ARTICLE_INDEX.filter(unused);
-    // 큰 칸에는 진짜 사진이 있는 기사를 쓴다(없으면 CI 로고가 크게 걸리므로 사진 칸을 두지 않는다)
-    var latestHero = restArticles.filter(hasPhoto)[0] || null;
-    var latestList = restArticles.filter(function (a) { return a !== latestHero; }).slice(0, 6);
+    var latestHero = restArticles[0] || null;
+    var latestList = restArticles.slice(1, 7);
     var numList = document.getElementById('numList');
     if (numList) {
-      var numerals = latestHero ? ['②', '③', '④', '⑤', '⑥', '⑦'] : ['①', '②', '③', '④', '⑤', '⑥'];
+      var numerals = ['②', '③', '④', '⑤', '⑥', '⑦'];
       numList.innerHTML = latestList.map(function (item, i) {
         return '<li><span class="num">' + numerals[i] + '</span><a href="' + item.url + '">' + esc(item.title) + '</a>' + dateHtml(item) + '</li>';
       }).join('');
