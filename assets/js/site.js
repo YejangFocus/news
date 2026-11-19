@@ -82,6 +82,14 @@
       console.error('기사 목록(articles.json)을 불러오지 못했습니다.', err);
     });
 
+  // 후원문의 버튼 임시 숨김: 2026-11-19부터 10일간(2026-11-29 0시 KST 전까지).
+  // 이 날짜가 지나면 코드 수정 없이 자동으로 다시 나타난다.
+  if (Date.now() < Date.parse('2026-11-29T00:00:00+09:00')) {
+    Array.prototype.forEach.call(document.querySelectorAll('.support-btn'), function (b) {
+      if (b.parentNode) b.parentNode.removeChild(b);
+    });
+  }
+
   initSkipLink();
   initCatScrollHint();
   initMastheadWatch();
