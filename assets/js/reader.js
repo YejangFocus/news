@@ -180,16 +180,6 @@
     }, { passive: true });
   }
 
-  // ── 홈: 오늘의 포커스 아래 구독 띠(정적 기본 마크업을 설정이 반영된 상자로 교체) ──
-  function onHome() {
-    var ph = document.getElementById('homeSubscribe');
-    if (!ph || ph.getAttribute('data-ready')) return;
-    addCss();
-    var box = subBox('', true);
-    box.setAttribute('data-ready', '1');
-    ph.parentNode.replaceChild(box, ph);
-  }
-
   // ── 주간 브리핑 페이지: 구독 상자 ─────────────────────────────────────────
   function onBriefing() {
     var br = document.getElementById('briefing');
@@ -207,7 +197,6 @@
       initAnalytics();
       fixFooter();
       onBriefing();
-      onHome();
       if (window.__yfArticle) onArticle();
       document.addEventListener('yf:article', onArticle);
     });
