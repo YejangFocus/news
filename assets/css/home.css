@@ -560,8 +560,9 @@
   .col-side .col-panel { padding: 16px 20px 4px; }
   .col-side .side-list li { padding: 10px 0; }
   .col-side .side-list .thumb { width: 64px; height: 64px; aspect-ratio: 1/1; }
-  .col-main .plain-list { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-  .col-main .plain-list li { flex: 1; align-items: center; padding: 8px 0; }
+  /* 사이드 높이에 맞춰 늘리지 않고 내용 높이만큼만 차지한다(항목 사이가 과하게 벌어지지 않도록) */
+  .col-main .plain-list { flex: none; display: flex; flex-direction: column; justify-content: flex-start; }
+  .col-main .plain-list li { align-items: center; padding: 12px 0; }
 
   .ticker-bar { margin: 0; background: #fff; border-radius: 30px; padding: 6px 8px 6px 6px; box-shadow: var(--shadow); }
   .ticker-badge { transform: none; box-shadow: none; border-radius: 20px; background: var(--red); padding: 6px 14px; }
