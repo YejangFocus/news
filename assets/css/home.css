@@ -1109,3 +1109,7 @@ body:has(#heroFeature) nav.catnav .brandmark { padding-top: 8px; padding-bottom:
 
 /* 세로형 포스터·카드뉴스 이미지를 16:9 칸에 넣을 때 제목이 있는 윗부분이 잘리지 않게 위쪽 기준으로 자른다 */
 .card-pair img.thumb:not(.is-fallback) { object-position: center 6%; }
+
+/* 하단 목록 아래 '전체 기사 더보기' 링크 */
+.col-main .list-more { display: block; margin-top: -8px; padding: 12px 0; text-align: center; font: 700 14px 'Noto Sans KR', sans-serif; color: var(--navy); background: var(--paper); border: 1px solid var(--hair); border-radius: 4px; transition: background .15s ease, color .15s ease; }
+.col-main .list-more:hover { background: var(--navy-ink); color: var(--paper); }
