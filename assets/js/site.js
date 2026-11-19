@@ -741,16 +741,61 @@
   // 메뉴줄이 가로로 넘칠 때, 더 넘길 수 있는 쪽 끝을 흐리게 해서 '더 있음'을 알린다.
   function initCatScrollHint() {
     var el = document.getElementById('catNav');
-    if (!el) return;
+    var nav = document.querySelector('nav.catnav');
+    if (!el || !nav) return;
+
+    // 더 넘길 수 있는 쪽에 ‹ › 버튼을 띄운다(탭하면 그쪽으로 이동). 스크롤이 필요 없으면 둘 다 숨긴다.
+    var css = document.createElement('style');
+    css.textContent =
+      'nav.catnav{position:sticky;}' +
+      '.cat-scroll-btn{position:absolute;top:50%;width:26px;height:26px;margin-top:-13px;padding:0;border-radius:50%;' +
+        'border:1px solid rgba(255,255,255,.35);background:rgba(15,29,58,.88);color:#fff;font:700 17px/1 "Noto Sans KR",sans-serif;' +
+        'display:none;align-items:center;justify-content:center;cursor:pointer;z-index:3;box-shadow:0 1px 6px rgba(0,0,0,.35);-webkit-tap-highlight-color:transparent;}' +
+      '.cat-scroll-btn.on{display:flex;}' +
+      '.cat-scroll-btn.r{right:4px;}.cat-scroll-btn.l{left:4px;}' +
+      '.cat-scroll-btn.r.on{animation:catNudge 1.6s ease-in-out 2;}' +
+      '@keyframes catNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(3px)}}' +
+      '@media (prefers-reduced-motion:reduce){.cat-scroll-btn.r.on{animation:none;}}' +
+      '@media print{.cat-scroll-btn{display:none !important;}}';
+    document.head.appendChild(css);
+    function mk(cls, label, ch) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'cat-scroll-btn ' + cls;
+      b.setAttribute('aria-label', label); b.textContent = ch;
+      nav.appendChild(b);
+      return b;
+    }
+    var btnL = mk('l', '메뉴 왼쪽으로 이동', '‹');
+    var btnR = mk('r', '메뉴 오른쪽으로 이동', '›');
+    function by(dir) { el.scrollBy({ left: dir * Math.max(120, el.clientWidth * 0.6), behavior: 'smooth' }); }
+    btnL.addEventListener('click', function () { by(-1); });
+    btnR.addEventListener('click', function () { by(1); });
+
     function update() {
       var max = el.scrollWidth - el.clientWidth;
-      el.classList.toggle('fade-l', el.scrollLeft > 4);
-      el.classList.toggle('fade-r', max > 4 && el.scrollLeft < max - 4);
+      var left = el.scrollLeft > 4, right = max > 4 && el.scrollLeft < max - 4;
+      el.classList.toggle('fade-l', left);
+      el.classList.toggle('fade-r', right);
+      btnL.classList.toggle('on', left);
+      btnR.classList.toggle('on', right);
     }
     el.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
     window.addEventListener('load', update);
     update();
+
+    // 처음 들어온 방문에서 한 번만, 메뉴를 살짝 밀었다가 돌아와 '옆으로 넘어간다'는 것을 보여 준다.
+    var seen = false;
+    try { seen = sessionStorage.getItem('yfCatNudge') === '1'; } catch (e) {}
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!seen && !reduce) {
+      setTimeout(function () {
+        if (el.scrollWidth - el.clientWidth <= 8 || el.scrollLeft > 0) return;
+        try { sessionStorage.setItem('yfCatNudge', '1'); } catch (e) {}
+        el.scrollTo({ left: 48, behavior: 'smooth' });
+        setTimeout(function () { el.scrollTo({ left: 0, behavior: 'smooth' }); }, 650);
+      }, 1200);
+    }
   }
 
   // 공지가 한 줄에 다 들어가면 그대로 두고, 넘칠 때만 흐르게 한다.
