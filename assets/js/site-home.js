@@ -191,7 +191,7 @@
     // 좌측 하단 텍스트 목록: 위 칸에 나오지 않은 최신 기사(칼럼 제외) 5건을 날짜순으로.
     var plainList = document.getElementById('plainList');
     if (plainList) {
-      var plain = ARTICLE_INDEX.filter(function (a) { return notColumn(a) && unused(a); }).slice(0, 5);
+      var plain = ARTICLE_INDEX.filter(function (a) { return notColumn(a) && unused(a); }).slice(0, 7);
       plain.forEach(mark);
       plainList.innerHTML = plain.map(function (item) {
         return '<li><span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
