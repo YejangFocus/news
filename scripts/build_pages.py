@@ -328,7 +328,7 @@ def render_home_blocks(index):
     blocks["secondFeature"] = _feature(second, "", "", always_img=True, sizes=CARD_SIZES)
     blocks["thirdFeature"] = _feature(third, "border-bottom:none;", "", always_img=True, sizes=CARD_SIZES)
 
-    plain = [c for c in (pick_unused(lambda a: a["tag"] != "칼럼") for _ in range(5)) if c]
+    plain = [c for c in (pick_unused(lambda a: a["tag"] != "칼럼") for _ in range(7)) if c]
     blocks["plainList"] = "".join(
         f'<li><span class="tag" style="color:{tag_color(it["tag"])};">{esc(it["tag"])}</span>'
         f'<a href="{it["url"]}">{esc(it["title"])}</a>{_date(it)}</li>' for it in plain)
