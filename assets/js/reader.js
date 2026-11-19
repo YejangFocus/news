@@ -153,7 +153,6 @@
     if (!ctx || ctx.done) return;
     ctx.done = true;
     addCss();
-    ctx.end.appendChild(subBox(ctx.cur.url));
     track('article_view', { label: ctx.cur.tag });
 
     var g = cfg.giscus || {};
