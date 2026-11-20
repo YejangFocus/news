@@ -290,7 +290,7 @@ def _feature(item, extra_style, empty_label, eager=False, always_img=False, size
     if not item:
         return (f'<div class="feature-item"{st}><div class="body"><span class="tag" style="color:{tag_color(empty_label)};">'
                 f'{esc(empty_label)}</span></div></div>') if empty_label else ""
-    return (f'<a class="feature-item" href="{item["url"]}"{st}>{_home_thumb(item, "thumb", eager, sizes) if (eager or always_img or _has_photo(item)) else ""}<div class="body">'
+    return (f'<a class="feature-item" href="{item["url"]}" aria-label="{esc(item["title"])}"{st}>{_home_thumb(item, "thumb", eager, sizes) if (eager or always_img or _has_photo(item)) else ""}<div class="body">'
             f'<span class="tag" style="color:{tag_color(item["tag"])};">{esc(item["tag"])}</span>'
             f'<h3>{esc(item["title"])}</h3>' + (f'<p>{esc(item["desc"])}</p>' if item.get("desc") else "") + _date(item) + "</div></a>")
 
@@ -333,8 +333,9 @@ def render_home_blocks(index):
         f'<li><span class="tag" style="color:{tag_color(it["tag"])};">{esc(it["tag"])}</span>'
         f'<a href="{it["url"]}">{esc(it["title"])}</a>{_date(it)}</li>' for it in plain)
     rest = [a for a in index if a["url"] not in used]
-    latest_hero = rest[0] if rest else None
-    latest_list = rest[1:7]
+    # 맨 위 큰 카드(①)에 CI 로고가 뜨지 않도록, 최신 4건 안에 사진 기사가 있으면 그것을 ①로 쓴다
+    latest_hero = next((a for a in rest[:4] if _has_photo(a)), rest[0] if rest else None)
+    latest_list = [a for a in rest if a is not latest_hero][:6]
     numerals = ["②", "③", "④", "⑤", "⑥", "⑦"]  # 맨 위 사진이 ①
     blocks["numList"] = "".join(
         f'<li><span class="num">{numerals[i]}</span><a href="{a["url"]}">{esc(a["title"])}</a>{_date(a)}</li>'
