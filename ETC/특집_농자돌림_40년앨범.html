@@ -368,6 +368,35 @@
   nav.catnav a.brandmark { padding: 8px 16px 8px 0; border-bottom: none; }
   nav.catnav button:hover, nav.catnav a:hover { color: var(--navy); }
   nav.catnav button.active, nav.catnav a.active { color: var(--red); border-bottom-color: var(--red); }
+
+  /* ---------- 하단 푸터 (index.html과 동일) ---------- */
+  footer.yf-footer{
+    margin-top: 20px; background: #0f1d3a; color: #c9cfe2;
+    line-height: normal; font-family: 'Noto Sans KR', sans-serif;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  footer.yf-footer a{ color: inherit; text-decoration: none; }
+  footer.yf-footer .wrap{ max-width: 1040px; margin: 0 auto; padding: 32px 18px 30px; }
+  footer.yf-footer .flockup{
+    font-family: 'Noto Serif KR', serif; font-weight: 900; font-size: 20px; color: #fff; margin-bottom: 4px;
+  }
+  footer.yf-footer .fsub{ font-size: 11px; letter-spacing: .28em; color: #8b93ab; }
+  footer.yf-footer .flinks{ display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 16px 0 18px; font-size: 12.5px; }
+  footer.yf-footer .flinks a:hover{ color: #fff; }
+  footer.yf-footer .legal-grid{
+    display: flex; flex-wrap: wrap; column-gap: 14px; row-gap: 4px;
+    font-size: 12px; line-height: 1.5; color: #98a0bd; border-top: 1px solid #263258; padding-top: 16px;
+  }
+  footer.yf-footer .legal-grid .litem{ white-space: nowrap; }
+  footer.yf-footer .legal-grid .ll{ color: #6b7396; margin-right: 3px; }
+  footer.yf-footer .legal-grid .lv{ color: #98a0bd; }
+  footer.yf-footer p.copyright{ margin: 18px 0 4px; font-size: 11.5px; line-height: 1.6; color: #7b83a3; }
+  footer.yf-footer p.copyright + p.copyright{ margin-top: 0; }
+  footer.yf-footer p.copyright a:hover{ color: #fff; }
+  @media (max-width: 760px){
+    footer.yf-footer .legal-grid{ flex-direction: column; }
+    footer.yf-footer .legal-grid .litem{ white-space: normal; }
+  }
 </style>
 </head>
 <body>
@@ -649,5 +678,36 @@
 
 </script>
 
+<footer class="yf-footer">
+  <div class="wrap">
+    <div class="flockup">예장포커스</div>
+    <div class="fsub">YEJANG FOCUS</div>
+
+    <div class="flinks">
+      <a href="https://yejangfocus.com/메인화면/예장포커스_매체소개.html">매체소개</a>
+      <a href="mailto:contact@yejangfocus.com">기사 제보</a>
+      <a href="mailto:contact@yejangfocus.com?subject=%5B광고%20문의%5D">광고 문의</a>
+      <a href="mailto:contact@yejangfocus.com?subject=%5B구독%20신청%5D">구독 신청</a>
+      <a href="https://yejangfocus.com/메인화면/이용약관.html">이용약관</a>
+      <a href="https://yejangfocus.com/메인화면/예장포커스_개인정보취급방침.html">개인정보처리방침</a>
+      <a href="https://yejangfocus.com/메인화면/청소년보호정책.html">청소년보호정책</a>
+      <a href="https://yejangfocus.com/메인화면/저작권보호정책.html">저작권보호정책</a>
+      <a href="https://yejangfocus.com/메인화면/정정반론추후보도_안내.html">정정·반론·추후 보도</a>
+    </div>
+
+    <div class="legal-grid">
+      <span class="litem"><span class="ll">제호</span><span class="lv">예장포커스(Yejang Focus)</span></span>
+      <span class="litem"><span class="ll">대표전화</span><span class="lv">0504-492-3386</span></span>
+      <span class="litem"><span class="ll">팩스</span><span class="lv">0504-492-3386</span></span>
+      <span class="litem"><span class="ll">사업자등록번호</span><span class="lv">진행 중</span></span>
+      <span class="litem"><span class="ll">청소년보호책임자</span><span class="lv">윤기로</span></span>
+      <span class="litem"><span class="ll">발행·편집인</span><span class="lv">박종명</span></span>
+      <span class="litem"><span class="ll">주소</span><span class="lv">대구광역시 달서구 선원로 122 서한2차A 상가 301호</span></span>
+    </div>
+
+    <p class="copyright">예장포커스(Yejang Focus)의 모든 콘텐츠(영상, 기사, 사진)는 저작권법의 보호를 받는 바, 무단 전재와 복사, 배포 등을 금합니다.</p>
+    <p class="copyright">Copyright © 2026 예장포커스(Yejang Focus). All rights reserved. 문의 <a href="mailto:contact@yejangfocus.com">contact@yejangfocus.com</a></p>
+  </div>
+</footer>
 </body>
 </html>
