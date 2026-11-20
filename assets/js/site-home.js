@@ -69,7 +69,7 @@
           '<div class="body"><span class="tag" style="color:' + tagColor(emptyLabel) + ';">' + esc(emptyLabel) + '</span></div></div>' : '';
       }
       return '' +
-        '<a class="feature-item" href="' + item.url + '"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
+        '<a class="feature-item" href="' + item.url + '" aria-label="' + esc(item.title) + '"' + (extraStyle ? ' style="' + extraStyle + '"' : '') + '>' +
           (eager || alwaysImg || hasPhoto(item) ? thumbImgHtml(item, 'thumb', eager, sizes) : '') +
           '<div class="body">' +
             '<span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
@@ -201,8 +201,9 @@
 
     // 우측 '이어지는 소식': 위 칸들에 나오지 않은 기사를 최신순으로. 맨 위 큰 사진이 ①, 목록은 ②부터.
     var restArticles = ARTICLE_INDEX.filter(unused);
-    var latestHero = restArticles[0] || null;
-    var latestList = restArticles.slice(1, 7);
+    // 맨 위 큰 카드(①)에 CI 로고가 뜨지 않도록, 최신 4건 안에 사진 기사가 있으면 그것을 ①로 쓴다
+    var latestHero = restArticles.slice(0, 4).filter(hasPhoto)[0] || restArticles[0] || null;
+    var latestList = restArticles.filter(function (a) { return a !== latestHero; }).slice(0, 6);
     var numList = document.getElementById('numList');
     if (numList) {
       var numerals = ['②', '③', '④', '⑤', '⑥', '⑦'];
