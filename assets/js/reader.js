@@ -121,18 +121,19 @@
     '@media print{.yf-sub,.yf-cmt{display:none}}';
   function subBox(articleUrl, home) {
     var n = cfg.newsletter || {};
-    var mail = n.url || ('mailto:' + (n.email || 'contact@yejangfocus.com') + '?subject=' + encodeURIComponent('[구독 신청]'));
+    var mail = n.url || '';
     var ext = n.url ? ' target="_blank" rel="noopener"' : '';
     var tip = TIP + (articleUrl ? '?type=' + encodeURIComponent('정정 요청') + '&url=' + encodeURIComponent(articleUrl) : '');
     var d = document.createElement('div');
     d.className = 'yf-sub' + (home ? ' yf-sub-home' : '');
     if (home) d.id = 'homeSubscribe';
     d.innerHTML = (home ? '<div class="ys-text">' : '') + '<b>예장포커스 소식 받아보기</b><p>총회·교계 소식을 놓치지 않도록, 편한 방법으로 구독하세요.</p>' + (home ? '</div>' : '') + '<div class="row">' +
-      '<a class="pri" href="' + esc(mail) + '"' + ext + ' data-t="subscribe_email">이메일 구독</a>' +
+      (mail ? '<a class="pri" href="' + esc(mail) + '"' + ext + ' data-t="subscribe_email">이메일 구독</a>' : '') +
       (cfg.kakaoChannel ? '<a href="' + esc(cfg.kakaoChannel) + '" target="_blank" rel="noopener" data-t="subscribe_kakao">카카오톡 채널</a>' : '') +
       '<a href="' + YOUTUBE + '" target="_blank" rel="noopener" data-t="subscribe_youtube">예포TV 구독</a>' +
       '<a href="' + esc(root) + 'feed.xml" data-t="subscribe_rss">RSS</a>' +
       '<button type="button" data-yf-install hidden>앱 설치</button></div>' +
+      '<small>구독·제보 문의: ' + (n.email || 'contact@yejangfocus.com') + '</small>' +
       (home ? '' : '<small>기사 제보나 잘못된 내용 신고는 <a href="' + tip + '">제보·정정 요청</a>에서 받습니다.</small>');
     d.addEventListener('click', function (e) {
       var a = e.target.closest ? e.target.closest('[data-t]') : null;
