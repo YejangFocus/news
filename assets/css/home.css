@@ -1114,3 +1114,6 @@ body:has(#heroFeature) nav.catnav .brandmark { padding-top: 8px; padding-bottom:
 /* 하단 목록 아래 '전체 기사 더보기' 링크 */
 .col-main .list-more { display: block; margin-top: -8px; padding: 12px 0; text-align: center; font: 700 14px 'Noto Sans KR', sans-serif; color: var(--navy); background: var(--paper); border: 1px solid var(--hair); border-radius: 4px; transition: background .15s ease, color .15s ease; }
 .col-main .list-more:hover { background: var(--navy-ink); color: var(--paper); }
+
+/* 분류별 최신 기사 목록 삭제 후: 칼럼 패널은 기존 우측 폭 그대로 유지 */
+@media (min-width: 901px) { .home-grid > .col-side { grid-column: 2; } }
