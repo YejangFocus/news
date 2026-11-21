@@ -469,12 +469,12 @@
   footer .flinks { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 16px 0 18px; font-size: 12.5px; }
   footer .flinks a:hover { color: #fff; }
   footer .legal-grid {
-    display: grid; grid-template-columns: repeat(3, auto); justify-content: start;
+    display: flex; flex-wrap: wrap; justify-content: flex-start;
     column-gap: 28px; row-gap: 6px;
     font-size: 12px; line-height: 1.5; color: #98a0bd; border-top: 1px solid #263258; padding-top: 16px;
   }
   footer .legal-grid .litem { white-space: nowrap; }
-  footer .legal-grid .litem:last-child { grid-column: 1 / -1; white-space: normal; }
+  footer .legal-grid .lbr { flex-basis: 100%; height: 0; }
   footer .legal-grid .ll { color: #98a1c4; margin-right: 3px; }
   footer .legal-grid .lv { color: #98a0bd; }
   footer .copyright { margin-top: 18px; font-size: 11.5px; color: #9ba4c8; }
@@ -486,7 +486,6 @@
     .corner-body { flex-direction: column; }
     .corner-sub { border-left: none; padding-left: 0; border-top: 1px solid var(--hair); padding-top: 12px; }
     .corner-hero .thumb { width: 110px; }
-    footer .legal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .masthead .lockup { font-size: 32px; }
   }
 
