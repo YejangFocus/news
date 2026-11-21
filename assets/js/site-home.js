@@ -188,17 +188,6 @@
       });
     }
 
-    // 좌측 하단 텍스트 목록: 위 칸에 나오지 않은 최신 기사(칼럼 제외) 5건을 날짜순으로.
-    var plainList = document.getElementById('plainList');
-    if (plainList) {
-      var plain = ARTICLE_INDEX.filter(function (a) { return notColumn(a) && unused(a); }).slice(0, 7);
-      plain.forEach(mark);
-      plainList.innerHTML = plain.map(function (item) {
-        return '<li><span class="tag" style="color:' + tagColor(item.tag) + ';">' + esc(item.tag) + '</span>' +
-          '<a href="' + item.url + '">' + esc(item.title) + '</a>' + dateHtml(item) + '</li>';
-      }).join('');
-    }
-
     // 우측 '이어지는 소식': 위 칸들에 나오지 않은 기사를 최신순으로. 맨 위 큰 사진이 ①, 목록은 ②부터.
     var restArticles = ARTICLE_INDEX.filter(unused);
     // 맨 위 큰 카드(①)에 CI 로고가 뜨지 않도록, 최신 4건 안에 사진 기사가 있으면 그것을 ①로 쓴다

@@ -328,10 +328,6 @@ def render_home_blocks(index):
     blocks["secondFeature"] = _feature(second, "", "", always_img=True, sizes=CARD_SIZES)
     blocks["thirdFeature"] = _feature(third, "border-bottom:none;", "", always_img=True, sizes=CARD_SIZES)
 
-    plain = [c for c in (pick_unused(lambda a: a["tag"] != "칼럼") for _ in range(7)) if c]
-    blocks["plainList"] = "".join(
-        f'<li><span class="tag" style="color:{tag_color(it["tag"])};">{esc(it["tag"])}</span>'
-        f'<a href="{it["url"]}">{esc(it["title"])}</a>{_date(it)}</li>' for it in plain)
     rest = [a for a in index if a["url"] not in used]
     # 맨 위 큰 카드(①)에 CI 로고가 뜨지 않도록, 최신 4건 안에 사진 기사가 있으면 그것을 ①로 쓴다
     latest_hero = next((a for a in rest[:4] if _has_photo(a)), rest[0] if rest else None)
