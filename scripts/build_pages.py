@@ -13,6 +13,7 @@
 불필요한 커밋이 생기지 않는다.
 """
 import html
+import json
 import re
 from datetime import datetime
 from pathlib import Path
@@ -298,9 +299,32 @@ def _feature(item, extra_style, empty_label, eager=False, always_img=False, size
 CAT_TABS = ["교단", "목회", "신학", "사설", "특집", "노회", "인물"]  # 홈 '분류별 기사' 탭 순서(최신 다음; 칼럼은 오른쪽에 따로 있어 제외)
 
 
+POPULAR_FILE = REPO_ROOT / "data" / "popular.json"   # scripts/fetch_popular.py 가 만든다(없으면 '많이 본' 탭은 그리지 않는다)
+
+
+def popular_articles(index, limit=4):
+    """data/popular.json 의 조회수 순서대로 기사 목록을 돌려준다(목록에 없는 주소는 건너뜀)."""
+    try:
+        data = json.loads(POPULAR_FILE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    by_url = {a["url"]: a for a in index}
+    out = []
+    for item in data.get("items", []):
+        a = by_url.get(item.get("url"))
+        if a and a not in out:
+            out.append(a)
+        if len(out) >= limit:
+            break
+    return out
+
+
 def render_cat_tabs(index):
     """홈 왼쪽 아래 '분류별 기사' 탭 패널. 모든 탭을 미리 그려 두고 site-home.js 가 보이기만 전환한다."""
     tabs = [("최신", None, [a for a in index if a["tag"] != "칼럼"][:4])]
+    popular = popular_articles(index)
+    if popular:
+        tabs.append(("많이 본", None, popular))
     for cat in CAT_TABS:
         items = [a for a in index if a["tag"] == cat][:4]
         if items:
