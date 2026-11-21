@@ -30,20 +30,39 @@
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
     installEvt = e;
-    document.querySelectorAll('[data-yf-install]').forEach(function (b) { b.hidden = false; });
     addFooterInstall();
   });
   window.addEventListener('appinstalled', function () {
     track('app_install');
     installEvt = null;
-    document.querySelectorAll('[data-yf-install]').forEach(function (b) { b.hidden = true; });
+    hideInstall();
   });
+  function isStandalone() {
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+  }
+  function hideInstall() {
+    document.querySelectorAll('[data-yf-install]').forEach(function (b) { b.hidden = true; });
+  }
+  function installGuide() {
+    var ua = navigator.userAgent || '';
+    if (/KAKAOTALK|NAVER\(inapp|; wv\)|FBAN|FBAV|Instagram|Line\//i.test(ua)) {
+      return '현재 앱 안의 브라우저에서는 설치할 수 없습니다. 크롬(Android) 또는 사파리(iPhone)에서 yejangfocus.com 을 열어 주세요.';
+    }
+    if (/iPhone|iPad|iPod/i.test(ua)) {
+      return '사파리 하단의 공유 버튼(□↑)을 누른 뒤 "홈 화면에 추가"를 선택하세요.';
+    }
+    if (/Android/i.test(ua)) {
+      return '브라우저 오른쪽 위 메뉴(⋮)에서 "앱 설치" 또는 "홈 화면에 추가"를 선택하세요.';
+    }
+    return '브라우저 주소창 오른쪽의 설치 아이콘(⊕)을 누르거나, 메뉴에서 "앱 설치"(또는 "바로가기 만들기")를 선택하세요.';
+  }
   function doInstall() {
-    if (!installEvt) return;
+    if (!installEvt) { alert('예장포커스 앱 설치 방법\n\n' + installGuide()); return; }
     installEvt.prompt();
-    installEvt.userChoice.then(function () { installEvt = null; document.querySelectorAll('[data-yf-install]').forEach(function (b) { b.hidden = true; }); });
+    installEvt.userChoice.then(function () { installEvt = null; });
   }
   function addFooterInstall() {
+    if (isStandalone()) return;
     var links = document.querySelector('.flinks');
     if (!links || links.querySelector('[data-yf-install]')) return;
     var a = document.createElement('a');
@@ -51,6 +70,8 @@
     a.addEventListener('click', function (e) { e.preventDefault(); doInstall(); });
     links.appendChild(a);
   }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addFooterInstall);
+  else addFooterInstall();
 
   // ── 방문 통계 ───────────────────────────────────────────────────────────
   var analyticsOn = false;
