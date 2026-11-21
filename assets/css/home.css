@@ -1136,3 +1136,16 @@ body:has(#heroFeature) nav.catnav .brandmark { padding-top: 8px; padding-bottom:
   .col-side .latest { flex: 1; }
   .col-side .num-list li { padding: 16px 0; }
 }
+
+/* 4) 기사 카드: 제목·요약 높이를 고정하지 않고 내용만큼만 차지한다(두 카드는 같은 행이라 높이는 자동으로 같다). 날짜는 카드 바닥에 맞춘다 */
+.card-pair .feature-item h3 { height: auto; min-height: 0; }
+.card-pair .feature-item p { height: auto; min-height: 0; }
+.card-pair .feature-item .body { display: flex; flex-direction: column; }
+.card-pair .feature-item .body .date { margin-top: auto; padding-top: 8px; }
+
+/* 5) 모바일: 한 줄 항목의 위아래 빈칸을 없애고, 분류별 기사 탭은 잘리지 않게 두 줄로 감싼다 */
+@media (max-width: 640px) {
+  .col-side .num-list li { padding: 11px 0; }
+  .ct-tablist { flex-wrap: wrap; overflow: visible; gap: 6px; padding-bottom: 12px; }
+  .ct-tab { padding: 6px 14px; }
+}
