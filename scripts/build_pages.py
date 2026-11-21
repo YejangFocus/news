@@ -295,6 +295,44 @@ def _feature(item, extra_style, empty_label, eager=False, always_img=False, size
             f'<h3>{esc(item["title"])}</h3>' + (f'<p>{esc(item["desc"])}</p>' if item.get("desc") else "") + _date(item) + "</div></a>")
 
 
+CAT_TABS = ["교단", "노회", "목회", "신학"]  # 홈 '분류별 기사' 탭 순서(칼럼은 오른쪽에 따로 있어 제외)
+
+
+def render_cat_tabs(index):
+    """홈 왼쪽 아래 '분류별 기사' 탭 패널. 모든 탭을 미리 그려 두고 site-home.js 가 보이기만 전환한다."""
+    tabs = [("최신", None, [a for a in index if a["tag"] != "칼럼"][:4])]
+    for cat in CAT_TABS:
+        items = [a for a in index if a["tag"] == cat][:4]
+        if items:
+            tabs.append((cat, cat, items))
+
+    def lead(a):
+        return (f'<a class="ct-lead" href="{a["url"]}">{_home_thumb(a, "thumb", False, "(max-width: 700px) 100vw, 340px")}'
+                f'<span class="tag" style="color:{tag_color(a["tag"])};">{esc(a["tag"])}</span>'
+                f'<strong>{esc(a["title"])}</strong>'
+                + (f'<span class="ct-desc">{esc(a["desc"])}</span>' if a.get("desc") else "") + _date(a) + "</a>")
+
+    def row(a):
+        return (f'<li><a class="ct-thumb" href="{a["url"]}" tabindex="-1" aria-hidden="true">{_home_thumb(a, "thumb", False, "120px")}</a>'
+                f'<div><span class="tag" style="color:{tag_color(a["tag"])};">{esc(a["tag"])}</span>'
+                f'<a class="ct-title" href="{a["url"]}">{esc(a["title"])}</a>{_date(a)}</div></li>')
+
+    buttons, panels = [], []
+    for i, (label, cat, items) in enumerate(tabs):
+        on = i == 0
+        href = f"{SITE_URL}/{cat}/" if cat else f"{SITE_URL}/전체/"
+        buttons.append(f'<button type="button" class="ct-tab" role="tab" id="ctTab{i}" aria-controls="ctPanel{i}" '
+                       f'aria-selected="{"true" if on else "false"}" data-more="{esc(href)}" tabindex="{0 if on else -1}">{esc(label)}</button>')
+        rows = "".join(row(a) for a in items[1:])
+        panels.append(f'<div class="ct-panel" role="tabpanel" id="ctPanel{i}" aria-labelledby="ctTab{i}"{"" if on else " hidden"}>'
+                      f'{lead(items[0])}' + (f'<ul class="ct-list">{rows}</ul>' if rows else "") + "</div>")
+    return ('<div class="panel cat-tabs" id="catTabs">'
+            '<div class="mod-head"><h3>분류별 기사</h3>'
+            f'<a class="more" id="catTabsMore" href="{SITE_URL}/전체/">더보기〉</a></div>'
+            '<div class="ct-tablist" role="tablist" aria-label="분류별 기사">' + "".join(buttons) + "</div>"
+            + "".join(panels) + "</div>")
+
+
 def render_home_blocks(index):
     blocks = {}
     ticker_group = '<span class="ticker-group">' + '<span class="sep">•</span>'.join(
@@ -344,6 +382,7 @@ def render_home_blocks(index):
         + f'<div class="body"><a href="{a["url"]}"><h4>{esc(a["title"])}</h4></a>'
         + (f'<p>{esc(a["desc"])}</p>' if a.get("desc") else "") + _date(a) + "</div></li>"
         for a in columns)
+    blocks["catTabs"] = render_cat_tabs(index)
     return blocks
 
 
