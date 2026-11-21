@@ -295,7 +295,7 @@ def _feature(item, extra_style, empty_label, eager=False, always_img=False, size
             f'<h3>{esc(item["title"])}</h3>' + (f'<p>{esc(item["desc"])}</p>' if item.get("desc") else "") + _date(item) + "</div></a>")
 
 
-CAT_TABS = ["교단", "노회", "목회", "신학", "특집", "인물"]  # 홈 '분류별 기사' 탭 순서(칼럼은 오른쪽에 따로 있어 제외)
+CAT_TABS = ["교단", "목회", "신학", "사설", "특집", "노회", "인물"]  # 홈 '분류별 기사' 탭 순서(최신 다음; 칼럼은 오른쪽에 따로 있어 제외)
 
 
 def render_cat_tabs(index):
