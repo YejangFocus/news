@@ -343,7 +343,7 @@ def render_home_blocks(index):
     # 최신순 우선 배치(site-home.js 와 같은 규칙): 카테고리 칸마다 오래된 기사가 올라오지 않도록
     #   대표(최신 3건) → 칼럼 칸(최신 칼럼 3건 예약) → 주요 카드 2칸 → 텍스트 목록 5칸 → 최신 소식 순으로,
     #   칼럼을 뺀 나머지 기사를 날짜순으로 채운다. 같은 기사는 한 번만 쓴다(티커는 새 기사 알림이라 예외).
-    heroes = index[:3]
+    heroes = [a for a in index if a["tag"] != "칼럼"][:3]  # 맨 위 첫화면(대표)에는 칼럼을 올리지 않는다
     used = {a["url"] for a in heroes}
 
     def pick_unused(pred):
