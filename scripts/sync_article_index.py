@@ -729,6 +729,27 @@ def write_sitemap_and_feed(index: list[dict], extra_pages: list[str] | None = No
     (REPO_ROOT / "feed.xml").write_text(feed, encoding="utf-8")
 
 
+PUBDATE_RE = re.compile(r'(<span class="ll">발행일</span><span class="lv">)[^<]*(</span>)')
+
+
+def update_publish_date(index: list[dict]):
+    """푸터 '발행일'을 가장 최근 기사의 업로드 날짜(YY.MM.DD)로 모든 HTML에 반영한다."""
+    dates = [a["date"] for a in index if a.get("date")]
+    if not dates:
+        return
+    ymd = max(dates)[2:].replace("-", ".")
+    for path in REPO_ROOT.rglob("*.html"):
+        if ".git" in path.parts:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        new = PUBDATE_RE.sub(lambda m: m.group(1) + ymd + m.group(2), text)
+        if new != text:
+            path.write_text(new, encoding="utf-8")
+
+
 def main():
     article_files = find_article_files()
     existing = load_existing_index()
@@ -824,6 +845,7 @@ def main():
     list_pages = build_pages.build_all(new_index, cats)
     write_sitemap_and_feed(new_index, list_pages)
     write_home_jsonld()
+    update_publish_date(new_index)
 
     for w in warnings:
         print(w, file=sys.stderr)
