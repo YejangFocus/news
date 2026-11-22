@@ -61,6 +61,18 @@
     .then(function (articles) {
       articles = sortByLatestDate(articles);
       window.ARTICLE_INDEX = articles;
+      // 푸터 '발행일' = 가장 최근에 올라온 기사의 업로드 날짜 (YY.MM.DD)
+      var newest = articles.reduce(function (m, a) {
+        var d = (a.date || '').slice(0, 10);
+        return d > m ? d : m;
+      }, '');
+      if (newest) {
+        var ymd = newest.slice(2).replace(/-/g, '.');
+        document.querySelectorAll('.litem').forEach(function (li) {
+          var ll = li.querySelector('.ll');
+          if (ll && ll.textContent.trim() === '발행일') li.querySelector('.lv').textContent = ymd;
+        });
+      }
       var counts = { '전체': articles.length };
       articles.forEach(function (a) { counts[a.tag] = (counts[a.tag] || 0) + 1; });
       if (window.__yfNavSetCounts) window.__yfNavSetCounts(counts);
