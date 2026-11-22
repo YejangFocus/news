@@ -733,7 +733,8 @@ PUBDATE_RE = re.compile(r'(<span class="ll">발행일</span><span class="lv">)[^
 
 
 def update_publish_date(index: list[dict]):
-    """푸터 '발행일'을 가장 최근 기사의 업로드 날짜(YY.MM.DD)로 모든 HTML에 반영한다."""
+    """푸터 '발행일'은 '27.00.00 예정'으로 고정하므로 자동 갱신하지 않는다."""
+    return
     dates = [a["date"] for a in index if a.get("date")]
     if not dates:
         return
