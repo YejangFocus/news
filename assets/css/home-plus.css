@@ -69,7 +69,9 @@ header.masthead .book-link:hover,header.masthead .gapck-link:hover{transform:tra
 header.masthead .book-logo,header.masthead .gapck-logo{display:block;height:100%;width:auto;max-width:none;border-radius:0;box-shadow:none}
 @media(max-width:720px){
   header.masthead .masthead-row{grid-template-columns:minmax(0,1fr) auto!important;gap:10px!important;padding-top:4px}
-  header.masthead .mh-left{display:none}
+  header.masthead .mh-left{grid-column:1/-1;grid-row:2;justify-self:start;gap:0}
+  header.masthead .mh-left .mh-tv{display:none}
+  .mh-date{font-size:12px;padding-bottom:2px}
   header.masthead .ci-link{grid-column:1;grid-row:1;justify-self:start;width:auto}
   header.masthead .ci-logo{width:min(200px,52vw);margin:0}
   header.masthead .right-group{grid-column:2;gap:6px;width:auto}
