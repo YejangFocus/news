@@ -250,7 +250,7 @@
 
     // 헤더 날짜
     var mhDate = document.getElementById('mhDate');
-    if (mhDate) {
+    if (mhDate && !mhDate.textContent.trim()) {   // 빌드가 '최종편집'을 넣어 두었으면 그대로 둔다
       var now = new Date();
       var wk = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
       mhDate.textContent = now.getFullYear() + '년 ' + (now.getMonth() + 1) + '월 ' + now.getDate() + '일 ' + wk + '요일';
