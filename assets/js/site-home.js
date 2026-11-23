@@ -262,7 +262,7 @@
     if (mhToday) {
       var t = new Date();
       var tw = ['일', '월', '화', '수', '목', '금', '토'][t.getDay()];
-      mhToday.textContent = '오늘: ' + t.getFullYear() + '년 ' + (t.getMonth() + 1) + '월 ' + t.getDate() + '일 ' + tw + '요일';
+      mhToday.innerHTML = '<span class="mt-label">오늘: </span><span class="mt-ymd">' + t.getFullYear() + '년 ' + (t.getMonth() + 1) + '월 ' + t.getDate() + '일</span> <span class="mt-wk">' + tw + '요일</span>';
       mhToday.setAttribute('datetime', t.getFullYear() + '-' + ('0' + (t.getMonth() + 1)).slice(-2) + '-' + ('0' + t.getDate()).slice(-2));
     }
 
