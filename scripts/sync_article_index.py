@@ -527,6 +527,29 @@ def normalize_share_meta(full_path: Path, rel_path: Path, title: str | None, des
     return text, index_image
 
 
+EDITED_RE = re.compile(r'[ \t]*<div class="yf-edited"[^>]*>.*?</div>\n?', re.S)
+
+
+def set_edited_stamp(full_path: Path, uploaded_epoch: int):
+    """기사 맨 위(메타 바 바로 앞)에 '최종편집: 2026년 12월 15일 09:30' 을 넣는다.
+    시각은 기사를 올린 시각(KST)이며, 이미 있으면 새 값으로 바꾼다."""
+    with open(full_path, "r", encoding="utf-8", errors="ignore", newline="") as f:
+        original = f.read()
+    marker = '<div class="meta-bar">'
+    if marker not in original:
+        return
+    dt = datetime.fromtimestamp(uploaded_epoch, tz=timezone.utc).astimezone(KST)
+    label = f"최종편집: {dt.year}년 {dt.month}월 {dt.day}일 {dt:%H:%M}"
+    nl = "\r\n" if "\r\n" in original else "\n"
+    div = (f'<div class="yf-edited" style="font-size:12.5px;color:var(--muted,#6b6b6b);padding:4px 0 0">'
+           f'<time datetime="{dt.isoformat()}">{label}</time></div>{nl}  ')
+    text = EDITED_RE.sub("", original)
+    text = text.replace(marker, div + marker, 1)
+    if text != original:
+        with open(full_path, "w", encoding="utf-8", newline="") as f:
+            f.write(text)
+
+
 def extract_body_text(html_text: str) -> str:
     """검색용 기사 본문 텍스트. 제목(<h1>)부터 <footer> 앞까지의 글자만 남긴다.
     스크립트·스타일·이미지(base64 포함)·메뉴(nav)·머리글(header)은 버린다."""
@@ -802,6 +825,7 @@ def main():
         # 보조 키로만 쓴다.
         uploaded = git_created_epoch(rel_path) or int(datetime.now(timezone.utc).timestamp())
         published = extract_published_time(html_text) or 0
+        set_edited_stamp(full_path, uploaded)
 
         search_index[url] = extract_body_text(html_text)
 
