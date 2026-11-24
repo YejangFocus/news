@@ -423,7 +423,8 @@ def inject_home(index):
     if index:
         try:
             dt = datetime.fromisoformat(index[0]["uploaded"])
-            label = f"최종편집: {dt.year}년 {dt.month}월 {dt.day}일 {dt:%H:%M}"
+            wk = "월화수목금토일"[dt.weekday()]
+            label = f"최종편집: {dt.year}년 {dt.month}월 {dt.day}일({wk}) {dt:%H:%M}"
             text = re.sub(
                 r'<time class="mh-date" id="mhDate"[^>]*>.*?</time>',
                 lambda m: f'<time class="mh-date" id="mhDate" datetime="{dt.isoformat()}">{label}</time>',
