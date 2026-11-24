@@ -134,11 +134,11 @@
 
   // ── 구독 안내 상자 ──────────────────────────────────────────────────────
   var BOX_CSS = '.yf-sub{margin:22px 0 0;padding:18px 20px;border:2px solid #111;border-radius:4px 16px 4px 16px;box-shadow:4px 4px 0 #111;background:var(--paper,#fff);font-family:"Noto Sans KR",sans-serif;color:var(--ink,#111)}' +
-    '.yf-sub b{font:400 17px "Do Hyeon","Noto Sans KR",sans-serif}.yf-sub p{margin:4px 0 12px;font-size:13.5px;color:var(--muted,#555)}' +
+    '.yf-sub b{font:700 17px "Noto Sans KR",sans-serif}.yf-sub p{margin:4px 0 12px;font-size:13.5px;color:var(--muted,#555)}' +
     '.yf-sub .row{display:flex;flex-wrap:wrap;gap:8px}.yf-sub .row a,.yf-sub .row button{font:700 13px "Noto Sans KR",sans-serif;padding:7px 14px;border:2px solid #111;border-radius:14px 3px 14px 3px;background:var(--paper,#fff);color:var(--ink,#111);cursor:pointer;text-decoration:none;box-shadow:2px 2px 0 #111}' +
     '.yf-sub .row a:hover,.yf-sub .row button:hover{background:#ffe38a;color:#1c1a16}.yf-sub .row .pri{background:#16294f;color:#fff}.yf-sub .row .pri:hover{background:#0f1d3a;color:#fff}' +
     '.yf-sub small{display:block;margin-top:12px;font-size:12px;color:var(--muted,#777)}.yf-sub small a{text-decoration:underline}' +
-    '.yf-cmt{margin:26px 0 0;font-family:"Noto Sans KR",sans-serif}.yf-cmt h3{margin:0 0 4px;font:400 17px "Do Hyeon","Noto Sans KR",sans-serif}.yf-cmt p{margin:0 0 10px;font-size:12.5px;color:var(--muted,#777)}' +
+    '.yf-cmt{margin:26px 0 0;font-family:"Noto Sans KR",sans-serif}.yf-cmt h3{margin:0 0 4px;font:700 17px "Noto Sans KR",sans-serif}.yf-cmt p{margin:0 0 10px;font-size:12.5px;color:var(--muted,#777)}' +
     '@media print{.yf-sub,.yf-cmt{display:none}}';
   function subBox(articleUrl, home) {
     var n = cfg.newsletter || {};
