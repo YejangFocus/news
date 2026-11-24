@@ -71,7 +71,10 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           # data/articles.json 외에, 스크립트가 고친 기사 HTML(og:image 등 링크
           # 미리보기 태그)과 새로 뽑아낸 이미지(assets/images, assets/og)도 함께 커밋한다.
-          git add -A -- index.html 검색.html data/popular.json data/articles.json data/search-index.json sitemap.xml news-sitemap.xml feed.xml assets/images assets/og '*.html'
+          git add -A -- index.html 검색.html data/articles.json data/search-index.json sitemap.xml news-sitemap.xml feed.xml assets/images assets/og '*.html'
+          # popular.json 은 GoatCounter 토큰이 있을 때만 생기므로, 파일이 있을 때만 따로 추가한다
+          # (없는 경로를 git add 에 넘기면 pathspec 오류로 단계 전체가 실패한다)
+          if [ -f data/popular.json ]; then git add -A -- data/popular.json; fi
           if git diff --cached --quiet; then
             echo "변경 없음 — 커밋 생략"
           else
