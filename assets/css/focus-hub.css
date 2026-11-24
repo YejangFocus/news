@@ -8,7 +8,7 @@
   }
   .fh-top { display: flex; align-items: center; gap: 10px; padding: 16px 22px 0; flex-wrap: wrap; }
   .fh-badge {
-    font: 400 15px 'Do Hyeon', sans-serif; color: #fff; background: var(--red);
+    font:700 15px 'Noto Sans KR', sans-serif; color: #fff; background: var(--red);
     padding: 5px 13px; border-radius: 12px 3px 12px 3px; transform: rotate(-1.5deg); box-shadow: 2px 2px 0 #000;
   }
   .fh-live { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #ffd27a; }
@@ -26,16 +26,16 @@
   .fh-title { margin-top: 8px; font-size: 27px; line-height: 1.36; font-weight: 900; color: #fff; word-break: keep-all; }
   .fh-stats { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
   .fh-stat { background: rgba(255,255,255,.1); border-radius: 10px; padding: 8px 14px; min-width: 76px; }
-  .fh-stat b { display: block; font: 400 24px/1.1 'Do Hyeon', sans-serif; color: #ffe38a; }
+  .fh-stat b { display: block; font:700 24px/1.1 'Noto Sans KR', sans-serif; color: #ffe38a; }
   .fh-stat span { font-size: 11px; color: #cfd6ee; }
   .fh-glance { margin-top: 18px; padding: 14px 16px; background: rgba(255,255,255,.07); border-left: 4px solid var(--amber); border-radius: 0 8px 8px 0; }
-  .fh-glance h3 { font: 400 14px 'Do Hyeon', sans-serif; color: #ffd27a; margin-bottom: 8px; }
+  .fh-glance h3 { font:700 14px 'Noto Sans KR', sans-serif; color: #ffd27a; margin-bottom: 8px; }
   .fh-glance li { position: relative; padding-left: 16px; font-size: 13.5px; line-height: 1.65; color: #e8ebf7; }
   .fh-glance li + li { margin-top: 6px; }
   .fh-glance li::before { content: counter(fh); counter-increment: fh; position: absolute; left: 0; color: #ffe38a; font-weight: 700; }
   .fh-glance ul { counter-reset: fh; }
 
-  .fh-tl-head { font: 400 14px 'Do Hyeon', sans-serif; color: #ffd27a; margin-bottom: 12px; }
+  .fh-tl-head { font:700 14px 'Noto Sans KR', sans-serif; color: #ffd27a; margin-bottom: 12px; }
   .fh-timeline { position: relative; margin: 0; padding: 0 0 0 22px; list-style: none; }
   .fh-timeline::before { content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 2px; background: rgba(255,255,255,.25); }
   .fh-timeline::after {
@@ -53,7 +53,7 @@
   .fh-item.latest::before { background: var(--red); border-color: #fff; box-shadow: 0 0 0 4px rgba(232,50,42,.35); }
   .fh-meta { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #b9c2e0; }
   .fh-meta .tag { font-weight: 700; padding: 1px 8px; border-radius: 10px; background: rgba(255,255,255,.14); color: #fff; }
-  .fh-meta .new { font: 400 11px 'Do Hyeon', sans-serif; color: #fff; background: var(--red); padding: 1px 7px; border-radius: 8px 2px 8px 2px; }
+  .fh-meta .new { font:700 11px 'Noto Sans KR', sans-serif; color: #fff; background: var(--red); padding: 1px 7px; border-radius: 8px 2px 8px 2px; }
   .fh-link { display: block; margin-top: 5px; font-size: 15px; line-height: 1.5; font-weight: 700; color: #fff; word-break: keep-all; }
   .fh-link:hover { color: #ffe38a; text-decoration: underline; }
   .fh-desc {
@@ -85,10 +85,10 @@
 
   /* ---------- 이슈 페이지 ---------- */
   .is-head { padding: 18px 0 6px; }
-  .is-head h1 { font: 400 34px 'Do Hyeon', sans-serif; margin: 0; color: var(--ink, #111); }
+  .is-head h1 { font:700 34px 'Noto Sans KR', sans-serif; margin: 0; color: var(--ink, #111); }
   .is-head p { margin: 6px 0 0; font-size: 14px; color: var(--ink-soft, #555); }
   .is-sec { display: flex; align-items: baseline; justify-content: space-between; margin: 34px 0 14px; padding-bottom: 9px; border-bottom: 3px solid #111; }
-  .is-sec h2 { margin: 0; font: 400 20px 'Do Hyeon', sans-serif; color: var(--ink, #111); }
+  .is-sec h2 { margin: 0; font:700 20px 'Noto Sans KR', sans-serif; color: var(--ink, #111); }
   .is-sec span { font-size: 12px; color: var(--muted, #777); }
   .is-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
   .is-card {
@@ -102,8 +102,8 @@
   .is-card[aria-current="true"] .k { color: #7c1220; }
   .is-card h3 { margin: 6px 0 12px; font-size: 17px; line-height: 1.45; font-weight: 700; word-break: keep-all; }
   .is-card .m { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; opacity: .75; }
-  .is-card .live { color: #fff; background: #cc2b24; border-radius: 8px 2px 8px 2px; padding: 0 7px; font: 400 11px/18px 'Do Hyeon', sans-serif; opacity: 1; }
-  .is-card .state { border: 1px solid currentColor; border-radius: 8px 2px 8px 2px; padding: 0 7px; font: 400 11px/16px 'Do Hyeon', sans-serif; }
+  .is-card .live { color: #fff; background: #cc2b24; border-radius: 8px 2px 8px 2px; padding: 0 7px; font:700 11px/18px 'Noto Sans KR', sans-serif; opacity: 1; }
+  .is-card .state { border: 1px solid currentColor; border-radius: 8px 2px 8px 2px; padding: 0 7px; font:700 11px/16px 'Noto Sans KR', sans-serif; }
   .is-card .state.past { opacity: .6; }
   .fh-state { display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; color: #cfcfcf; }
 
@@ -115,7 +115,7 @@
 .focus-hub .fh-link:hover, .focus-hub .fh-more, .focus-hub .fh-title a:hover { text-decoration: underline; }
 .focus-hub .fh-title { margin: 8px 0 0; padding: 0; border: 0; font-family: 'Noto Serif KR', serif; font-weight: 900; color: #fff; }
 .focus-hub .fh-title a { color: inherit; }
-.focus-hub .fh-glance h3 { margin: 0 0 8px; color: #ffd27a; font-family: 'Do Hyeon', sans-serif; font-weight: 400; font-size: 14px; }
+.focus-hub .fh-glance h3 { margin: 0 0 8px; color: #ffd27a; font-family: 'Noto Sans KR', sans-serif; font-weight:700; font-size: 14px; }
 .focus-hub p { margin: 0; }
 .focus-hub .fh-desc { margin-top: 4px; font-size: 12.5px; }
 .focus-hub .fh-meta .tag {
@@ -137,10 +137,10 @@
 .br-nav button:hover:not(:disabled), .br-copy:hover { background: #ffe38a; color: #1c1a16; }
 .br-nav button:disabled { opacity: .35; cursor: default; box-shadow: none; }
 .br-week { text-align: center; }
-.br-week small { display: block; font: 400 12px 'Do Hyeon', sans-serif; color: #cc2b24; }
-.br-week b { font: 400 24px 'Do Hyeon', sans-serif; }
+.br-week small { display: block; font:700 12px 'Noto Sans KR', sans-serif; color: #cc2b24; }
+.br-week b { font:700 24px 'Noto Sans KR', sans-serif; }
 .br-sum { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 16px 0 4px; }
-.br-count b { font: 400 40px/1 'Do Hyeon', sans-serif; color: #cc2b24; margin-right: 4px; }
+.br-count b { font:700 40px/1 'Noto Sans KR', sans-serif; color: #cc2b24; margin-right: 4px; }
 .br-count span { font-size: 14px; font-weight: 700; }
 .br-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
 .br-chip { font-size: 12px; font-weight: 700; border: 1.5px solid; border-radius: 12px; padding: 2px 10px; }
@@ -159,7 +159,7 @@
 .br-list .g { font-size: 12px; font-weight: 700; margin-right: 8px; }
 .br-list a:hover { text-decoration: underline; }
 .br-day { margin-top: 12px; }
-.br-dh { font: 400 15px 'Do Hyeon', sans-serif; padding: 3px 10px; display: inline-block; background: #111; color: #fff; border-radius: 3px; }
+.br-dh { font:700 15px 'Noto Sans KR', sans-serif; padding: 3px 10px; display: inline-block; background: #111; color: #fff; border-radius: 3px; }
 .br-dh small { opacity: .75; }
 @media (max-width: 720px) {
   .br-leads { grid-template-columns: 1fr; }

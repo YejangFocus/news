@@ -8,6 +8,8 @@ on:
     paths:
       - '원고/**'
       - 'assets/images/**'
+      - 'assets/css/**'
+      - '!assets/css/home.bundle.css'
       - '**/*.html'
       - '!index.html'
       - '!404.html'
@@ -54,6 +56,9 @@ jobs:
       - name: 원고(Markdown) → 기사 HTML 생성
         run: python3 scripts/build_articles.py
 
+      - name: 홈 CSS 번들 (3개 → 1개)
+        run: python3 scripts/bundle_css.py
+
       - name: 이미지 최적화 (WebP 변환 + srcset·지연 로딩 반영)
         run: python3 scripts/optimize_images.py --rewrite
 
@@ -71,7 +76,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           # data/articles.json 외에, 스크립트가 고친 기사 HTML(og:image 등 링크
           # 미리보기 태그)과 새로 뽑아낸 이미지(assets/images, assets/og)도 함께 커밋한다.
-          git add -A -- index.html 검색.html data/popular.json data/articles.json data/search-index.json sitemap.xml news-sitemap.xml feed.xml assets/images assets/og '*.html'
+          git add -A -- index.html 검색.html data/popular.json data/articles.json data/search-index.json sitemap.xml news-sitemap.xml feed.xml assets/images assets/og assets/css/home.bundle.css '*.html'
           if git diff --cached --quiet; then
             echo "변경 없음 — 커밋 생략"
           else

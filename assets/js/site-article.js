@@ -71,7 +71,7 @@
       '.yf-end{margin:44px 0 0;font-family:"Noto Sans KR",sans-serif;color:var(--ink,#111)}' +
       '.yf-end a{text-decoration:none;color:inherit}' +
       '.yf-share{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 0;border-top:2px solid var(--ink,#111);border-bottom:1px solid var(--rule-soft,#ddd)}' +
-      '.yf-share b{font:400 15px "Do Hyeon","Noto Sans KR",sans-serif;margin-right:auto}' +
+      '.yf-share b{font:700 15px "Noto Sans KR",sans-serif;margin-right:auto}' +
       '.yf-share button{font:600 13px "Noto Sans KR",sans-serif;cursor:pointer;color:var(--ink,#111);background:var(--paper,#fff);border:1px solid var(--rule-soft,#ccd);border-radius:999px;padding:8px 15px;transition:background .15s,border-color .15s,transform .12s}' +
       '.yf-share button:hover{background:var(--accent-soft,#e6ebf2);border-color:var(--accent,#1f4a8a)}' +
       '.yf-share button:active{transform:scale(.95)}' +
@@ -85,7 +85,7 @@
       '.yf-toc a{color:var(--ink,#111);text-decoration:none;border-bottom:1px solid transparent}' +
       '.yf-toc a:hover,.yf-toc a.on{color:var(--accent,#1f4a8a);border-bottom-color:currentColor}' +
       '.yf-box{margin-top:22px;padding:18px 20px;border:2px solid #111;border-radius:4px 16px 4px 16px;box-shadow:4px 4px 0 #111;background:var(--paper,#fff)}' +
-      '.yf-box h3{margin:0 0 4px;font:400 17px "Do Hyeon","Noto Sans KR",sans-serif;color:var(--ink,#111)}' +
+      '.yf-box h3{margin:0 0 4px;font:700 17px "Noto Sans KR",sans-serif;color:var(--ink,#111)}' +
       '.yf-box .k{font-size:12px;font-weight:700;color:#cc2b24}' +
       '.yf-box .t{display:block;margin:4px 0 10px;font:700 16px/1.5 "Noto Serif KR",serif;word-break:keep-all}' +
       '.yf-box .t:hover{text-decoration:underline}' +
@@ -109,10 +109,6 @@
       '@media (max-width:520px){.yf-nav{grid-template-columns:1fr}.yf-nav .pv{grid-column:1;text-align:left}}' +
       '@media print{.yf-progress,.yf-end{display:none}}';
     document.head.appendChild(css);
-    var fl = document.createElement('link');
-    fl.rel = 'stylesheet';
-    fl.href = 'https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap';
-    document.head.appendChild(fl);
 
     // 1) 읽기 진행률 바
     var bar = document.createElement('div');
@@ -252,7 +248,7 @@
       '.yf-term:hover,.yf-term[aria-expanded="true"]{background:linear-gradient(transparent 40%,rgba(255,200,60,.8) 40%)}' +
       '.yf-card{position:absolute;z-index:1100;width:320px;max-width:calc(100vw - 24px);padding:14px 16px 12px;background:var(--paper,#fff);color:var(--ink,#111);' +
       'border:2px solid #111;border-radius:4px 16px 4px 16px;box-shadow:4px 4px 0 #111;font:14px/1.65 "Noto Sans KR",sans-serif;text-align:left;letter-spacing:0}' +
-      '.yf-card .ty{display:inline-block;font:400 12px "Do Hyeon","Noto Sans KR",sans-serif;color:#fff;background:#cc2b24;border-radius:8px 2px 8px 2px;padding:1px 9px}' +
+      '.yf-card .ty{display:inline-block;font:700 12px "Noto Sans KR",sans-serif;color:#fff;background:#cc2b24;border-radius:8px 2px 8px 2px;padding:1px 9px}' +
       '.yf-card h4{margin:6px 0 6px;font:700 16px/1.4 "Noto Serif KR",serif;color:var(--ink,#111);padding:0;border:0}' +
       '.yf-card p{margin:0;font-size:13.5px;line-height:1.7;color:var(--ink,#111)}' +
       '.yf-card .nt{margin-top:6px;font-size:11.5px;color:var(--muted,#777)}' +
