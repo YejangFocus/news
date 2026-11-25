@@ -27,6 +27,16 @@ def parse(body):
     return out
 
 
+def save(data):
+    """events.json 을 한 줄에 일정 하나씩 저장하고 홈을 다시 그린다."""
+    data["events"].sort(key=lambda e: e["date"], reverse=True)
+    lines = ",\n".join("    " + json.dumps(e, ensure_ascii=False) for e in data["events"])
+    EVENTS.write_text('{\n  "_설명": ' + json.dumps(data.get("_설명", ""), ensure_ascii=False)
+                      + ',\n  "events": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
+    import build_pages
+    build_pages.inject_home(json.loads((ROOT / "data" / "articles.json").read_text(encoding="utf-8")))
+
+
 def main():
     f = parse(os.environ.get("ISSUE_BODY", ""))
     errors = []
@@ -67,12 +77,7 @@ def main():
         return 1
     data["events"].append(ev)
     data["events"].sort(key=lambda e: e["date"], reverse=True)
-    lines = ",\n".join("    " + json.dumps(e, ensure_ascii=False) for e in data["events"])
-    EVENTS.write_text('{\n  "_설명": ' + json.dumps(data.get("_설명", ""), ensure_ascii=False)
-                      + ',\n  "events": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
-
-    import build_pages
-    build_pages.inject_home(json.loads((ROOT / "data" / "articles.json").read_text(encoding="utf-8")))
+    save(data)
     print(f"추가: {ev['date']} {title}")
     return 0
 

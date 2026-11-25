@@ -1,6 +1,7 @@
 name: Add event from issue
 
 # '행사·일정 등록' 이슈 양식을 제출하면 data/events.json 에 일정을 추가하고 홈을 다시 그린다.
+# '행사·일정 수정·삭제' 양식(라벨 일정수정)은 기존 일정을 고치거나 지운다.
 # 저장소 소유자·구성원·협력자가 올린 이슈만 처리한다.
 on:
   issues:
@@ -17,7 +18,7 @@ concurrency:
 jobs:
   add:
     if: >-
-      contains(github.event.issue.labels.*.name, '일정') &&
+      (contains(github.event.issue.labels.*.name, '일정') || contains(github.event.issue.labels.*.name, '일정수정')) &&
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
     runs-on: ubuntu-latest
     steps:
@@ -33,9 +34,11 @@ jobs:
         id: add
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
+          EDIT: ${{ contains(github.event.issue.labels.*.name, '일정수정') }}
         run: |
           set +e
-          python3 scripts/add_event.py > result.txt
+          if [ "$EDIT" = "true" ]; then S=edit_event.py; else S=add_event.py; fi
+          python3 scripts/$S > result.txt
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
       - name: 커밋 & 푸시
@@ -44,7 +47,7 @@ jobs:
           git config user.name "yejangfocus-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/events.json index.html
-          git commit -m "chore: 행사·일정 추가 (이슈 #${{ github.event.issue.number }}) [skip ci]"
+          git commit -m "chore: 행사·일정 변경 (이슈 #${{ github.event.issue.number }}) [skip ci]"
           for i in 1 2 3 4 5; do
             if git push; then exit 0; fi
             sleep $((i * 5))
@@ -59,11 +62,11 @@ jobs:
           CODE: ${{ steps.add.outputs.code }}
         run: |
           if [ "$CODE" = "0" ]; then
-            { echo "일정을 등록했습니다. 잠시 뒤 홈 화면에 반영됩니다."; echo; echo '```'; cat result.txt; echo '```'; } > comment.md
+            { echo "처리했습니다. 잠시 뒤 홈 화면에 반영됩니다."; echo; echo '```'; cat result.txt; echo '```'; } > comment.md
             gh issue comment "$ISSUE" --body-file comment.md
             gh issue close "$ISSUE" --reason completed
           else
-            { echo "일정을 등록하지 못했습니다. 아래를 고쳐 새 이슈로 다시 올려 주세요."; echo; cat result.txt; } > comment.md
+            { echo "처리하지 못했습니다. 아래를 고쳐 새 이슈로 다시 올려 주세요."; echo; cat result.txt; } > comment.md
             gh issue comment "$ISSUE" --body-file comment.md
             gh issue close "$ISSUE" --reason "not planned"
           fi

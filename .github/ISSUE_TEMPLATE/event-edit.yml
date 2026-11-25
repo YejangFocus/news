@@ -1,0 +1,77 @@
+name: 행사·일정 수정·삭제
+description: 이미 등록한 일정을 고치거나 지웁니다.
+title: "[일정 수정] "
+labels: ["일정수정"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        어떤 일정인지 **현재 시작일 + 현재 행사명**으로 찾습니다. 제출하면 자동 반영되고 이 이슈는 닫힙니다. (저장소 관리자·협력자가 올린 이슈만 처리됩니다)
+        **수정**이면 바꿀 칸만 채우세요. 비워 둔 칸은 그대로입니다. 값을 없애려면 칸에 `-` 한 글자를 적습니다.
+  - type: input
+    id: cur_date
+    attributes:
+      label: 현재 시작일
+      description: "등록돼 있는 시작일 (YYYY-MM-DD)"
+      placeholder: "2026-12-10"
+    validations:
+      required: true
+  - type: input
+    id: cur_title
+    attributes:
+      label: 현재 행사명
+      description: 일부만 적어도 그 날짜에 하나로 좁혀지면 됩니다.
+      placeholder: 예) 임시노회
+    validations:
+      required: true
+  - type: dropdown
+    id: action
+    attributes:
+      label: 작업
+      options:
+        - 수정
+        - 삭제
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: "## 아래는 '수정'일 때만 (바꿀 칸만 채우세요)"
+  - type: input
+    id: title
+    attributes:
+      label: 새 행사명
+  - type: input
+    id: start
+    attributes:
+      label: 새 시작일
+      placeholder: "2026-12-11"
+  - type: input
+    id: end
+    attributes:
+      label: 새 종료일
+      description: 없애려면 `-`
+  - type: input
+    id: place
+    attributes:
+      label: 새 장소
+      description: 없애려면 `-`
+  - type: dropdown
+    id: tag
+    attributes:
+      label: 새 분류
+      options:
+        - (변경 안 함)
+        - 교단
+        - 교계
+        - 노회
+        - 목회
+        - 신학
+        - 특집
+        - 인물
+        - 기타
+      default: 0
+  - type: input
+    id: url
+    attributes:
+      label: 새 관련 기사 주소
+      description: 없애려면 `-`
