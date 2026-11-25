@@ -321,7 +321,7 @@ def popular_articles(index, limit=4):
 
 EVENTS_FILE = REPO_ROOT / "data" / "events.json"   # 손으로 관리하는 행사·일정 목록
 KST = timezone(timedelta(hours=9))
-EVENT_LIMIT = 4   # 홈에 보이는 일정 수(다가오는 일정 우선, 모자라면 최근 지난 일정으로 채움)
+EVENT_LIMIT = 4   # 다가오는 일정은 전부 보이고, 4개에 모자랄 때만 최근 지난 일정으로 채움
 
 
 def _load_events():
@@ -344,7 +344,7 @@ def render_events(today=None):
     """홈 아래쪽 '행사·일정' 칸. data/events.json 을 읽어 다가오는 일정(가까운 순)을 먼저, 지난 일정(최근 순)을 뒤에 그린다."""
     today = today or datetime.now(KST).date()
     events = _load_events()
-    upcoming = sorted((e for e in events if e["_end"] >= today), key=lambda e: (e["_start"], e["_end"]))[:EVENT_LIMIT]
+    upcoming = sorted((e for e in events if e["_end"] >= today), key=lambda e: (e["_start"], e["_end"]))
     past = sorted((e for e in events if e["_end"] < today), key=lambda e: e["_end"], reverse=True)
     past = past[:max(0, EVENT_LIMIT - len(upcoming))]
 
