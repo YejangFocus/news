@@ -356,16 +356,17 @@ def render_events(today=None):
             badge = "진행 중" if s != en else "오늘"
         else:
             badge = f"D-{(s - today).days}"
-        span = f"{s.month}.{s.day}({wk})" + (f" ~ {en.month}.{en.day}" if en != s else "")
+        wk2 = "월화수목금토일"[en.weekday()]
+        when = f"{s.month}월 {s.day}일 ({wk})" + (f" ~ {en.month}월 {en.day}일 ({wk2})" if en != s else "")
+        span = f"{s.month}.{s.day}({wk})" + (f" ~ {en.month}.{en.day}({wk2})" if en != s else "")
         title = esc(e["title"])
         if e.get("url"):
             title = f'<a href="{esc(e["url"])}">{title}</a>'
         meta = " · ".join(x for x in (span, esc(e.get("place", ""))) if x)
         tag = f'<span class="tag" style="color:{tag_color(e["tag"])};">{esc(e["tag"])}</span>' if e.get("tag") else ""
         return (f'<li class="ev-row{" is-past" if is_past else ""}">'
-                f'<div class="ev-date" aria-hidden="true"><b>{s.day}</b><span>{s.month}월</span></div>'
-                f'<div class="ev-body">{tag}<span class="ev-title">{title}</span><span class="ev-meta">{meta}</span></div>'
-                f'<span class="ev-badge">{badge}</span></li>')
+                f'<div class="ev-head"><span class="ev-when">{when}</span><span class="ev-badge">{badge}</span></div>'
+                f'{tag}<span class="ev-title">{title}</span><span class="ev-meta">{meta}</span></li>')
 
     rows = "".join(row(e, False) for e in upcoming) + "".join(row(e, True) for e in past)
     if not rows:
