@@ -223,31 +223,6 @@
       }).join('');
     }
 
-    // '분류별 기사' 탭: 서버가 모든 탭을 그려 두었으므로 보이기만 전환(좌우 방향키 지원)
-    var catTabs = document.getElementById('catTabs');
-    if (catTabs) {
-      var ctBtns = [].slice.call(catTabs.querySelectorAll('.ct-tab'));
-      var ctMore = document.getElementById('catTabsMore');
-      var selectTab = function (btn, focus) {
-        ctBtns.forEach(function (b) {
-          var on = b === btn;
-          b.setAttribute('aria-selected', on ? 'true' : 'false');
-          b.tabIndex = on ? 0 : -1;
-          var panel = document.getElementById(b.getAttribute('aria-controls'));
-          if (panel) panel.hidden = !on;
-        });
-        if (ctMore) ctMore.href = btn.getAttribute('data-more');
-        if (focus) btn.focus();
-      };
-      ctBtns.forEach(function (b, i) {
-        b.addEventListener('click', function () { selectTab(b); });
-        b.addEventListener('keydown', function (e) {
-          var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-          if (d) { e.preventDefault(); selectTab(ctBtns[(i + d + ctBtns.length) % ctBtns.length], true); }
-        });
-      });
-    }
-
     // 헤더 날짜
     var mhDate = document.getElementById('mhDate');
     if (mhDate && !mhDate.textContent.trim()) {   // 빌드가 '최종편집'을 넣어 두었으면 그대로 둔다

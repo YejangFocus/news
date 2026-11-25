@@ -15,7 +15,7 @@
 import html
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import quote
 
@@ -319,42 +319,62 @@ def popular_articles(index, limit=4):
     return out
 
 
-def render_cat_tabs(index):
-    """홈 왼쪽 아래 '분류별 기사' 탭 패널. 모든 탭을 미리 그려 두고 site-home.js 가 보이기만 전환한다."""
-    tabs = [("최신", None, [a for a in index if a["tag"] != "칼럼"][:4])]
-    popular = popular_articles(index)
-    if popular:
-        tabs.append(("많이 본", None, popular))
-    for cat in CAT_TABS:
-        items = [a for a in index if a["tag"] == cat][:4]
-        if items:
-            tabs.append((cat, cat, items))
+EVENTS_FILE = REPO_ROOT / "data" / "events.json"   # 손으로 관리하는 행사·일정 목록
+KST = timezone(timedelta(hours=9))
 
-    def lead(a):
-        return (f'<a class="ct-lead" href="{a["url"]}">{_home_thumb(a, "thumb", False, "(max-width: 700px) 100vw, 340px")}'
-                f'<span class="tag" style="color:{tag_color(a["tag"])};">{esc(a["tag"])}</span>'
-                f'<strong>{esc(a["title"])}</strong>'
-                + (f'<span class="ct-desc">{esc(a["desc"])}</span>' if a.get("desc") else "") + _date(a) + "</a>")
 
-    def row(a):
-        return (f'<li><a class="ct-thumb" href="{a["url"]}" tabindex="-1" aria-hidden="true">{_home_thumb(a, "thumb", False, "120px")}</a>'
-                f'<div><span class="tag" style="color:{tag_color(a["tag"])};">{esc(a["tag"])}</span>'
-                f'<a class="ct-title" href="{a["url"]}">{esc(a["title"])}</a>{_date(a)}</div></li>')
+def _load_events():
+    try:
+        data = json.loads(EVENTS_FILE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    out = []
+    for e in data.get("events", []):
+        try:
+            start = datetime.strptime(e["date"], "%Y-%m-%d").date()
+            end = datetime.strptime(e.get("end") or e["date"], "%Y-%m-%d").date()
+        except (KeyError, ValueError):
+            continue
+        out.append({**e, "_start": start, "_end": max(start, end)})
+    return out
 
-    buttons, panels = [], []
-    for i, (label, cat, items) in enumerate(tabs):
-        on = i == 0
-        href = f"{SITE_URL}/{cat}/" if cat else f"{SITE_URL}/전체/"
-        buttons.append(f'<button type="button" class="ct-tab" role="tab" id="ctTab{i}" aria-controls="ctPanel{i}" '
-                       f'aria-selected="{"true" if on else "false"}" data-more="{esc(href)}" tabindex="{0 if on else -1}">{esc(label)}</button>')
-        rows = "".join(row(a) for a in items[1:])
-        panels.append(f'<div class="ct-panel" role="tabpanel" id="ctPanel{i}" aria-labelledby="ctTab{i}"{"" if on else " hidden"}>'
-                      f'{lead(items[0])}' + (f'<ul class="ct-list">{rows}</ul>' if rows else "") + "</div>")
-    return ('<div class="panel cat-tabs" id="catTabs">'
-            '<div class="mod-head"><h3>분류별 기사</h3>'
-            f'<a class="more" id="catTabsMore" href="{SITE_URL}/전체/">더보기〉</a></div>'
-            '<div class="ct-tablist" role="tablist" aria-label="분류별 기사">' + "".join(buttons) + "</div>"
-            + "".join(panels) + "</div>")
+
+def render_events(today=None):
+    """홈 아래쪽 '행사·일정' 칸. data/events.json 을 읽어 다가오는 일정(가까운 순)을 먼저, 지난 일정(최근 순)을 뒤에 그린다."""
+    today = today or datetime.now(KST).date()
+    events = _load_events()
+    upcoming = sorted((e for e in events if e["_end"] >= today), key=lambda e: (e["_start"], e["_end"]))[:6]
+    past = sorted((e for e in events if e["_end"] < today), key=lambda e: e["_end"], reverse=True)
+    past = past[:max(0, 5 - len(upcoming))] if upcoming else past[:3]
+
+    def row(e, is_past):
+        s, en = e["_start"], e["_end"]
+        wk = "월화수목금토일"[s.weekday()]
+        if is_past:
+            badge = "지남"
+        elif s <= today <= en:
+            badge = "진행 중" if s != en else "오늘"
+        else:
+            badge = f"D-{(s - today).days}"
+        span = f"{s.month}.{s.day}({wk})" + (f" ~ {en.month}.{en.day}" if en != s else "")
+        title = esc(e["title"])
+        if e.get("url"):
+            title = f'<a href="{esc(e["url"])}">{title}</a>'
+        meta = " · ".join(x for x in (span, esc(e.get("place", ""))) if x)
+        tag = f'<span class="tag" style="color:{tag_color(e["tag"])};">{esc(e["tag"])}</span>' if e.get("tag") else ""
+        return (f'<li class="ev-row{" is-past" if is_past else ""}">'
+                f'<div class="ev-date" aria-hidden="true"><b>{s.day}</b><span>{s.month}월</span></div>'
+                f'<div class="ev-body">{tag}<span class="ev-title">{title}</span><span class="ev-meta">{meta}</span></div>'
+                f'<span class="ev-badge">{badge}</span></li>')
+
+    rows = "".join(row(e, False) for e in upcoming) + "".join(row(e, True) for e in past)
+    if not rows:
+        rows = '<li class="ev-empty">등록된 일정이 없습니다.</li>'
+    elif not upcoming:
+        rows = '<li class="ev-empty">예정된 일정이 없습니다. 최근 지난 일정입니다.</li>' + rows
+    return ('<div class="panel events" id="eventCal"><div class="mod-head"><h3>행사·일정</h3>'
+            '<a class="more" href="/메인화면/기사제보.html">일정 알리기〉</a></div>'
+            f'<ul class="ev-list">{rows}</ul></div>')
 
 
 def render_home_blocks(index):
@@ -406,7 +426,7 @@ def render_home_blocks(index):
         + f'<div class="body"><a href="{a["url"]}"><h4>{esc(a["title"])}</h4></a>'
         + (f'<p>{esc(a["desc"])}</p>' if a.get("desc") else "") + _date(a) + "</div></li>"
         for a in columns)
-    blocks["catTabs"] = render_cat_tabs(index)
+    blocks["events"] = render_events()
     return blocks
 
 
