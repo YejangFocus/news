@@ -321,7 +321,7 @@ def popular_articles(index, limit=4):
 
 EVENTS_FILE = REPO_ROOT / "data" / "events.json"   # 손으로 관리하는 행사·일정 목록
 KST = timezone(timedelta(hours=9))
-EVENT_LIMIT = 4   # 다가오는 일정은 전부 보이고, 4개에 모자랄 때만 최근 지난 일정으로 채움
+EVENT_LIMIT = 6   # 홈에는 다가오는 일정만 6개까지(날짜순). 하루가 지나면 빠지고 다음 일정이 올라온다
 
 
 def _load_events():
@@ -341,12 +341,10 @@ def _load_events():
 
 
 def render_events(today=None):
-    """홈 아래쪽 '행사·일정' 칸. data/events.json 을 읽어 다가오는 일정(가까운 순)을 먼저, 지난 일정(최근 순)을 뒤에 그린다."""
+    """홈 아래쪽 '행사·일정' 칸. data/events.json 을 읽어 다가오는 일정만 가까운 순으로 EVENT_LIMIT개 그린다(지난 일정은 빠짐)."""
     today = today or datetime.now(KST).date()
     events = _load_events()
-    upcoming = sorted((e for e in events if e["_end"] >= today), key=lambda e: (e["_start"], e["_end"]))
-    past = sorted((e for e in events if e["_end"] < today), key=lambda e: e["_end"], reverse=True)
-    past = past[:max(0, EVENT_LIMIT - len(upcoming))]
+    upcoming = sorted((e for e in events if e["_end"] >= today), key=lambda e: (e["_start"], e["_end"]))[:EVENT_LIMIT]
 
     def row(e, is_past):
         s, en = e["_start"], e["_end"]
@@ -369,11 +367,9 @@ def render_events(today=None):
                 f'<div class="ev-head"><span class="ev-when">{when}</span><span class="ev-badge">{badge}</span>{tag}{place}</div>'
                 f'<span class="ev-title">{title}</span></li>')
 
-    rows = "".join(row(e, False) for e in upcoming) + "".join(row(e, True) for e in past)
+    rows = "".join(row(e, False) for e in upcoming)
     if not rows:
-        rows = '<li class="ev-empty">등록된 일정이 없습니다.</li>'
-    elif not upcoming:
-        rows = '<li class="ev-empty">예정된 일정이 없습니다. 최근 지난 일정입니다.</li>' + rows
+        rows = '<li class="ev-empty">예정된 일정이 없습니다.</li>'
     return ('<div class="panel events" id="eventCal"><div class="mod-head"><h3>행사·일정</h3>'
             '<a class="more" href="/메인화면/기사제보.html">일정 알리기〉</a></div>'
             f'<ul class="ev-list">{rows}</ul></div>')
