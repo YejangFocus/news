@@ -140,7 +140,7 @@
 
     // 최신순 우선 배치(build_pages.py 와 같은 규칙): 카테고리 칸마다 오래된 기사가 올라오지 않도록
     // 대표(최신 3건) → 칼럼 칸(최신 칼럼 3건 예약) → 주요 카드 2칸 → 텍스트 목록 5칸 → 최신 소식 순으로,
-    // 칼럼을 뺀 나머지 기사를 날짜순으로 채운다. 같은 기사는 한 번만 쓴다. (맨 위 티커는 새 기사 알림이라 예외)
+    // 칼럼을 뺀 나머지 기사를 날짜순으로 채운다. 같은 기사는 한 번만 쓴다. (맨 위 티커도 칼럼 제외)
     var heroes = ARTICLE_INDEX.filter(function (a) { return a.tag !== '칼럼'; }).slice(0, 3); // 맨 위 대표에는 칼럼 제외
     var hero = heroes[0] || null;
     var used = {};
@@ -170,8 +170,8 @@
     if (secondEl) secondEl.innerHTML = featureItemHtml(second, '', '', false, true, CARD_SIZES);
     if (thirdEl) thirdEl.innerHTML = featureItemHtml(third, 'border-bottom:none;', '', false, true, CARD_SIZES);
 
-    // 최신뉴스 티커: 항상 전체 최신 5건, 같은 묶음을 두 번 이어붙여 끊김 없이 순환
-    var tickerGroup = ARTICLE_INDEX.slice(0, 5).map(function (item) {
+    // 최신뉴스 티커: 칼럼을 뺀 최신 5건, 같은 묶음을 두 번 이어붙여 끊김 없이 순환
+    var tickerGroup = ARTICLE_INDEX.filter(notColumn).slice(0, 5).map(function (item) {
       return '<a href="' + item.url + '">' + esc(item.title) + '</a>';
     }).join('<span class="sep">•</span>');
     tickerBox.innerHTML = '<span class="ticker-group">' + tickerGroup + '</span>' +
