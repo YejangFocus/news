@@ -1,0 +1,54 @@
+name: 행사·일정 등록
+description: 홈 화면 '행사·일정' 칸에 일정을 추가합니다.
+title: "[일정] "
+labels: ["일정"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        제출하면 자동으로 홈 화면 '행사·일정'에 반영되고 이 이슈는 닫힙니다. (저장소 관리자·협력자가 올린 이슈만 처리됩니다)
+  - type: input
+    id: title
+    attributes:
+      label: 행사명
+      placeholder: 예) 대구수성노회 임시노회
+    validations:
+      required: true
+  - type: input
+    id: start
+    attributes:
+      label: 시작일
+      description: "YYYY-MM-DD 형식 (예: 2026-12-10)"
+      placeholder: "2026-12-10"
+    validations:
+      required: true
+  - type: input
+    id: end
+    attributes:
+      label: 종료일 (여러 날 행사만)
+      description: 하루짜리 행사는 비워 두세요.
+      placeholder: "2026-12-12"
+  - type: input
+    id: place
+    attributes:
+      label: 장소
+      placeholder: 예) 수성교회
+  - type: dropdown
+    id: tag
+    attributes:
+      label: 분류
+      options:
+        - 교단
+        - 교계
+        - 노회
+        - 목회
+        - 신학
+        - 특집
+        - 인물
+        - 기타
+  - type: input
+    id: url
+    attributes:
+      label: 관련 기사 주소 (선택)
+      description: 있으면 행사명이 이 기사로 연결됩니다.
+      placeholder: https://yejangfocus.com/...
