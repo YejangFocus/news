@@ -105,16 +105,16 @@ header.masthead .book-logo,header.masthead .gapck-logo{display:block;height:100%
 /* 홈 '분류별 기사' 탭 패널 (왼쪽 아래, 오른쪽 칼럼 패널과 짝) */
 .events{flex:1}
 .ev-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.ev-row{display:flex;flex-direction:column;gap:3px;padding:14px 0;border-bottom:1px solid var(--hair)}
-.ev-row:first-child{padding-top:4px}
-.ev-row:last-child{border-bottom:0}
-.ev-head{display:flex;align-items:center;gap:8px;margin-bottom:2px}
-.ev-when{font:700 15px 'Noto Sans KR',sans-serif;color:var(--ink)}
+.ev-row{display:flex;flex-direction:column;gap:2px;padding:9px 0;border-bottom:1px solid var(--hair)}
+.ev-row:first-child{padding-top:2px}
+.ev-row:last-child{border-bottom:0;padding-bottom:2px}
+.ev-head{display:flex;align-items:center;flex-wrap:wrap;gap:2px 8px}
+.ev-when{font:700 14px 'Noto Sans KR',sans-serif;color:var(--ink)}
 .ev-title,.ev-title a{font:600 15px/1.5 'Noto Sans KR',sans-serif;color:var(--ink);word-break:keep-all}
 .ev-title a:hover{color:var(--navy)}
 .ev-meta{font-size:12.5px;color:var(--ink-soft)}
 .events .tag{font-size:12px;font-weight:800}
-.ev-badge{font:700 12px 'Noto Sans KR',sans-serif;padding:3px 10px;border-radius:999px;background:var(--red);color:#fff;white-space:nowrap}
+.ev-badge{font:700 11.5px 'Noto Sans KR',sans-serif;padding:2px 9px;border-radius:999px;background:var(--red);color:#fff;white-space:nowrap}
 .ev-row.is-past{opacity:.6}
 .ev-row.is-past .ev-badge{background:var(--hair);color:var(--ink-soft)}
 .ev-empty{padding:14px 0;color:var(--ink-soft);font-size:14px}
