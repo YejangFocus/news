@@ -76,7 +76,13 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           # data/articles.json 외에, 스크립트가 고친 기사 HTML(og:image 등 링크
           # 미리보기 태그)과 새로 뽑아낸 이미지(assets/images, assets/og)도 함께 커밋한다.
-          git add -A -- index.html 검색.html data/popular.json data/articles.json data/search-index.json sitemap.xml news-sitemap.xml feed.xml assets/images assets/og assets/css/home.bundle.css '*.html'
+          # 파일이 없는 경로(예: GoatCounter 토큰이 없으면 안 생기는 data/popular.json)가 섞여 있으면
+          # git add 전체가 'pathspec did not match' 로 실패하므로, 실제로 있는 경로만 골라 추가한다.
+          PATHS=""
+          for p in index.html 검색.html data/popular.json data/articles.json data/search-index.json sitemap.xml news-sitemap.xml feed.xml assets/images assets/og assets/css/home.bundle.css; do
+            [ -e "$p" ] && PATHS="$PATHS $p"
+          done
+          git add -A -- $PATHS '*.html'
           if git diff --cached --quiet; then
             echo "변경 없음 — 커밋 생략"
           else
