@@ -439,18 +439,16 @@ def inject_home(index):
         if not pat.search(text):
             continue
         text = pat.sub(lambda m: m.group(1) + content + m.group(2), text, count=1)
-    # 상단 '최종편집': 가장 최근에 올린 기사의 업로드 시각(기사를 올릴 때마다 바뀜)
-    if index:
-        try:
-            dt = datetime.fromisoformat(index[0]["uploaded"])
-            wk = "월화수목금토일"[dt.weekday()]
-            label = f"최종편집: {dt.year}년 {dt.month}월 {dt.day}일({wk}) {dt:%H:%M}"
-            text = re.sub(
-                r'<time class="mh-date" id="mhDate"[^>]*>.*?</time>',
-                lambda m: f'<time class="mh-date" id="mhDate" datetime="{dt.isoformat()}">{label}</time>',
-                text, count=1, flags=re.S)
-        except (KeyError, ValueError):
-            pass
+    # 상단 '최종편집': 홈을 마지막으로 다시 그린 시각(KST).
+    # 기사·행사·일정이 바뀌거나 매일 새벽 자동 갱신이 돌 때마다 바뀐다.
+    # (예전에는 '가장 최근 기사의 업로드 시각'이라 새 기사가 없으면 며칠씩 그대로였다.)
+    dt = datetime.now(timezone(timedelta(hours=9))).replace(microsecond=0)
+    wk = "월화수목금토일"[dt.weekday()]
+    label = f"최종편집: {dt.year}년 {dt.month}월 {dt.day}일({wk}) {dt:%H:%M}"
+    text = re.sub(
+        r'<time class="mh-date" id="mhDate"[^>]*>.*?</time>',
+        lambda m: f'<time class="mh-date" id="mhDate" datetime="{dt.isoformat()}">{label}</time>',
+        text, count=1, flags=re.S)
     if text != original:
         path.write_text(text, encoding="utf-8")
 
