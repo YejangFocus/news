@@ -322,7 +322,7 @@ def popular_articles(index, limit=4):
 EVENTS_FILE = REPO_ROOT / "data" / "events.json"   # 손으로 관리하는 행사·일정 목록
 KST = timezone(timedelta(hours=9))
 EVENT_LIMIT = 6   # 홈에는 다가오는 일정만 6개까지(날짜순). 하루가 지나면 빠지고 다음 일정이 올라온다
-EVENT_SPARE = 6   # 예비로 더 담아 두는 일정 수(숨김). 자동 재생성이 늦어져도 방문자 브라우저(site-home.js)가 날짜를 다시 계산해 지난 일정을 빼고 채운다
+EVENT_SPARE = EVENT_LIMIT   # 예비로 더 담아 두는 일정 수(숨김). 자동 재생성이 늦어져도 방문자 브라우저(site-home.js)가 날짜를 다시 계산해 지난 일정을 빼고 채운다
 
 
 def _load_events():
@@ -373,7 +373,7 @@ def render_events(today=None):
         rows = '<li class="ev-empty">예정된 일정이 없습니다.</li>'
     return ('<div class="panel events" id="eventCal"><div class="mod-head"><h3>행사·일정</h3>'
             '<a class="more" href="/메인화면/기사제보.html">일정 알리기〉</a></div>'
-            f'<ul class="ev-list">{rows}</ul></div>')
+            f'<ul class="ev-list" data-limit="{EVENT_LIMIT}">{rows}</ul></div>')
 
 
 def render_home_blocks(index):
