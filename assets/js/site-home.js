@@ -13,6 +13,30 @@
     var tickerBox = document.getElementById('tickerBox');
     if (!tickerBox) return;
 
+    // 행사·일정: index.html 은 자동 재생성 때 만든 '그때의 오늘' 기준이라, 재생성이 늦어지면 어제 일정이 남는다.
+    // 방문자 브라우저의 한국 날짜로 지난 일정을 빼고, 오늘/D-n 배지를 다시 계산하며, 예비로 담아 둔 일정으로 6개를 채운다.
+    (function refreshEvents() {
+      var list = document.querySelector('#eventCal .ev-list');
+      if (!list) return;
+      var LIMIT = 6, DAY = 86400000;
+      var kst = new Date(Date.now() + 9 * 3600000);
+      var today = Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate());
+      function day(iso) { var p = iso.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
+      var shown = 0;
+      [].slice.call(list.querySelectorAll('.ev-row[data-start]')).forEach(function (li) {
+        var s = day(li.getAttribute('data-start')), e = day(li.getAttribute('data-end'));
+        if (e < today) { li.parentNode.removeChild(li); return; }
+        var badge = li.querySelector('.ev-badge');
+        if (badge) badge.textContent = (s <= today && today <= e) ? (s === e ? '오늘' : '진행 중') : 'D-' + Math.round((s - today) / DAY);
+        if (shown < LIMIT) { li.hidden = false; shown++; } else { li.hidden = true; }
+      });
+      if (!shown && !list.querySelector('.ev-empty')) {
+        var li = document.createElement('li');
+        li.className = 'ev-empty'; li.textContent = '예정된 일정이 없습니다.';
+        list.appendChild(li);
+      }
+    })();
+
     // 기사에 쓸 만한 사진이 없을 때 대신 보여줄 예포 CI 로고.
     // 로고 자체의 여백을 미리 잘라낸 버전이라 박스를 꽉 채워 보인다.
     // 사진과 달리 cover로 잘라내면 로고·문구가 잘리므로, 아래 thumbImgHtml()에서
