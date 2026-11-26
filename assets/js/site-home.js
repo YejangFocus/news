@@ -18,7 +18,7 @@
     function refreshEvents() {
       var list = document.querySelector('#eventCal .ev-list');
       if (!list) return;
-      var LIMIT = 6, DAY = 86400000;
+      var LIMIT = parseInt(list.getAttribute('data-limit'), 10) || 6, DAY = 86400000;  // 개수는 scripts/build_pages.py 의 EVENT_LIMIT 한 곳에서만 정한다
       var kst = new Date(Date.now() + 9 * 3600000);
       var today = Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate());
       function day(iso) { var p = iso.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
