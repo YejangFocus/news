@@ -15,7 +15,7 @@
 
     // 행사·일정: index.html 은 자동 재생성 때 만든 '그때의 오늘' 기준이라, 재생성이 늦어지면 어제 일정이 남는다.
     // 방문자 브라우저의 한국 날짜로 지난 일정을 빼고, 오늘/D-n 배지를 다시 계산하며, 예비로 담아 둔 일정으로 6개를 채운다.
-    (function refreshEvents() {
+    function refreshEvents() {
       var list = document.querySelector('#eventCal .ev-list');
       if (!list) return;
       var LIMIT = 6, DAY = 86400000;
@@ -35,7 +35,16 @@
         li.className = 'ev-empty'; li.textContent = '예정된 일정이 없습니다.';
         list.appendChild(li);
       }
+    }
+    refreshEvents();
+    // 창을 열어 둔 채 한국 시각 0시를 넘겨도 정각에 바로 바뀌도록 다음 0시에 다시 계산한다.
+    // (절전·백그라운드로 타이머가 밀릴 수 있어 탭이 다시 보일 때도 한 번 더 계산한다.)
+    (function scheduleMidnight() {
+      var kstNow = Date.now() + 9 * 3600000;
+      var wait = 86400000 - (kstNow % 86400000) + 500;
+      setTimeout(function () { refreshEvents(); scheduleMidnight(); }, wait);
     })();
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) refreshEvents(); });
 
     // 기사에 쓸 만한 사진이 없을 때 대신 보여줄 예포 CI 로고.
     // 로고 자체의 여백을 미리 잘라낸 버전이라 박스를 꽉 채워 보인다.
