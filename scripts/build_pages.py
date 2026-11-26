@@ -322,6 +322,7 @@ def popular_articles(index, limit=4):
 EVENTS_FILE = REPO_ROOT / "data" / "events.json"   # 손으로 관리하는 행사·일정 목록
 KST = timezone(timedelta(hours=9))
 EVENT_LIMIT = 6   # 홈에는 다가오는 일정만 6개까지(날짜순). 하루가 지나면 빠지고 다음 일정이 올라온다
+EVENT_SPARE = 6   # 예비로 더 담아 두는 일정 수(숨김). 자동 재생성이 늦어져도 방문자 브라우저(site-home.js)가 날짜를 다시 계산해 지난 일정을 빼고 채운다
 
 
 def _load_events():
@@ -344,9 +345,9 @@ def render_events(today=None):
     """홈 아래쪽 '행사·일정' 칸. data/events.json 을 읽어 다가오는 일정만 가까운 순으로 EVENT_LIMIT개 그린다(지난 일정은 빠짐)."""
     today = today or datetime.now(KST).date()
     events = _load_events()
-    upcoming = sorted((e for e in events if e["_end"] >= today), key=lambda e: (e["_start"], e["_end"]))[:EVENT_LIMIT]
+    upcoming = sorted((e for e in events if e["_end"] >= today), key=lambda e: (e["_start"], e["_end"]))[:EVENT_LIMIT + EVENT_SPARE]
 
-    def row(e, is_past):
+    def row(e, is_past, hidden=False):
         s, en = e["_start"], e["_end"]
         wk = "월화수목금토일"[s.weekday()]
         if is_past:
@@ -363,11 +364,11 @@ def render_events(today=None):
         tag = f'<span class="tag" style="color:{tag_color(e["tag"])};">{esc(e["tag"])}</span>' if e.get("tag") else ""
         place = f'<span class="ev-meta">{esc(e["place"])}</span>' if e.get("place") else ""
         # 2줄: ① 날짜·배지·분류·장소  ② 행사명
-        return (f'<li class="ev-row{" is-past" if is_past else ""}">'
+        return (f'<li class="ev-row{" is-past" if is_past else ""}" data-start="{s.isoformat()}" data-end="{en.isoformat()}"{" hidden" if hidden else ""}>'
                 f'<div class="ev-head"><span class="ev-when">{when}</span><span class="ev-badge">{badge}</span>{tag}{place}</div>'
                 f'<span class="ev-title">{title}</span></li>')
 
-    rows = "".join(row(e, False) for e in upcoming)
+    rows = "".join(row(e, False, i >= EVENT_LIMIT) for i, e in enumerate(upcoming))
     if not rows:
         rows = '<li class="ev-empty">예정된 일정이 없습니다.</li>'
     return ('<div class="panel events" id="eventCal"><div class="mod-head"><h3>행사·일정</h3>'
